@@ -14,16 +14,17 @@
 		"next": "^12.3.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"ui": "*"
+		"@clfxc/ui": "*",
+		"@clfxc/services": "*"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.0.0",
 		"@types/node": "^17.0.12",
 		"@types/react": "^18.0.21",
 		"@types/react-dom": "^18.0.6",
-		"eslint-config-custom": "*",
 		"next-transpile-modules": "9.0.0",
-		"tsconfig": "*",
-		"typescript": "^4.8.4"
+		"typescript": "^4.8.4",
+		"eslint-config-custom": "*",
+		"tsconfig": "*"
 	}
 }
