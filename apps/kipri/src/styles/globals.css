@@ -1,0 +1,39 @@
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0;
+	font-family: Nunito, Helvetica Neue, sans-serif;
+}
+
+a,
+a:visited {
+	color: inherit;
+	text-decoration: none;
+}
+
+button {
+	border: none;
+	font-size: inherit;
+	background-color: transparent;
+}
+
+img {
+	max-width: 100%;
+}
+
+.container {
+	max-width: 1440px;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+}

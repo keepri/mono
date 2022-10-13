@@ -1,0 +1,27 @@
+{
+	"name": "kipri",
+	"version": "0.0.0",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev --parallel",
+		"lint": "turbo run lint",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"kipri:dev": "npm run dev --workspace=kipri-folio",
+		"api:dev": "concurrently \"npm run build:watch --workspace=api\" \"npm run serve-funcs --workspace=api\""
+	},
+	"devDependencies": {
+		"concurrently": "^7.4.0",
+		"prettier": "latest",
+		"turbo": "latest",
+		"eslint-config-custom": "*"
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	},
+	"packageManager": "npm@8.19.2"
+}
