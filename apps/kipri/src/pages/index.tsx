@@ -1,7 +1,7 @@
 import { Button } from '@clfxc/ui';
 import { NextPage } from 'next';
 
-const KIPRI: NextPage = () => {
+const Index: NextPage = () => {
 	return (
 		<>
 			<Button />
@@ -9,4 +9,4 @@ const KIPRI: NextPage = () => {
 	);
 };
 
-export default KIPRI;
+export default Index;

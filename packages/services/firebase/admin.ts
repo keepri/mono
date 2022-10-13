@@ -5,7 +5,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase/auth';
 import { InitFirebaseServerSideParams } from '../utils/declarations/types';
 
-export const initApp = ({
+export const initAdminFireApp = ({
 	credential: { projectId, privateKey, clientEmail },
 	firebaseConfig,
 }: InitFirebaseServerSideParams) => {
@@ -21,9 +21,5 @@ export const initApp = ({
 };
 
 // firebase server refs
-const firestoreBE = getFirestore();
-const authBE = getAuth();
-
-export default {
-	initApp,
-};
+const firestore = getFirestore();
+const auth = getAuth();

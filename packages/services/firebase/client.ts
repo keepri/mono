@@ -1,9 +1,10 @@
-import { FirebaseOptions, initializeApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { InitFirebaseClientSideParams } from '../utils/declarations';
 
-export const initApp = ({ firebaseConfig }: { firebaseConfig: FirebaseOptions }) => {
+export const initClientFireApp = ({ firebaseConfig }: InitFirebaseClientSideParams) => {
 	initializeApp(firebaseConfig);
 };
 
@@ -11,5 +12,3 @@ export const initApp = ({ firebaseConfig }: { firebaseConfig: FirebaseOptions })
 const firestoreFE = getFirestore();
 const authFE = getAuth();
 const storage = getStorage();
-
-export default { initApp };

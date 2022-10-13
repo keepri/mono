@@ -27,9 +27,7 @@ const Head: FC<Props> = ({
 
 	return (
 		<NextHead>
-			<title>
-				{siteName} | {title}
-			</title>
+			<title>{`${siteName} | ${title}`}</title>
 			<meta httpEquiv="X-UA-Compatible" content="ie=edge" />
 			<meta name="keywords" content={keywords} />
 			<meta name="description" content={desc} />
