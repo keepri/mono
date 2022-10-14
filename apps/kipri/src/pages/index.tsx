@@ -1,7 +1,7 @@
 import { Button } from '@clfxc/ui';
 import { NextPage } from 'next';
 
-const Index: NextPage = () => {
+const IndexPage: NextPage = () => {
 	return (
 		<>
 			<Button />
@@ -9,4 +9,4 @@ const Index: NextPage = () => {
 	);
 };
 
-export default Index;
+export default IndexPage;
