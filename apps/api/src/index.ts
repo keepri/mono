@@ -1,15 +1,15 @@
-import { https } from 'firebase-functions';
-import { getApp } from 'firebase/app';
-import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
+import { t } from '@clfxc/services/index';
+import express from 'express';
+import * as functions from 'firebase-functions';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-export const helloWorld = https.onRequest((_request, response) => {
-	// logger.info('Hello logs!', { structuredData: true });
-	response.send('Hello from Firebase!');
+const app = express();
+
+app.get('*', (req, res) => {
+	res.send({
+		hello: 'world',
+		iLikeTurtles: t,
+		nice: 69,
+	});
 });
 
-// Connect functions to emulator for dev
-const funcs = getFunctions(getApp());
-connectFunctionsEmulator(funcs, 'localhost', 5001);
+export const server = functions.https.onRequest(app);

@@ -17,9 +17,10 @@
 	},
 	"devDependencies": {
 		"concurrently": "^7.4.0",
+		"eslint-config-custom": "*",
+		"firebase-tools": "^11.14.4",
 		"prettier": "latest",
-		"turbo": "latest",
-		"eslint-config-custom": "*"
+		"turbo": "latest"
 	},
 	"engines": {
 		"node": ">=14.0.0"

@@ -1,0 +1,30 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "CloudFunctions",
+	"compilerOptions": {
+		"strict": true,
+		"alwaysStrict": true,
+		"allowJs": false,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictPropertyInitialization": true,
+		"noImplicitThis": true,
+		"forceConsistentCasingInFileNames": true,
+		"inlineSources": false,
+		"isolatedModules": false,
+		"noImplicitAny": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"lib": ["ES2021"],
+		"module": "ES2020",
+		"moduleResolution": "node",
+		"target": "ES2021",
+		"outDir": "dist",
+		"sourceMap": true,
+		"rootDir": "../../",
+		"typeRoots": ["node_modules/@types"],
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true
+	}
+}

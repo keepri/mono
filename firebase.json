@@ -1,0 +1,27 @@
+{
+	"firestore": {
+		"rules": "firestore.rules",
+		"indexes": "firestore.indexes.json"
+	},
+	"functions": [
+		{
+			"source": "apps/api",
+			"codebase": "default",
+			"ignore": [
+				".git",
+				"firebase-debug.log",
+				"firebase-debug.*.log",
+				"**/src/**",
+				"**/.vscode/**",
+				".firebase/**",
+				".firebaserc",
+				"firebase.json",
+				"**/node_modules/**"
+			],
+			"predeploy": ["npm run lint --workspace=api", "npm run build --workspace=api"]
+		}
+	],
+	"storage": {
+		"rules": "storage.rules"
+	}
+}

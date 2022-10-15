@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 // import { getAuth } from 'firebase/auth';
 // import { getFirestore } from 'firebase/firestore';
 // import { getStorage } from 'firebase/storage';
-import { InitFirebaseClientSideParams } from '../utils/declarations';
+import type { InitFirebaseClientSideParams } from '../utils/declarations';
 
 export const initClientFireApp = ({ firebaseConfig }: InitFirebaseClientSideParams) => {
 	initializeApp(firebaseConfig);

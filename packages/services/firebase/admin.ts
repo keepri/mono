@@ -1,9 +1,7 @@
-// eslint-disable-next-line import/no-unresolved
-import { cert, initializeApp } from 'firebase-admin/app';
-// eslint-disable-next-line import/no-unresolved
-import { getFirestore } from 'firebase-admin/firestore';
-import { getAuth } from 'firebase/auth';
-import { InitFirebaseServerSideParams } from '../utils/declarations/types';
+import { credential, initializeApp } from 'firebase-admin';
+// import { getFirestore } from 'firebase-admin/firestore';
+// import { getAuth } from 'firebase/auth';
+import type { InitFirebaseServerSideParams } from '../utils/declarations';
 
 export const initAdminFireApp = ({
 	credential: { projectId, privateKey, clientEmail },
@@ -12,7 +10,7 @@ export const initAdminFireApp = ({
 	initializeApp({
 		...firebaseConfig,
 		serviceAccountId: clientEmail,
-		credential: cert({
+		credential: credential.cert({
 			projectId,
 			privateKey,
 			clientEmail,
@@ -21,5 +19,5 @@ export const initAdminFireApp = ({
 };
 
 // firebase server refs
-const firestore = getFirestore();
-const auth = getAuth();
+// const firestore = getFirestore();
+// const auth = getAuth();

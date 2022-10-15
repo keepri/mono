@@ -21,6 +21,8 @@ module.exports = {
 		'turbo/no-undeclared-env-vars': 'warn',
 		indent: ['warn', 'tab', { SwitchCase: 1, VariableDeclarator: 2, ignoredNodes: ['ConditionalExpression'] }],
 		'@typescript-eslint/no-inferrable-types': 'off',
+		'@typescript-eslint/no-var-requires': 'warn',
+		'@typescript-eslint/no-empty-function': 'warn',
 		'@typescript-eslint/no-empty-interface': ['warn', { allowSingleExtends: true }],
 		'react/jsx-key': 'warn',
 		'react/display-name': 'off',

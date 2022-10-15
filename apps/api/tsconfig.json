@@ -1,13 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "tsconfig/base.json",
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es2017",
-		"outDir": "lib",
-		"sourceMap": true
-	},
-	"compileOnSave": true,
-	"include": ["src", "../../packages/shared/**/*.ts"],
+	"extends": "tsconfig/cloud-functions.json",
+	"include": ["../../packages/services/**/*.ts", "src"],
 	"exclude": ["node_modules"]
 }

@@ -1,1 +1,2 @@
-import { toFile } from 'qrcode';
+// import { toFile } from 'qrcode';
+export {};
