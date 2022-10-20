@@ -1,6 +1,6 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
-	"globalEnv": ["TOKEN_SPLIT", "NODE_ENV"],
+	"globalEnv": ["NODE_ENV"],
 	"pipeline": {
 		"db:generate": {
 			"outputs": [".generated/**"]

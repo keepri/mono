@@ -20,6 +20,7 @@ module.exports = {
 		'@next/next/no-html-link-for-pages': 'off',
 		'turbo/no-undeclared-env-vars': 'warn',
 		indent: ['warn', 'tab', { SwitchCase: 1, VariableDeclarator: 2, ignoredNodes: ['ConditionalExpression'] }],
+		'@typescript-eslint/ban-ts-comment': 'warn',
 		'@typescript-eslint/no-inferrable-types': 'off',
 		'@typescript-eslint/no-var-requires': 'warn',
 		'@typescript-eslint/no-empty-function': 'warn',
