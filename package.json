@@ -8,8 +8,12 @@
 		"packages/*"
 	],
 	"scripts": {
+		"db-generate": "turbo db-generate",
+		"db-push": "turbo db-push",
 		"build": "turbo run build",
 		"dev": "turbo run dev --parallel",
+		"clean:workspaces": "turbo clean",
+		"clean": "rm -rf node_modules .turbo .vercel",
 		"lint": "turbo run lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"kipri:dev": "npm run dev --workspace=kipri-folio",

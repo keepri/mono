@@ -5,7 +5,8 @@
 	"main": "./index.ts",
 	"types": "./index.ts",
 	"scripts": {
-		"lint": "TIMING=2 eslint \"**/*.ts*\""
+		"lint": "TIMING=2 eslint \"**/*.ts*\"",
+		"clean": "rm -rf node_modules .turbo"
 	},
 	"dependencies": {
 		"firebase": "^9.12.1",
