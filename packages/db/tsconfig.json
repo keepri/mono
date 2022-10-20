@@ -1,4 +1,9 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": ["index.ts"]
+	"extends": "tsconfig/base.json",
+	"compilerOptions": {
+		"incremental": true,
+		"noUncheckedIndexedAccess": true
+	},
+	"include": ["index.ts"],
+	"exclude": ["node_modules"]
 }
