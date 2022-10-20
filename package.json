@@ -16,7 +16,7 @@
 		"clean": "rm -rf node_modules .turbo .vercel",
 		"lint": "turbo lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"kipri:dev": "npm run dev --workspace=kipri-folio",
+		"foley:dev": "npm run dev --workspace=foley",
 		"api:dev": "concurrently \"npm run build:watch --workspace=api\" \"npm run serve-funcs --workspace=api\""
 	},
 	"devDependencies": {
