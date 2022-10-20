@@ -1,22 +1,25 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
-	"globalEnv": [
-		"FIREBASE_PROJECT_ID",
-		"FIREBASE_PRIVATE_KEY",
-		"FIREBASE_CLIENT_EMAIL",
-		"TOKEN_SPLIT",
-		"NODE_ENV",
-		"NEXT_PUBLIC_FIREBASE_API_KEY",
-		"NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
-		"NEXT_PUBLIC_FIREBASE_PROJECT_ID",
-		"NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
-		"NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
-		"NEXT_PUBLIC_FIREBASE_APP_ID"
-	],
+	"globalEnv": ["TOKEN_SPLIT", "NODE_ENV"],
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", ".next/**"]
+		},
+		"kipri-folio#build": {
+			"dependsOn": ["^build"],
+			"outputs": ["build/**"],
+			"env": [
+				"NEXT_PUBLIC_FIREBASE_API_KEY",
+				"NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
+				"NEXT_PUBLIC_FIREBASE_PROJECT_ID",
+				"NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
+				"NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+				"NEXT_PUBLIC_FIREBASE_APP_ID",
+				"FIREBASE_PROJECT_ID",
+				"FIREBASE_PRIVATE_KEY",
+				"FIREBASE_CLIENT_EMAIL"
+			]
 		},
 		"lint": {
 			"outputs": []

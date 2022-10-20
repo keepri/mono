@@ -1,0 +1,41 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+	/* colors */
+	--clr-black: #333;
+	--clr-white: #fff;
+
+	/* vars */
+	--radius: 5px;
+}
+
+.button-base {
+	padding: 0.4em 0.7em;
+	border-radius: var(--radius);
+	border: 1px solid var(--clr-black);
+	background: transparent;
+	color: var(--clr-black);
+	font-size: 1rem;
+	cursor: pointer;
+	line-height: 1;
+}
+.button-base:hover {
+	scale: 0.95;
+	background-color: var(--clr-black);
+	color: var(--clr-white);
+}
+.button-base:active {
+	scale: 0.9;
+}
+
+.input-base {
+	border: 1px solid lightgrey;
+	border-radius: var(--radius);
+	font-size: 1rem;
+	padding: 0.5rem 0.75rem;
+}
+.input-base::placeholder {
+	font-size: 0.95em;
+}
