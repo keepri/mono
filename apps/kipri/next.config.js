@@ -3,7 +3,7 @@ const NextTranspileModules = require('next-transpile-modules');
 const { join, relative } = require('path');
 const { cwd, env } = require('process');
 
-const withTM = NextTranspileModules(['@clfxc/ui', '@clfxc/services', '@clfxc/tailwind']);
+const withTM = NextTranspileModules(['@clfxc/ui', '@clfxc/services']);
 
 module.exports = withTM({
 	experimental: { images: { allowFutureImage: true } },

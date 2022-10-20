@@ -1,3 +1,12 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+	// colors
+	--clr-grey: rgb(137, 137, 137);
+}
+
 *,
 *::after,
 *::before {

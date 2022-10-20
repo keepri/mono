@@ -1,0 +1,34 @@
+.add-button,
+.remove-button {
+	font-size: 0.75rem;
+}
+
+.container {
+	display: grid;
+	grid-template-columns: minmax(70px, 12.5vw) 1fr;
+	min-height: 100vh;
+
+	& > aside {
+		border-right: 2px dotted grey;
+
+		span + span {
+			position: relative;
+
+			&::before {
+				content: '';
+				width: 100%;
+				border-top: 2px dotted grey;
+			}
+		}
+	}
+
+	section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		& > textarea {
+			flex: 1;
+		}
+	}
+}

@@ -1,4 +1,3 @@
-import '@clfxc/tailwind';
 // import '@styles/fontFaces.scss';
 // eslint-disable-next-line import/no-unresolved
 import '@styles/globals.scss';
