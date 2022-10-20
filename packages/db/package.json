@@ -7,15 +7,15 @@
 	"scripts": {
 		"dev": "prisma studio --port 5556",
 		"clean": "rm -rf .turbo node_modules",
-		"db-push": "prisma db push",
+		"db:push": "prisma db push",
 		"db:generate": "prisma generate"
 	},
 	"dependencies": {
-		"@prisma/client": "^4.4.0"
+		"@prisma/client": "^4.5.0"
 	},
 	"devDependencies": {
-		"prisma": "^4.4.0",
-		"typescript": "^4.8.4",
-		"tsconfig": "*"
+		"prisma": "^4.5.0",
+		"tsconfig": "*",
+		"typescript": "^4.8.4"
 	}
 }

@@ -9,7 +9,7 @@
 	],
 	"scripts": {
 		"db:generate": "turbo db:generate",
-		"db-push": "turbo db-push",
+		"db:push": "turbo db:push",
 		"build": "turbo build",
 		"dev": "turbo dev --parallel",
 		"clean:workspaces": "turbo clean",

@@ -31,7 +31,7 @@
 			"dependsOn": ["^db:generate"],
 			"cache": false
 		},
-		"db-push": {
+		"db:push": {
 			"cache": false
 		},
 		"clean": {
