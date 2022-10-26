@@ -4,9 +4,9 @@ interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 	initialValue?: string;
 }
 
-export const Textarea: FC<Props> = ({ className, initialValue, ...rest }) => {
+export const Textarea: FC<Props> = ({ className, initialValue, rows, cols, ...rest }) => {
 	return (
-		<textarea className={`input-base ${className}`} {...rest}>
+		<textarea rows={rows} cols={cols} className={`input-base ${className}`} {...rest}>
 			{initialValue}
 		</textarea>
 	);

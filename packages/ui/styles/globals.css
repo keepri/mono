@@ -20,14 +20,15 @@
 	font-size: 1rem;
 	cursor: pointer;
 	line-height: 1;
+	transition: background-color 50ms ease-in-out;
 }
 .button-base:hover {
-	scale: 0.95;
 	background-color: var(--clr-black);
 	color: var(--clr-white);
 }
 .button-base:active {
-	scale: 0.9;
+	background-color: transparent;
+	color: var(--clr-black);
 }
 
 .input-base {

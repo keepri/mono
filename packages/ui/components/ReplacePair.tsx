@@ -1,8 +1,8 @@
-import { forwardRef, InputHTMLAttributes, PropsWithRef } from 'react';
+import { forwardRef, InputHTMLAttributes, PropsWithRef, useId } from 'react';
 import { WithRequired } from '../types';
 import { Button } from './Button';
 
-type ReplacePairProps = WithRequired<Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder'>, 'onChange'>;
+type ReplacePairProps = WithRequired<Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder' & 'id'>, 'onChange'>;
 
 interface Props extends ReplacePairProps {
 	replace?: string;
@@ -16,16 +16,17 @@ interface Props extends ReplacePairProps {
 
 export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 	(
-		// eslint-disable-next-line max-len
 		{ index, className, replace, replaceValue, wrapperClass, placeholder1, placeholder2, onChange, remove, ...rest },
 		ref
 	) => {
+		const id = useId();
+
 		return (
-			<span ref={ref} className={`flex justify-center items-center flex-wrap gap-2 ${wrapperClass}`}>
+			<span ref={ref} id={id} className={`flex justify-center items-center flex-wrap gap-2 ${wrapperClass}`}>
 				<input
 					name="replace"
-					id={String(index ?? '#')}
-					className={`input-base ${className}`}
+					id={id}
+					className={`input-base max-w-full ${className}`}
 					value={replace}
 					placeholder={placeholder1 ?? 'replace'}
 					onChange={onChange}
@@ -33,8 +34,8 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 				/>
 				<input
 					name="replaceValue"
-					id={String(index ?? '#')}
-					className={`input-base ${className}`}
+					id={id}
+					className={`input-base max-w-full ${className}`}
 					value={replaceValue}
 					placeholder={placeholder2 ?? 'with'}
 					onChange={onChange}
