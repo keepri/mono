@@ -2,7 +2,10 @@ import { forwardRef, InputHTMLAttributes, PropsWithRef, useId } from 'react';
 import { WithRequired } from '../types';
 import { Button } from './Button';
 
-type ReplacePairProps = WithRequired<Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder' & 'id'>, 'onChange'>;
+type ReplacePairProps = WithRequired<
+	Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder' & 'id' & 'name'>,
+	'onChange'
+>;
 
 interface Props extends ReplacePairProps {
 	replace?: string;
@@ -10,19 +13,35 @@ interface Props extends ReplacePairProps {
 	wrapperClass?: string;
 	placeholder1?: string;
 	placeholder2?: string;
+	label1?: string;
+	label2?: string;
 	index?: number;
 	remove?: (index: number) => void;
 }
 
 export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 	(
-		{ index, className, replace, replaceValue, wrapperClass, placeholder1, placeholder2, onChange, remove, ...rest },
+		{
+			index,
+			className,
+			replace,
+			replaceValue,
+			wrapperClass,
+			placeholder1,
+			placeholder2,
+			label1,
+			label2,
+			onChange,
+			remove,
+			...rest
+		},
 		ref
 	) => {
 		const id = useId();
 
 		return (
 			<span ref={ref} id={id} className={`flex justify-center items-center flex-wrap gap-2 ${wrapperClass}`}>
+				{label1 && <label className="text-sm leading-none text-left w-full">{label1}</label>}
 				<input
 					name="replace"
 					id={id}
@@ -32,6 +51,7 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 					onChange={onChange}
 					{...rest}
 				/>
+				{label2 && <label className="text-sm leading-none text-left w-full">{label2}</label>}
 				<input
 					name="replaceValue"
 					id={id}

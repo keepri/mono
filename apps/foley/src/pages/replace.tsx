@@ -68,6 +68,8 @@ const ReplaceTextPage: NextPage = () => {
 		return new Array(pairs).fill('').map((_, index) => {
 			return (
 				<ReplacePair
+					label1="replace"
+					label2="with"
 					key={'replace-pair-' + index + 1}
 					ref={(inputRef) =>
 						inputRef &&

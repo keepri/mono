@@ -6,6 +6,9 @@
 	/* colors */
 	--clr-black: #333;
 	--clr-white: #fff;
+	--clr-lightgrey-100: hsl(0, 0%, 90%);
+	--clr-lightgrey-200: hsl(0, 0%, 80%);
+	--clr-lightgrey-300: hsl(0, 0%, 70%);
 
 	/* vars */
 	--radius: 5px;
@@ -32,11 +35,12 @@
 }
 
 .input-base {
-	border: 1px solid lightgrey;
+	border: 1px solid var(--clr-black);
 	border-radius: var(--radius);
 	font-size: 1rem;
 	padding: 0.5rem 0.75rem;
 }
 .input-base::placeholder {
-	font-size: 0.95em;
+	font-size: 0.8em;
+	color: var(--clr-lightgrey-100);
 }
