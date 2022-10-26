@@ -12,14 +12,6 @@ export const baseUrl = isProduction
 
 export const defaultLanguage = Langs.en;
 
-// URLS
-export const URLS = {
-	// WEBSITE
-	HOME: '/',
-
-	// API
-};
-
 // MISC
 // TODO update to correct domain
 export const domain = isProduction ? (typeof window !== 'undefined' ? location.host : undefined) : 'localhost';

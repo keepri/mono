@@ -4,6 +4,15 @@ export enum StateStatus {
 	failed = 'failed',
 }
 
+// URLS
+export enum URLS {
+	// WEBSITE
+	HOME = '/',
+	REPLACE = '/replace',
+
+	// API
+}
+
 export enum Langs {
 	en = 'en',
 	ro = 'ro',
