@@ -14,6 +14,7 @@
 	--radius: 5px;
 }
 
+/* BUTTONS */
 .button-base {
 	padding: 0.4em 0.7em;
 	border-radius: var(--radius);
@@ -33,7 +34,20 @@
 	background-color: transparent;
 	color: var(--clr-black);
 }
+.button-varient-dark {
+	background-color: var(--clr-black);
+	color: var(--clr-white);
+}
+.button-varient-dark:hover {
+	background-color: transparent;
+	color: var(--clr-black);
+}
+.button-varient-dark:active {
+	background-color: var(--clr-black);
+	color: var(--clr-white);
+}
 
+/* INPUTS */
 .input-base {
 	border: 1px solid var(--clr-black);
 	border-radius: var(--radius);

@@ -1,10 +1,14 @@
 import { ButtonHTMLAttributes, FC, PropsWithChildren } from 'react';
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {}
+export type ButtonVarient = 'dark';
 
-export const Button: FC<PropsWithChildren<Props>> = ({ children, className, ...rest }) => {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+	varient?: ButtonVarient;
+}
+
+export const Button: FC<PropsWithChildren<Props>> = ({ children, varient, className, ...rest }) => {
 	return (
-		<button className={`button-base ${className}`} {...rest}>
+		<button className={`button-base ${className} ${varient ? `button-varient-${varient}` : ''}`} {...rest}>
 			{children}
 		</button>
 	);

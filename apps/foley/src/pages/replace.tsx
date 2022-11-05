@@ -3,33 +3,36 @@ import { Button, ReplacePair, Textarea } from '@clfxc/ui';
 import { ReplacePairName } from '@clfxc/ui/types';
 import styles from '@styles/Replace.module.scss';
 import type { NextPage } from 'next';
-import { ChangeEventHandler, useCallback, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, ChangeEventHandler, useCallback, useState } from 'react';
 
 type Declaration = Record<ReplacePairName, string>;
-type Declarations = Record<string, Declaration>;
 
-type Fields = { input: string; declarations: Declarations };
-
-// interface Props {}
-
-const initFields: Fields = { input: '', declarations: {} };
+const initDeclaration: Declaration = { replace: '', replaceValue: '' };
 
 const ReplaceTextPage: NextPage = () => {
-	const fields = useRef<Fields>(initFields);
-
-	const [pairs, setPairs] = useState<number>(1);
+	const [declarations, updateDeclarations] = useState<Declaration[]>([initDeclaration]);
+	const [input, updateInput] = useState<string>('');
 	const [output, updateOutput] = useState<string>('');
 
-	const handleChangeReplacePair: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+	const handleChangeReplacePair = useCallback((e: ChangeEvent<HTMLInputElement>, index: number) => {
 		const target = e.target;
-		const id = target.id;
 		const name = target.name as ReplacePairName;
+		const value = target.value;
 
-		const f = fields.current;
-		fields.current = {
-			...f,
-			declarations: { ...f.declarations, [id]: { ...f.declarations[id], [name]: e.target.value } },
-		};
+		updateDeclarations((d) => {
+			const newDeclarations = [...d];
+			newDeclarations[index][name] = value;
+			return newDeclarations;
+		});
+	}, []);
+
+	const handleClearReplacePair = useCallback((index: number) => {
+		updateDeclarations((d) => {
+			const newDeclarations = [...d];
+			newDeclarations[index].replace = '';
+			newDeclarations[index].replaceValue = '';
+			return newDeclarations;
+		});
 	}, []);
 
 	const handleOutputChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback((e) => {
@@ -37,54 +40,32 @@ const ReplaceTextPage: NextPage = () => {
 	}, []);
 
 	const handleInputChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback((e) => {
-		const f = fields.current;
-		fields.current = { ...f, input: e.target.value };
+		updateInput(e.target.value);
 	}, []);
 
-	const handleSubmit = useCallback(() => {
-		const input = fields.current.input;
-		const declarations = fields.current.declarations ?? {};
+	const handleSubmit = () => {
+		if (!input?.length) return;
 		let output: string = String(input);
 
-		if (!input?.length) return;
-
-		for (const key in declarations) {
-			const declaration = declarations[key as keyof typeof declarations];
+		for (const declaration of declarations) {
 			if (!declaration.replace.length || !declaration.replaceValue.length) continue;
-
 			const newOutput = output.split(declaration.replace).join(declaration.replaceValue);
 			output = newOutput;
 		}
 
 		updateOutput(output);
-	}, []);
+	};
 
 	const handleAddReplacePair = useCallback(() => {
-		setPairs((prev) => prev + 1);
+		updateDeclarations((d) => [...d, initDeclaration]);
 	}, []);
 
-	// DOM REPLACE DECLARATION FIELDS
-	const ReplacePairInputGroups = useMemo(() => {
-		return new Array(pairs).fill('').map((_, index) => {
-			return (
-				<ReplacePair
-					label1="replace"
-					label2="with"
-					key={'replace-pair-' + index + 1}
-					ref={(inputRef) =>
-						inputRef &&
-						(fields.current.declarations = {
-							...fields.current.declarations,
-							[inputRef.id]: { replace: '', replaceValue: '' },
-						})
-					}
-					className="w-full font-nixie-one"
-					labelClass="font-nixie-one"
-					onChange={handleChangeReplacePair}
-				/>
-			);
+	const handleRemoveReplacePair = useCallback((index: number) => {
+		updateDeclarations((d) => {
+			const newDeclarations = [...d].filter((_, i) => i !== index);
+			return newDeclarations;
 		});
-	}, [pairs, handleChangeReplacePair]);
+	}, []);
 
 	return (
 		<div className={styles['container']}>
@@ -92,11 +73,26 @@ const ReplaceTextPage: NextPage = () => {
 				<Button className="w-full font-nixie-one font-bold" onClick={handleAddReplacePair}>
 					+
 				</Button>
-				{ReplacePairInputGroups}
+				{/* {ReplacePairInputGroups} */}
+				{declarations.map(({ replace, replaceValue }, index) => (
+					<ReplacePair
+						index={index}
+						replace={replace}
+						replaceValue={replaceValue}
+						label1="replace"
+						label2="with"
+						key={'replace-pair-' + index + 1}
+						className="w-full font-nixie-one"
+						labelClass="font-nixie-one"
+						handleChange={handleChangeReplacePair}
+						clear={handleClearReplacePair}
+						remove={handleRemoveReplacePair}
+					/>
+				))}
 			</aside>
 			<section className="p-2">
-				<Textarea className="font-nixie-one" placeholder="Input" onChange={handleInputChange} />
-				<Textarea className="font-nixie-one" value={output} onChange={handleOutputChange} placeholder="Output" />
+				<Textarea className="font-nixie-one" placeholder="Input" value={input} onChange={handleInputChange} />
+				<Textarea className="font-nixie-one" placeholder="Output" value={output} onChange={handleOutputChange} />
 				<div style={{ minHeight: '50px' }}>
 					<Button className="w-full h-full font-nixie-one" onClick={handleSubmit}>
 						start
