@@ -78,7 +78,8 @@ const ReplaceTextPage: NextPage = () => {
 							[inputRef.id]: { replace: '', replaceValue: '' },
 						})
 					}
-					className="w-full"
+					className="w-full font-nixie-one"
+					labelClass="font-nixie-one"
 					onChange={handleChangeReplacePair}
 				/>
 			);
@@ -88,17 +89,17 @@ const ReplaceTextPage: NextPage = () => {
 	return (
 		<div className={styles['container']}>
 			<aside className="flex flex-col gap-2.5 p-2">
-				<Button className="w-full" onClick={handleAddReplacePair}>
+				<Button className="w-full font-nixie-one font-bold" onClick={handleAddReplacePair}>
 					+
 				</Button>
 				{ReplacePairInputGroups}
 			</aside>
 			<section className="p-2">
-				<Textarea className="" placeholder="Input" onChange={handleInputChange} />
-				<Textarea className="" value={output} onChange={handleOutputChange} placeholder="Output" />
+				<Textarea className="font-nixie-one" placeholder="Input" onChange={handleInputChange} />
+				<Textarea className="font-nixie-one" value={output} onChange={handleOutputChange} placeholder="Output" />
 				<div style={{ minHeight: '50px' }}>
-					<Button className="w-full h-full" onClick={handleSubmit}>
-						Replace
+					<Button className="w-full h-full font-nixie-one" onClick={handleSubmit}>
+						start
 					</Button>
 				</div>
 			</section>

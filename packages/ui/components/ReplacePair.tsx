@@ -11,6 +11,7 @@ interface Props extends ReplacePairProps {
 	replace?: string;
 	replaceValue?: string;
 	wrapperClass?: string;
+	labelClass?: string;
 	placeholder1?: string;
 	placeholder2?: string;
 	label1?: string;
@@ -24,9 +25,10 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 		{
 			index,
 			className,
+			wrapperClass,
+			labelClass,
 			replace,
 			replaceValue,
-			wrapperClass,
 			placeholder1,
 			placeholder2,
 			label1,
@@ -41,7 +43,7 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 
 		return (
 			<span ref={ref} id={id} className={`flex justify-center items-center flex-wrap gap-2 ${wrapperClass}`}>
-				{label1 && <label className="text-sm leading-none text-left w-full">{label1}</label>}
+				{label1 && <label className={`text-sm leading-none text-left w-full ${labelClass}`}>{label1}</label>}
 				<input
 					name="replace"
 					id={id}
@@ -51,7 +53,7 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 					onChange={onChange}
 					{...rest}
 				/>
-				{label2 && <label className="text-sm leading-none text-left w-full">{label2}</label>}
+				{label2 && <label className={`text-sm leading-none text-left w-full ${labelClass}`}>{label2}</label>}
 				<input
 					name="replaceValue"
 					id={id}
