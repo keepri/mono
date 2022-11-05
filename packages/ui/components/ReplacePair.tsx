@@ -86,7 +86,7 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 				{Boolean(clear || remove) && (
 					<div className="flex justify-between flex-wrap gap-2 w-full">
 						{Boolean(clear) && (
-							<Button className="text-xs flex-1" onClick={handleClear}>
+							<Button className="text-xs flex-1 bg-white" onClick={handleClear}>
 								clear
 							</Button>
 						)}

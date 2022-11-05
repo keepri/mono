@@ -14,7 +14,7 @@ const IndexPage: NextPage = () => {
 					KIPRI
 					<span className="text-2xl">.dev</span>
 				</h1>
-				<Link className={`button ${styles.boop}`} href={URLS.REPLACE}>
+				<Link className={`button border-white ${styles.boop}`} href={URLS.REPLACE}>
 					BOOP
 				</Link>
 			</section>

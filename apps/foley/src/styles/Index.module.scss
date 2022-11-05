@@ -1,9 +1,8 @@
 .boop {
 	color: var(--clr-white) !important;
-	border-color: var(--clr-white);
 }
 .boop:hover {
-	background-color: var(--clr-bg-500);
+	background-color: var(--clr-bg-500) !important;
 }
 .boop:active {
 	background-color: transparent;

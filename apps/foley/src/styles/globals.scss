@@ -68,9 +68,8 @@ img {
 .button {
 	padding: 0.4em 0.7em;
 	border-radius: var(--radius);
-	border: 1px solid var(--clr-black);
-	background-color: transparent;
-	color: var(--clr-black);
+	border-width: 1px;
+	border-style: solid;
 	cursor: pointer;
 	line-height: 1;
 	transition: background-color 50ms ease-in-out;
