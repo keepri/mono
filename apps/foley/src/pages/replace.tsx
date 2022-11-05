@@ -1,9 +1,8 @@
-/* eslint-disable indent */
 import { Button, ReplacePair, Textarea } from '@clfxc/ui';
 import { ReplacePairName } from '@clfxc/ui/types';
 import styles from '@styles/Replace.module.scss';
 import type { NextPage } from 'next';
-import { ChangeEvent, ChangeEventHandler, useCallback, useLayoutEffect, useState, useTransition } from 'react';
+import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState, useTransition } from 'react';
 
 type Declaration = Record<ReplacePairName, string>;
 
@@ -73,7 +72,7 @@ const ReplaceTextPage: NextPage = () => {
 	};
 
 	// submit key combination event listener
-	useLayoutEffect(() => {
+	useEffect(() => {
 		const listener = (e: DocumentEventMap['keydown']) => {
 			const isMetaKey = e.metaKey;
 			const isEnterKey = e.code.toLowerCase() === 'enter';
@@ -86,7 +85,7 @@ const ReplaceTextPage: NextPage = () => {
 	}, []);
 
 	// auto submit
-	useLayoutEffect(() => {
+	useEffect(() => {
 		if (!autoSubmit) return;
 		startTransition(() => {
 			handleSubmit();
@@ -108,7 +107,7 @@ const ReplaceTextPage: NextPage = () => {
 					replaceValue={declarations[0].replaceValue}
 					label1="replace"
 					label2="with"
-					wrapperClass="py-2"
+					wrapperClass={`py-2 ${styles.pair}`}
 					className="w-full font-nixie-one"
 					labelClass="font-nixie-one"
 					handleChange={handleChangeReplacePair}
@@ -126,7 +125,7 @@ const ReplaceTextPage: NextPage = () => {
 									replaceValue={replaceValue}
 									label1="replace"
 									label2="with"
-									wrapperClass="py-2"
+									wrapperClass={`py-2 ${styles.pair}`}
 									className="w-full font-nixie-one"
 									labelClass="font-nixie-one"
 									handleChange={handleChangeReplacePair}

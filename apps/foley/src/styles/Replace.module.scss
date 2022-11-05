@@ -3,6 +3,13 @@
 	font-size: 0.75rem;
 }
 
+.pair {
+	background-color: hsl(0, 0%, 95%);
+	padding: 0.75rem;
+	border: 1px solid var(--clr-lightgrey-300);
+	border-radius: var(--radius);
+}
+
 .container {
 	display: flex;
 	height: 100vh;
@@ -14,7 +21,7 @@
 
 		span {
 			position: relative;
-			border-top: 2px dotted grey;
+			// border-top: 2px dotted grey;
 		}
 	}
 

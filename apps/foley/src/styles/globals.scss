@@ -71,18 +71,17 @@ img {
 	border: 1px solid var(--clr-black);
 	background-color: transparent;
 	color: var(--clr-black);
-	font-size: 1rem;
 	cursor: pointer;
 	line-height: 1;
 	transition: background-color 50ms ease-in-out;
 }
 .button:hover {
-	background-color: var(--clr-black);
-	color: var(--clr-white);
+	background-color: var(--clr-black) !important;
+	color: var(--clr-white) !important;
 }
 .button:active {
-	background-color: transparent;
-	color: var(--clr-black);
+	background-color: transparent !important;
+	color: var(--clr-black) !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {
