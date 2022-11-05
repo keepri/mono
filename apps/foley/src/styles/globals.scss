@@ -3,8 +3,16 @@
 @import 'tailwindcss/utilities';
 
 :root {
-	// colors
+	/* colors */
 	--clr-grey: rgb(137, 137, 137);
+	--clr-black: #333;
+	--clr-white: #fff;
+	--clr-lightgrey-100: hsl(0, 0%, 90%);
+	--clr-lightgrey-200: hsl(0, 0%, 80%);
+	--clr-lightgrey-300: hsl(0, 0%, 70%);
+
+	/* vars */
+	--radius: 5px;
 }
 
 *,
@@ -42,6 +50,27 @@ img {
 	padding-right: 1rem;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+/* BUTTONS */
+.button {
+	padding: 0.4em 0.7em;
+	border-radius: var(--radius);
+	border: 1px solid var(--clr-black);
+	background: transparent;
+	color: var(--clr-black);
+	font-size: 1rem;
+	cursor: pointer;
+	line-height: 1;
+	transition: background-color 50ms ease-in-out;
+}
+.button:hover {
+	background-color: var(--clr-black);
+	color: var(--clr-white);
+}
+.button:active {
+	background-color: transparent;
+	color: var(--clr-black);
 }
 
 @media (prefers-reduced-motion: no-preference) {
