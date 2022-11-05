@@ -6,9 +6,10 @@
 	"license": "MIT",
 	"scripts": {
 		"dev": "prisma studio --port 5556",
-		"clean": "rm -rf .turbo node_modules",
+		"clean": "rm -rf .turbo .generated node_modules",
 		"db:push": "prisma db push",
-		"db:generate": "prisma generate"
+		"db:generate": "prisma generate",
+		"db:connect": "pscale connect clfxc main --port 3309"
 	},
 	"dependencies": {
 		"@prisma/client": "^4.5.0"

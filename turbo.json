@@ -5,6 +5,12 @@
 		"db:generate": {
 			"outputs": [".generated/**"]
 		},
+		"db:push": {
+			"cache": false
+		},
+		"db:dev": {
+			"cache": false
+		},
 		"build": {
 			"dependsOn": ["^db:generate", "^lint", "^build"],
 			"outputs": ["dist/**", ".next/**"]
@@ -19,9 +25,6 @@
 		},
 		"dev": {
 			"dependsOn": ["^db:generate"],
-			"cache": false
-		},
-		"db:push": {
 			"cache": false
 		},
 		"clean": {

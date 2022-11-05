@@ -8,8 +8,10 @@
 		"packages/*"
 	],
 	"scripts": {
+		"db:connect": "turbo db:connect",
 		"db:generate": "turbo db:generate",
 		"db:push": "turbo db:push",
+		"db:studio": "npm run dev --workspace @clfxc/db",
 		"build": "turbo build",
 		"dev": "turbo dev --parallel",
 		"clean:workspaces": "turbo clean",
