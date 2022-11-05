@@ -12,14 +12,9 @@
 		overflow-y: scroll;
 		flex: 1;
 
-		span + span {
+		span {
 			position: relative;
-
-			&::before {
-				content: '';
-				width: 100%;
-				border-top: 2px dotted grey;
-			}
+			border-top: 2px dotted grey;
 		}
 	}
 

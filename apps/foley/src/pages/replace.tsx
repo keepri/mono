@@ -52,9 +52,12 @@ const ReplaceTextPage: NextPage = () => {
 		updateDeclarations((d) => [...d, initDeclaration]);
 	}, []);
 
-	const handleRemoveReplacePair = useCallback((index: number) => {
-		updateDeclarations((d) => [...d].filter((_, i) => i !== index));
-	}, []);
+	const handleRemoveReplacePair = useCallback(
+		(index: number) => {
+			declarations.length > 1 && updateDeclarations((d) => [...d].filter((_, i) => i !== index));
+		},
+		[declarations.length]
+	);
 
 	const handleSubmit = () => {
 		if (!input?.length) return;
@@ -95,7 +98,7 @@ const ReplaceTextPage: NextPage = () => {
 	return (
 		<div className={styles['container']}>
 			<aside className="flex flex-col gap-2.5 p-2">
-				<Button className="w-full font-nixie-one font-bold" onClick={handleAddReplacePair}>
+				<Button className="w-full font-nixie-one font-bold my-1" onClick={handleAddReplacePair}>
 					+
 				</Button>
 				<ReplacePair
@@ -105,6 +108,7 @@ const ReplaceTextPage: NextPage = () => {
 					replaceValue={declarations[0].replaceValue}
 					label1="replace"
 					label2="with"
+					wrapperClass="py-2"
 					className="w-full font-nixie-one"
 					labelClass="font-nixie-one"
 					handleChange={handleChangeReplacePair}
@@ -122,6 +126,7 @@ const ReplaceTextPage: NextPage = () => {
 									replaceValue={replaceValue}
 									label1="replace"
 									label2="with"
+									wrapperClass="py-2"
 									className="w-full font-nixie-one"
 									labelClass="font-nixie-one"
 									handleChange={handleChangeReplacePair}
