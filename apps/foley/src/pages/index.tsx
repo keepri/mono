@@ -7,7 +7,10 @@ const IndexPage: NextPage = () => {
 	return (
 		<>
 			<section className="grid place-content-center place-items-center gap-2 min-h-screen bg-clr-bg-300">
-				<h1 style={{ color: 'var(--clr-white)' }} className="relative font-londrina-sketch text-9xl leading-tight">
+				<h1
+					style={{ color: 'var(--clr-white)', fontSize: '16rem' }}
+					className="relative font-londrina-sketch leading-tight"
+				>
 					KIPRI
 					<span className="text-2xl">.dev</span>
 				</h1>
