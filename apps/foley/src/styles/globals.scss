@@ -5,14 +5,26 @@
 :root {
 	/* colors */
 	--clr-grey: rgb(137, 137, 137);
-	--clr-black: #333;
-	--clr-white: #fff;
+	--clr-black: #011627;
+	--clr-white: #fdfffc;
 	--clr-lightgrey-100: hsl(0, 0%, 90%);
 	--clr-lightgrey-200: hsl(0, 0%, 80%);
 	--clr-lightgrey-300: hsl(0, 0%, 70%);
+	--clr-turquoise: #2ec4b6;
+	--clr-red: #e71d36;
+	--clr-orange: #ff9f1c;
+	--clr-bg-300: #aeb2e7;
+	--clr-bg-500: #9d679c;
 
 	/* vars */
 	--radius: 5px;
+}
+
+.bg-clr-bg-300 {
+	background-color: var(--clr-bg-300);
+}
+.bg-clr-bg-500 {
+	background-color: var(--clr-bg-500);
 }
 
 *,
@@ -57,7 +69,7 @@ img {
 	padding: 0.4em 0.7em;
 	border-radius: var(--radius);
 	border: 1px solid var(--clr-black);
-	background: transparent;
+	background-color: transparent;
 	color: var(--clr-black);
 	font-size: 1rem;
 	cursor: pointer;

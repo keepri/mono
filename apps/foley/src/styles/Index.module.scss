@@ -1,0 +1,10 @@
+.boop {
+	color: var(--clr-white) !important;
+	border-color: var(--clr-white);
+}
+.boop:hover {
+	background-color: var(--clr-bg-500);
+}
+.boop:active {
+	background-color: transparent;
+}
