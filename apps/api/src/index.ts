@@ -1,10 +1,10 @@
-import { t } from '@clfxc/services/index';
+import { t } from '@clfxc/services';
 import express from 'express';
 import * as functions from 'firebase-functions';
 
 const app = express();
 
-app.get('*', (req, res) => {
+app.get('*', (_req, res) => {
 	res.send({
 		hello: 'world',
 		iLikeTurtles: t,
