@@ -6,9 +6,17 @@ import { useRouter } from 'next/router';
 const IndexPage: NextPage = () => {
 	const { push } = useRouter();
 	return (
-		<div className="grid place-items-center min-h-screen">
-			<Button onClick={() => push(URLS.REPLACE)}>BOOP</Button>
-		</div>
+		<>
+			<section className="grid place-content-center place-items-center gap-2 min-h-screen">
+				<h1 className="relative font-londrina-sketch text-9xl leading-tight">
+					KIPRI
+					<span className="text-2xl">.dev</span>
+				</h1>
+				<Button className="" onClick={() => push(URLS.REPLACE)}>
+					BOOP
+				</Button>
+			</section>
+		</>
 	);
 };
 

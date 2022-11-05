@@ -3,16 +3,28 @@ import { Button, ReplacePair, Textarea } from '@clfxc/ui';
 import { ReplacePairName } from '@clfxc/ui/types';
 import styles from '@styles/Replace.module.scss';
 import type { NextPage } from 'next';
-import { ChangeEvent, ChangeEventHandler, useCallback, useState } from 'react';
+import {
+	ChangeEvent,
+	ChangeEventHandler,
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useState,
+	useTransition,
+} from 'react';
 
 type Declaration = Record<ReplacePairName, string>;
 
 const initDeclaration: Declaration = { replace: '', replaceValue: '' };
 
 const ReplaceTextPage: NextPage = () => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [_, startTransition] = useTransition();
+
 	const [declarations, updateDeclarations] = useState<Declaration[]>([initDeclaration]);
 	const [input, updateInput] = useState<string>('');
 	const [output, updateOutput] = useState<string>('');
+	const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
 
 	const handleChangeReplacePair = useCallback((e: ChangeEvent<HTMLInputElement>, index: number) => {
 		const target = e.target;
@@ -66,6 +78,27 @@ const ReplaceTextPage: NextPage = () => {
 			return newDeclarations;
 		});
 	}, []);
+
+	useLayoutEffect(() => {
+		const listener = (e: DocumentEventMap['keydown']) => {
+			const isMetaKey = e.metaKey;
+			const isEnterKey = e.code.toLowerCase() === 'enter';
+			isMetaKey && isEnterKey && setAutoSubmit(true);
+		};
+
+		document.addEventListener('keydown', listener);
+
+		return () => document.removeEventListener('keydown', listener);
+	}, []);
+
+	useEffect(() => {
+		if (!autoSubmit) return;
+		startTransition(() => {
+			handleSubmit();
+		});
+		setAutoSubmit(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [autoSubmit]);
 
 	return (
 		<div className={styles['container']}>
