@@ -4,7 +4,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const slug = req.query['slug'];
 
-	console.log('slug?', slug);
 	if (typeof slug !== 'string') {
 		res.status(400).json({ message: 'slug not valid' });
 		return;
@@ -22,5 +21,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		return;
 	}
 
-	res.status(200).redirect(data.url);
+	res.status(200).json({ data });
+	return;
 };

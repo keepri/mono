@@ -3,7 +3,7 @@ import { Prisma, PrismaClient } from '@clfxc/db';
 let prisma: PrismaClient;
 
 const config: Prisma.Subset<Prisma.PrismaClientOptions, Prisma.PrismaClientOptions> = {
-	log: ['query', 'error'],
+	log: ['error'],
 };
 
 if (process.env.NODE_ENV === 'production') {

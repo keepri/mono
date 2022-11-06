@@ -1,14 +1,14 @@
 {
 	"name": "@clfxc/db",
 	"version": "0.1.0",
-	"main": "./index.ts",
-	"types": "./index.ts",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"license": "MIT",
 	"scripts": {
 		"dev": "prisma studio --port 5556",
 		"clean": "rm -rf .turbo .generated node_modules",
 		"db:push": "prisma db push",
-		"db:generate": "prisma generate",
+		"db:generate": "prisma generate && tsc",
 		"db:connect": "pscale connect clfxc main --port 3309"
 	},
 	"dependencies": {

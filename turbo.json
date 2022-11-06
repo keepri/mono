@@ -11,6 +11,9 @@
 		"db:dev": {
 			"cache": false
 		},
+		"db:connect": {
+			"cache": false
+		},
 		"build": {
 			"dependsOn": ["^db:generate", "^lint", "^build"],
 			"outputs": ["dist/**", ".next/**"]
