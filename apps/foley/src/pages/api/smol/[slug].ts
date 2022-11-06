@@ -21,6 +21,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		return;
 	}
 
+	if (data.status !== 'active') {
+		res.status(401).json({ message: 'url note active anymore' });
+	}
+
 	res.status(200).json({ data });
 	return;
 };
