@@ -1,4 +1,5 @@
 import { Smol } from '@clfxc/db';
+import { URLS } from '@declarations/enums';
 import prisma from '@env/prisma';
 import { origin } from '@utils/misc';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -15,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let exists: boolean = false;
 	do {
 		slug = makeLetterMix(4);
-		const found = (await fetch(`${req.headers.origin}/api/smol/${slug}`)).ok;
+		const found = (await fetch(`${req.headers.origin}/api${URLS.SMOL}/${slug}`)).ok;
 		if (found) exists = true;
 	} while (exists);
 
@@ -32,7 +33,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	await prisma.smol.create({ data: smol });
 
-	const short = `${origin}/smol/${slug}`.split('https://').pop();
+	const short = `${origin}${URLS.SMOL}/${slug}`.split('https://').pop();
 
 	res.status(200).json({ smol: short });
 	return;

@@ -1,4 +1,5 @@
 import { Button, Input, Spinner } from '@clfxc/ui';
+import { URLS } from '@declarations/enums';
 import { urlSchema } from '@declarations/schemas';
 import styles from '@styles/Index.module.scss';
 import { baseUrl } from '@utils/misc';
@@ -30,7 +31,7 @@ const SmolPage: NextPage = () => {
 				return;
 			}
 
-			const fetchUrl = `${baseUrl}/api/smol/create`;
+			const fetchUrl = `${baseUrl}/api${URLS.SMOL}/create`;
 			try {
 				const data = await (
 					await fetch(fetchUrl, {

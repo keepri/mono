@@ -17,6 +17,9 @@ const IndexPage: NextPage = () => {
 				<Link className={`button border-white ${styles.boop}`} href={URLS.REPLACE}>
 					boop
 				</Link>
+				<Link className={`button border-white ${styles.boop}`} href={URLS.SMOL}>
+					smol
+				</Link>
 			</section>
 		</>
 	);

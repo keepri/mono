@@ -9,6 +9,7 @@ export enum URLS {
 	// WEBSITE
 	HOME = '/',
 	REPLACE = '/replace',
+	SMOL = '/smol',
 
 	// API
 }
