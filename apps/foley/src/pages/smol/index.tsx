@@ -1,9 +1,81 @@
+import { Button, Input, Spinner } from '@clfxc/ui';
+import { urlSchema } from '@declarations/schemas';
+import styles from '@styles/Index.module.scss';
+import { baseUrl } from '@utils/misc';
 import type { NextPage } from 'next';
+import { ChangeEvent, FormEvent, useCallback, useState, useTransition } from 'react';
 
 // interface Props {}
 
 const SmolPage: NextPage = () => {
-	return <></>;
+	const [isTransition, startTransition] = useTransition();
+
+	const [loading, setLoading] = useState<boolean>(false);
+	const [url, setUrl] = useState<string>('');
+	const [smol, setSmol] = useState<string>('');
+
+	const handleChangeUrl = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+		setUrl(e.target.value);
+	}, []);
+
+	const handleMakeSmol = useCallback(
+		async (e: FormEvent<HTMLFormElement>) => {
+			e.preventDefault();
+			startTransition(() => setLoading(true));
+
+			const parsed = urlSchema.safeParse(url);
+			if (!url.length || !parsed.success) {
+				console.warn('invalid url');
+				setLoading(false);
+				return;
+			}
+
+			const fetchUrl = `${baseUrl}/api/smol/create`;
+			try {
+				const data = await (
+					await fetch(fetchUrl, {
+						method: 'POST',
+						body: JSON.stringify({ url }),
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					})
+				).json();
+
+				setSmol(data?.smol ?? '');
+				setLoading(false);
+			} catch (error) {
+				setLoading(false);
+				console.log('something went wrong', error);
+			}
+		},
+		[url]
+	);
+
+	return (
+		<>
+			<section className="grid place-content-center place-items-center gap-6 min-h-screen px-4">
+				<h1 style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }} className={`font-underdog text-center ${styles.heading}`}>
+					make smol
+				</h1>
+				<Spinner variant="puff" className={`stroke-black ${!loading ? 'hide' : ''}`} />
+				<form
+					onSubmit={handleMakeSmol}
+					className={loading ? 'hide' : 'grid auto-rows-auto gap-6 place-items-center w-full'}
+				>
+					{Boolean(smol.length) && (
+						<a className="underline" target="_blank" href={'https://' + smol} rel="noreferrer">
+							{smol}
+						</a>
+					)}
+					<Input style={{ maxWidth: '30rem' }} className="w-full" value={url} onChange={handleChangeUrl} />
+					<Button type="submit" disabled={isTransition || loading}>
+						boop
+					</Button>
+				</form>
+			</section>
+		</>
+	);
 };
 
 export default SmolPage;

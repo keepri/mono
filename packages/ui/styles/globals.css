@@ -47,9 +47,9 @@
 
 /* INPUTS */
 .input-base {
-	border: 1px solid var(--clr-black);
+	border-width: 1px;
+	border-style: solid;
 	border-radius: var(--radius);
-	font-size: 1rem;
 	padding: 0.5rem 0.75rem;
 }
 .input-base::placeholder {

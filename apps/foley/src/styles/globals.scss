@@ -64,6 +64,10 @@ img {
 	margin-right: auto;
 }
 
+.hide {
+	display: none !important;
+}
+
 /* BUTTONS */
 .button {
 	padding: 0.4em 0.7em;
@@ -71,6 +75,7 @@ img {
 	border-width: 1px;
 	border-style: solid;
 	cursor: pointer;
+	font-family: Nixie One;
 	line-height: 1;
 	transition: background-color 50ms ease-in-out;
 }

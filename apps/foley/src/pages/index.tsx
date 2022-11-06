@@ -15,7 +15,7 @@ const IndexPage: NextPage = () => {
 					<span className="text-2xl">.dev</span>
 				</h1>
 				<Link className={`button border-white ${styles.boop}`} href={URLS.REPLACE}>
-					BOOP
+					boop
 				</Link>
 			</section>
 		</>

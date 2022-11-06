@@ -3,7 +3,7 @@
 	"globalEnv": ["NODE_ENV", "TZ"],
 	"pipeline": {
 		"db:generate": {
-			"outputs": [".generated/**"]
+			"outputs": []
 		},
 		"db:push": {
 			"cache": false
@@ -18,10 +18,13 @@
 			"dependsOn": ["^db:generate", "^lint", "^build"],
 			"outputs": ["dist/**", ".next/**"]
 		},
+		"foley:dev": {
+			"cache": false
+		},
 		"foley:build": {
 			"dependsOn": ["^lint", "^db:generate", "^build"],
 			"outputs": [".next/**"],
-			"env": ["FIREBASE_PROJECT_ID", "FIREBASE_PRIVATE_KEY", "FIREBASE_CLIENT_EMAIL"]
+			"env": ["DATABASE_URL", "SHADOW_DATABASE_URL", "UPSTASH_REDIS_REST_TOKEN", "UPSTASH_REDIS_REST_URL"]
 		},
 		"lint": {
 			"outputs": []

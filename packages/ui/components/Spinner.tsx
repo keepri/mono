@@ -16,7 +16,7 @@ export const Spinner: FC<Props> = ({ variant, strokeWidth = 2, ...rest }) => {
 				viewBox="0 0 44 44"
 				xmlns="http://www.w3.org/2000/svg"
 				stroke="#fff"
-				stroke-width={String(strokeWidth)}
+				strokeWidth={String(strokeWidth)}
 				{...rest}
 			>
 				<g fill="none" fillRule="evenodd">
@@ -79,10 +79,10 @@ export const Spinner: FC<Props> = ({ variant, strokeWidth = 2, ...rest }) => {
 				xmlns="http://www.w3.org/2000/svg"
 				stroke="#fff"
 				{...rest}
-				stroke-width={String(strokeWidth)}
+				strokeWidth={String(strokeWidth)}
 			>
 				<g fill="none" fillRule="evenodd" transform="translate(1 1)">
-					<circle cx="22" cy="22" r="6" stroke-opacity="0">
+					<circle cx="22" cy="22" r="6" strokeOpacity="0">
 						<animate attributeName="r" begin="1.5s" dur="3s" values="6;22" calcMode="linear" repeatCount="indefinite" />
 						<animate
 							attributeName="stroke-opacity"
@@ -101,7 +101,7 @@ export const Spinner: FC<Props> = ({ variant, strokeWidth = 2, ...rest }) => {
 							repeatCount="indefinite"
 						/>
 					</circle>
-					<circle cx="22" cy="22" r="6" stroke-opacity="0">
+					<circle cx="22" cy="22" r="6" strokeOpacity="0">
 						<animate attributeName="r" begin="3s" dur="3s" values="6;22" calcMode="linear" repeatCount="indefinite" />
 						<animate
 							attributeName="stroke-opacity"

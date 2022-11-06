@@ -12,19 +12,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const data = await prisma.smol.findFirst({ where: { slug: { equals: slug } } });
 
 	if (!data) {
-		res.status(404).json({ message: 'not found' });
+		res.status(404).json({ message: 'not found Sadge' });
 		return;
 	}
 
-	if (!data?.url) {
+	if (!data.url) {
 		console.log('no url found');
-		res.status(400).json({ message: 'found, but no url exists for redirect' });
+		res.status(400).json({ message: 'found, but no url exists for redirect 4Head' });
 		return;
 	}
 
 	if (data.status !== 'active') {
 		console.warn('inactive url hit');
-		res.status(401).json({ message: 'url note active anymore' });
+		res.status(401).json({ message: 'smol not active anymore AnyGifters' });
 	}
 
 	res.status(200).json({ data });
