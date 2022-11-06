@@ -12,6 +12,7 @@
 		"db:connect": "pscale connect clfxc main --port 3309"
 	},
 	"dependencies": {
+		"@next-auth/prisma-adapter": "^1.0.5",
 		"@prisma/client": "^4.5.0"
 	},
 	"devDependencies": {
