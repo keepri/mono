@@ -13,14 +13,12 @@ export default async function handler(req: NextRequest, _ev: NextFetchEvent) {
 
 		if (data?.url && reqUrl === data.url) {
 			console.warn('we have a sneaky bastard on the loose');
-			return NextResponse.redirect('https://kipri.dev');
+			return NextResponse.redirect(`${req.nextUrl.origin}/smol/error`);
 		}
 
 		if (data.url) {
 			return NextResponse.redirect(data.url);
 		}
-
-		return NextResponse.next();
 	}
 
 	return NextResponse.next();

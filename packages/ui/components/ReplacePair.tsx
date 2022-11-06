@@ -1,7 +1,7 @@
 import { ChangeEvent, createRef, forwardRef, InputHTMLAttributes, PropsWithRef, useCallback, useId } from 'react';
 import { Button } from './Button';
 
-type ReplacePairProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder' & 'id' & 'name' & 'onChange'>;
+type ReplacePairProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'id' | 'name' | 'onChange'>;
 
 interface Props extends ReplacePairProps {
 	replace?: string;
@@ -15,7 +15,7 @@ interface Props extends ReplacePairProps {
 	index?: number;
 	remove?: (index: number) => void;
 	clear?: (index: number) => void;
-	handleChange: (e: ChangeEvent<HTMLInputElement>, index: number) => void;
+	onChange: (e: ChangeEvent<HTMLInputElement>, index: number) => void;
 }
 
 export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
@@ -31,7 +31,7 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 			placeholder2,
 			label1,
 			label2,
-			handleChange,
+			onChange,
 			remove,
 			clear,
 			...rest
@@ -56,9 +56,9 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
 		const handleInputChange = useCallback(
 			(e: ChangeEvent<HTMLInputElement>) => {
 				if (typeof index !== 'number') return;
-				handleChange(e, index);
+				onChange(e, index);
 			},
-			[handleChange, index]
+			[onChange, index]
 		);
 
 		return (

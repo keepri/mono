@@ -110,7 +110,7 @@ const ReplaceTextPage: NextPage = () => {
 					wrapperClass={`py-2 ${styles.pair}`}
 					className="w-full font-nixie-one"
 					labelClass="font-nixie-one"
-					handleChange={handleChangeReplacePair}
+					onChange={handleChangeReplacePair}
 					clear={handleClearReplacePair}
 					remove={handleRemoveReplacePair}
 				/>
@@ -128,7 +128,7 @@ const ReplaceTextPage: NextPage = () => {
 									wrapperClass={`py-2 ${styles.pair}`}
 									className="w-full font-nixie-one"
 									labelClass="font-nixie-one"
-									handleChange={handleChangeReplacePair}
+									onChange={handleChangeReplacePair}
 									clear={handleClearReplacePair}
 									remove={handleRemoveReplacePair}
 								/>
