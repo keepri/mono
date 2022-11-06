@@ -17,11 +17,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 
 	if (!data?.url) {
+		console.log('no url found');
 		res.status(400).json({ message: 'found, but no url exists for redirect' });
 		return;
 	}
 
 	if (data.status !== 'active') {
+		console.warn('inactive url hit');
 		res.status(401).json({ message: 'url note active anymore' });
 	}
 
