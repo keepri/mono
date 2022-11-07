@@ -35,7 +35,7 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 		const res = await fetch(`${origin}/api${URLS.SMOL}/${slug}`);
 		const resOk = res.ok;
 		const { data } = await res.json();
-		const smol = data as Smol;
+		const smol = data as Partial<Smol>;
 
 		if (!resOk || !smol) {
 			console.warn('slug not found');
@@ -48,8 +48,8 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 			return NextResponse.json({ message: 'chill' });
 		}
 
-		if (data.url) {
-			return NextResponse.redirect(data.url);
+		if (smol.url) {
+			return NextResponse.redirect(smol.url);
 		}
 	}
 

@@ -9,7 +9,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		return;
 	}
 
-	const data = await prisma.smol.findFirst({ where: { slug: { equals: slug } } });
+	// eslint-disable-next-line max-len
+	const data = await prisma.smol.findFirst({ where: { slug: { equals: slug } }, select: { status: true, url: true } });
 
 	if (!data) {
 		res.status(404).json({ message: 'not found Sadge' });
