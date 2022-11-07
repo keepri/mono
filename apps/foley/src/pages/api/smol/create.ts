@@ -1,17 +1,19 @@
 import { Smol } from '@clfxc/db';
 import { URLS } from '@declarations/enums';
+import { urlSchema } from '@declarations/schemas';
 import prisma from '@env/prisma';
 import { origin } from '@utils/misc';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	const url = req.body['url'];
+	const urlParse = urlSchema.safeParse(req.body['url']);
 
-	if (typeof url !== 'string') {
+	if (!urlParse.success) {
 		res.status(400).json({ message: 'invalid body sent' });
 		return;
 	}
 
+	const url = urlParse.data;
 	let slug: string;
 	let exists: boolean = false;
 	do {
