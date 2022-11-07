@@ -79,7 +79,7 @@ const SmolPage: NextPage = () => {
 				/>
 				<Button
 					type="submit"
-					className="hover:bg-[var(--clr-bg-500)] border-white text-white"
+					className="border-white text-white hover:bg-[var(--clr-bg-500)] active:text-[var(--clr-turquoise)]"
 					disabled={isTransition || loading}
 				>
 					boop
