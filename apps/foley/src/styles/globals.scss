@@ -20,13 +20,6 @@
 	--radius: 5px;
 }
 
-.bg-clr-bg-300 {
-	background-color: var(--clr-bg-300);
-}
-.bg-clr-bg-500 {
-	background-color: var(--clr-bg-500);
-}
-
 *,
 *::after,
 *::before {
@@ -38,6 +31,10 @@ body {
 	padding: 0;
 	margin: 0;
 	font-family: Nunito, Helvetica Neue, sans-serif;
+}
+
+body {
+	min-height: 100vh;
 }
 
 a,
@@ -70,7 +67,7 @@ img {
 
 /* BUTTONS */
 .button {
-	padding: 0.4em 0.7em;
+	padding: 0.25em 0.55em;
 	border-radius: var(--radius);
 	border-width: 1px;
 	border-style: solid;
@@ -78,14 +75,16 @@ img {
 	font-family: Nixie One;
 	line-height: 1;
 	transition: background-color 50ms ease-in-out;
-}
-.button:hover {
-	background-color: var(--clr-black) !important;
-	color: var(--clr-white) !important;
-}
-.button:active {
-	background-color: transparent !important;
-	color: var(--clr-black) !important;
+
+	&:hover {
+		background-color: var(--clr-black) !important;
+		color: var(--clr-white) !important;
+	}
+
+	&:active {
+		background-color: transparent !important;
+		color: var(--clr-black) !important;
+	}
 }
 
 @media (prefers-reduced-motion: no-preference) {

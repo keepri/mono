@@ -5,15 +5,17 @@ import Link from 'next/link';
 
 const IndexPage: NextPage = () => {
 	return (
-		<>
-			<section className="grid place-content-center place-items-center gap-2 min-h-screen bg-clr-bg-300">
-				<h1
-					style={{ color: 'var(--clr-white)', fontSize: 'clamp(7rem, 20vw, 25rem)' }}
-					className="relative font-londrina-sketch leading-tight"
-				>
-					KIPRI
-					<span className="text-2xl">.dev</span>
-				</h1>
+		<main className="grid place-content-center place-items-center gap-4 min-h-screen bg-[var(--clr-bg-300)]">
+			<a
+				href="mailto:hi@kipri.dev"
+				style={{ fontSize: 'clamp(4rem, 20vw, 15rem)' }}
+				className="relative text-[var(--clr-white)] font-londrina-sketch leading-tight whitespace-nowrap hover:text-[var(--clr-bg-500)]"
+			>
+				<span className="text-4xl">hi @ </span>
+				KIPRI
+				<span className="text-4xl"> . dev</span>
+			</a>
+			<section className="flex gap-4">
 				<Link className={`button border-white ${styles.boop}`} href={URLS.REPLACE}>
 					boop
 				</Link>
@@ -21,7 +23,7 @@ const IndexPage: NextPage = () => {
 					smol
 				</Link>
 			</section>
-		</>
+		</main>
 	);
 };
 

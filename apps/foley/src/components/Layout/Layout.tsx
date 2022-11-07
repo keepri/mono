@@ -1,6 +1,6 @@
-import Navbar from '@components/Navbar/Navbar';
+// import Navbar from '@components/Navbar/Navbar';
 import { FC, ReactNode } from 'react';
-import Footer from './Footer/Footer';
+// import Footer from './Footer/Footer';
 
 interface Props {
 	children: ReactNode;
@@ -8,11 +8,11 @@ interface Props {
 
 const Layout: FC<Props> = ({ children }) => {
 	return (
-		<main>
-			<Navbar />
+		<>
+			{/* <Navbar /> */}
 			{children}
-			<Footer />
-		</main>
+			{/* <Footer /> */}
+		</>
 	);
 };
 
