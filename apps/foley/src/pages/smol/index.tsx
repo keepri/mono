@@ -54,28 +54,38 @@ const SmolPage: NextPage = () => {
 	);
 
 	return (
-		<>
-			<section className="grid place-content-center place-items-center gap-6 min-h-screen px-4">
-				<h1 style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }} className={`font-underdog text-center ${styles.heading}`}>
-					make smol
-				</h1>
-				<Spinner variant="puff" className={`stroke-black ${!loading ? 'hide' : ''}`} />
-				<form
-					onSubmit={handleMakeSmol}
-					className={loading ? 'hide' : 'grid auto-rows-auto gap-6 place-items-center w-full'}
+		<section className="grid place-content-center place-items-center gap-6 min-h-screen px-4 bg-[var(--clr-bg-300)]">
+			<h1
+				style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }}
+				className={`font-underdog text-center text-white ${styles.heading}`}
+			>
+				make smol
+			</h1>
+			<Spinner variant="puff" className={`stroke-black ${!loading ? 'hide' : ''}`} />
+			<form
+				onSubmit={handleMakeSmol}
+				className={loading ? 'hide' : 'grid auto-rows-auto gap-6 place-items-center w-full'}
+			>
+				{Boolean(smol.length) && (
+					<a className="underline" target="_blank" href={'https://' + smol} rel="noreferrer">
+						{smol}
+					</a>
+				)}
+				<Input
+					style={{ maxWidth: '30rem' }}
+					className="w-full bg-[var(--clr-bg-500)] text-white"
+					value={url}
+					onChange={handleChangeUrl}
+				/>
+				<Button
+					type="submit"
+					className="hover:bg-[var(--clr-bg-500)] border-white text-white"
+					disabled={isTransition || loading}
 				>
-					{Boolean(smol.length) && (
-						<a className="underline" target="_blank" href={'https://' + smol} rel="noreferrer">
-							{smol}
-						</a>
-					)}
-					<Input style={{ maxWidth: '30rem' }} className="w-full" value={url} onChange={handleChangeUrl} />
-					<Button type="submit" disabled={isTransition || loading}>
-						boop
-					</Button>
-				</form>
-			</section>
-		</>
+					boop
+				</Button>
+			</form>
+		</section>
 	);
 };
 
