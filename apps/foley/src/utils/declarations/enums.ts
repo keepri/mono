@@ -12,6 +12,8 @@ export enum URLS {
 	SMOL = '/smol',
 
 	// API
+	API_SMOL = '/api/smol',
+	API_SMOL_CREATE = '/api/smol/create',
 }
 
 export enum Langs {

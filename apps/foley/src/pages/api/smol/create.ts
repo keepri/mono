@@ -18,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let exists: boolean = false;
 	do {
 		slug = makeLetterMix(4);
-		const found = (await fetch(`${req.headers.origin}/api${URLS.SMOL}/${slug}`)).ok;
+		const found = (await fetch(`${req.headers.origin}${URLS.API_SMOL}/${slug}`)).ok;
 		if (found) exists = true;
 	} while (exists);
 

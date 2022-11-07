@@ -32,7 +32,7 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 		const origin = req.nextUrl.origin;
 		const pathname = req.nextUrl.pathname;
 		const slug = pathname.split('/').pop();
-		const res = await fetch(`${origin}/api${URLS.SMOL}/${slug}`);
+		const res = await fetch(`${origin}${URLS.API_SMOL}/${slug}`);
 		const resOk = res.ok;
 		const { data } = await res.json();
 		const smol = data as Partial<Smol>;
