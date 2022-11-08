@@ -64,16 +64,24 @@ const SmolPage: NextPage = () => {
 			<Spinner variant="puff" className={`stroke-black ${!loading ? 'hide' : ''}`} />
 			<form
 				onSubmit={handleMakeSmol}
-				className={loading ? 'hide' : 'grid auto-rows-auto gap-6 place-items-center w-full'}
+				className={loading ? 'hide' : 'grid auto-rows-auto gap-8 place-items-center w-full'}
 			>
 				{Boolean(smol.length) && (
-					<a className="underline" target="_blank" href={'https://' + smol} rel="noreferrer">
-						{smol}
-					</a>
+					<>
+						<span className="text-center scale-[2]">🚀</span>
+						<a
+							className="underline text-center text-white font-thin text-lg"
+							target="_blank"
+							href={'https://' + smol}
+							rel="noreferrer"
+						>
+							{smol}
+						</a>
+					</>
 				)}
 				<Input
 					style={{ maxWidth: '30rem' }}
-					className="w-full bg-[var(--clr-bg-500)] text-white"
+					className="w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
 					value={url}
 					onChange={handleChangeUrl}
 				/>
