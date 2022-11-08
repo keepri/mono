@@ -39,6 +39,23 @@ export enum AccountType {
 	premium = 'premium',
 }
 
+export enum ImageType {
+	png = 'image/png',
+	jpeg = 'image/jpeg',
+	svg = 'image/svg',
+	gif = 'image/gif',
+	webp = 'image/webp',
+}
+
+export enum FileType {
+	pdf = 'application/pdf',
+	mp4 = 'video/mp4',
+	mp3 = 'audio/mpeg',
+	mpeg = 'video/mpeg',
+	json = 'application/json',
+	webm = 'video/webm',
+}
+
 // HEAD
 export enum TITLE {
 	HOME = 'Home xD',

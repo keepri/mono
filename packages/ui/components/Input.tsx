@@ -1,9 +1,10 @@
 import { ChangeEvent, forwardRef, InputHTMLAttributes, PropsWithRef, useCallback } from 'react';
-import { WithRequired } from '../types';
 
-interface Props extends WithRequired<Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'>, 'value'> {
+export type InputOnChange = (e: ChangeEvent<HTMLInputElement>, index?: number) => void;
+
+interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
 	index?: number;
-	onChange: (e: ChangeEvent<HTMLInputElement>, index?: number) => void;
+	onChange: InputOnChange;
 }
 
 export const Input = forwardRef<HTMLInputElement, PropsWithRef<Props>>(
