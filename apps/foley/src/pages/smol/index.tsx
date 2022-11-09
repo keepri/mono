@@ -54,34 +54,21 @@ const SmolPage: NextPage = () => {
 	);
 
 	return (
-		<section className="grid place-content-center place-items-center gap-6 min-h-screen px-4 bg-[var(--clr-bg-300)]">
+		<section className="grid place-content-center place-items-center leading-tight min-h-screen px-4 bg-[var(--clr-bg-300)]">
 			<h1
 				style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }}
 				className={`font-underdog text-center text-white ${styles.heading}`}
 			>
 				make smol
 			</h1>
-			<Spinner variant="puff" className={`stroke-black ${!loading ? 'hide' : ''}`} />
+			<Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? 'invisible' : ''}`} />
 			<form
 				onSubmit={handleMakeSmol}
-				className={loading ? 'hide' : 'grid auto-rows-auto gap-8 place-items-center w-full'}
+				className={`grid auto-rows-auto gap-8 place-items-center w-full ${loading ? 'invisible' : ''}`}
 			>
-				{Boolean(smol.length) && (
-					<>
-						<span className="text-center scale-[2]">🚀</span>
-						<a
-							className="underline text-center text-white font-thin text-lg"
-							target="_blank"
-							href={'https://' + smol}
-							rel="noreferrer"
-						>
-							{smol}
-						</a>
-					</>
-				)}
+				<span className={`text-center scale-[2] ${!Boolean(smol.length) ? 'invisible' : ''}`}>🚀</span>
 				<Input
-					style={{ maxWidth: '30rem' }}
-					className="w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
+					className="w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
 					value={url}
 					onChange={handleChangeUrl}
 				/>
@@ -92,6 +79,14 @@ const SmolPage: NextPage = () => {
 				>
 					boop
 				</Button>
+				<a
+					className={`underline text-center text-white font-thin text-lg ${!Boolean(smol.length) ? 'invisible' : ''}`}
+					target="_blank"
+					href={'https://' + smol}
+					rel="noreferrer"
+				>
+					{smol}
+				</a>
 			</form>
 		</section>
 	);

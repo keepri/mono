@@ -1,7 +1,6 @@
-import { Smol } from '@clfxc/db';
+import { prisma, Smol } from '@clfxc/db';
 import { URLS } from '@declarations/enums';
 import { urlSchema } from '@declarations/schemas';
-import prisma from '@env/prisma';
 import { origin } from '@utils/misc';
 import { NextApiRequest, NextApiResponse } from 'next';
 

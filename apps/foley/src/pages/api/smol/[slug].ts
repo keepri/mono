@@ -1,4 +1,4 @@
-import prisma from '@env/prisma';
+import { prisma } from '@clfxc/db';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

@@ -1,5 +1,4 @@
-import { PrismaAdapter } from '@clfxc/db';
-import prisma from '@env/prisma';
+import { prisma, PrismaAdapter } from '@clfxc/db';
 import NextAuth, { Session } from 'next-auth';
 
 export type NextSession = Session & { userId: string };

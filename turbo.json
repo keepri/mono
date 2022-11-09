@@ -3,9 +3,12 @@
 	"globalEnv": ["NODE_ENV", "TZ"],
 	"pipeline": {
 		"db:generate": {
+			"inputs": ["prisma/schema.prisma"],
+			"cache": true,
 			"outputs": []
 		},
 		"db:push": {
+			"inputs": ["prisma/schema.prisma"],
 			"cache": false
 		},
 		"db:dev": {
@@ -19,6 +22,7 @@
 			"outputs": ["dist/**", ".next/**"]
 		},
 		"foley:dev": {
+			"dependsOn": ["^db-generate"],
 			"cache": false
 		},
 		"foley:build": {
