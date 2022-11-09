@@ -19,7 +19,6 @@
 		"lint": "turbo lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"foley:dev": "turbo dev --filter=foley",
-		"foley:build": "turbo build --filter=foley",
 		"api:dev": "concurrently \"npm run build:watch --workspace=api\" \"npm run serve-funcs --workspace=api\""
 	},
 	"devDependencies": {

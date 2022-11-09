@@ -19,16 +19,12 @@
 		},
 		"build": {
 			"dependsOn": ["^db:generate", "^lint", "^build"],
-			"outputs": ["dist/**", ".next/**"]
+			"outputs": ["dist/**", ".next/**"],
+			"env": ["DATABASE_URL", "SHADOW_DATABASE_URL", "UPSTASH_REDIS_REST_TOKEN", "UPSTASH_REDIS_REST_URL"]
 		},
 		"foley:dev": {
 			"dependsOn": ["^db-generate"],
 			"cache": false
-		},
-		"foley:build": {
-			"dependsOn": ["^lint", "^db:generate", "^build"],
-			"outputs": [".next/**"],
-			"env": ["DATABASE_URL", "SHADOW_DATABASE_URL", "UPSTASH_REDIS_REST_TOKEN", "UPSTASH_REDIS_REST_URL"]
 		},
 		"lint": {
 			"outputs": []
