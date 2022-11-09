@@ -18,8 +18,8 @@
 			"cache": false
 		},
 		"build": {
-			"dependsOn": ["^db:generate", "^lint", "^build"],
-			"outputs": ["dist/**", ".next/**"],
+			"dependsOn": ["^db:generate", "^build"],
+			"outputs": [".next/**"],
 			"env": ["DATABASE_URL", "SHADOW_DATABASE_URL", "UPSTASH_REDIS_REST_TOKEN", "UPSTASH_REDIS_REST_URL"]
 		},
 		"foley:dev": {
