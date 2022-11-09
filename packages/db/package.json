@@ -13,10 +13,10 @@
 	},
 	"dependencies": {
 		"@next-auth/prisma-adapter": "^1.0.5",
-		"@prisma/client": "^4.5.0"
+		"@prisma/client": "^4.6.0"
 	},
 	"devDependencies": {
-		"prisma": "^4.5.0",
+		"prisma": "^4.6.0",
 		"tsconfig": "*",
 		"typescript": "^4.8.4"
 	}
