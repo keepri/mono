@@ -77,7 +77,7 @@ const SmolPage: NextPage = () => {
 					className="border-white text-white hover:bg-[var(--clr-bg-500)] active:text-[var(--clr-turquoise)]"
 					disabled={isTransition || loading}
 				>
-					boop
+					boop1
 				</Button>
 				<a
 					className={`underline text-center text-white font-thin text-lg ${!Boolean(smol.length) ? 'invisible' : ''}`}
