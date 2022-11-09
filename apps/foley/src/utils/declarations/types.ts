@@ -127,3 +127,5 @@ export type CookieSerializeOptions = {
 	 */
 	secure?: boolean | undefined;
 };
+
+export type ValidateFileReturn = { file: File; ok: true } | { file?: undefined; ok: false };
