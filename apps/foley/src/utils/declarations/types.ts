@@ -1,4 +1,5 @@
-import { AccountType, Currency, PaymentProvider, StateStatus } from '@declarations/enums';
+import { AccountType, Currency, FileType, ImageType, PaymentProvider, StateStatus } from '@declarations/enums';
+import { ZodError } from 'zod';
 
 export type User = {
 	uid: string;
@@ -128,4 +129,6 @@ export type CookieSerializeOptions = {
 	secure?: boolean | undefined;
 };
 
-export type ValidateFileReturn = { file: File; ok: true } | { file?: undefined; ok: false };
+export type ValidateFileReturn =
+	| { file: File; ok: true; error?: undefined }
+	| { file?: undefined; ok: false; error?: ZodError<ImageType | FileType> | 'file too big' };

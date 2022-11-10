@@ -18,7 +18,7 @@ model Smol {
     id        String   @id @default(cuid())
     status    String   @default("available")
     slug      String
-    url       String
+    url       String   @db.MediumText
     createdAt DateTime @default(now())
     updatedAt DateTime @default(now()) @updatedAt
 

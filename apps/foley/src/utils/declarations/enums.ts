@@ -14,6 +14,7 @@ export enum URLS {
 	// API
 	API_SMOL = '/api/smol',
 	API_SMOL_CREATE = '/api/smol/create',
+	API_QR_CREATE = '/api/qr/create',
 }
 
 export enum Langs {
@@ -42,6 +43,7 @@ export enum AccountType {
 export enum ImageType {
 	png = 'image/png',
 	jpeg = 'image/jpeg',
+	jpg = 'image/jpg',
 	svg = 'image/svg',
 	gif = 'image/gif',
 	webp = 'image/webp',
