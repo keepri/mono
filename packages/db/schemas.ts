@@ -8,4 +8,3 @@ export const SmolSchema = z.object({
 	createdAt: z.date(),
 	updatedAt: z.date(),
 });
-export type Smol = z.infer<typeof SmolSchema>;
