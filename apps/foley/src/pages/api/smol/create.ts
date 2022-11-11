@@ -18,7 +18,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	do {
 		slug = makeLetterMix(4);
-		const found = (await fetch(`${req.headers.origin}${URLS.API_SMOL}/${slug}`)).ok;
+		const found = await prisma.smol.findFirst({
+			where: { slug: { equals: slug } },
+			select: { status: true, url: true },
+		});
 		if (found) exists = true;
 	} while (exists);
 
