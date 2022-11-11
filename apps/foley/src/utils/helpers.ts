@@ -14,8 +14,7 @@ export function validateFile(file: File | undefined, maxFileSize?: number): Vali
 	// 1e6 = Math.pow(10, 6) ✌️
 	const fileSize = parseFloat((file.size / 1e6).toFixed(6));
 
-	if (fileSize >= (maxFileSize ?? 0.9)) {
-		console.log('here 2');
+	if (fileSize >= (maxFileSize ?? 3)) {
 		console.warn(`file too big ${fileSize}mb`);
 		return { ok: false, error: 'file too big' };
 	}

@@ -51,6 +51,11 @@ export enum ImageType {
 
 export enum FileType {
 	pdf = 'application/pdf',
+	ppt = 'application/vnd.ms-powerpoint',
+	pptx = 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+	msword = 'application/msword',
+	mswordx = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+	text = 'text/plain',
 	mp4 = 'video/mp4',
 	mp3 = 'audio/mpeg',
 	mpeg = 'video/mpeg',

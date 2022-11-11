@@ -10,7 +10,7 @@ const QRCodePage: NextPage = () => {
 	const [code, setCode] = useState<QRCode | null>(null);
 
 	const handleChange: InputOnChange = useCallback((e) => {
-		const maxFileSize = 0.9;
+		const maxFileSize = 3;
 		const { ok, file, error } = validateFile(e.target.files?.[0], maxFileSize);
 
 		if (!ok) {
@@ -18,7 +18,6 @@ const QRCodePage: NextPage = () => {
 
 			if (error === 'file too big') {
 				// TODO: handle file too big error
-
 				return;
 			}
 

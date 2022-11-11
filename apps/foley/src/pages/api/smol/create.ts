@@ -38,7 +38,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	await prisma.smol.create({ data: smol });
 
-	const short = `${origin}${URLS.SMOL}/${slug}`.split('https://').pop();
+	const protocol = origin.split('://')[0];
+	const short = `${origin}${URLS.SMOL}/${slug}`.split(`${protocol}://`).pop();
 
 	res.status(200).json({ smol: short });
 	return;
@@ -59,3 +60,12 @@ function makeLetterMix(len: number) {
 	}
 	return mix;
 }
+
+// Next api config
+export const config = {
+	api: {
+		bodyParser: {
+			sizeLimit: '3500kb',
+		},
+	},
+};
