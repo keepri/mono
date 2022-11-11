@@ -4,8 +4,6 @@ import NextAuth, { Session } from 'next-auth';
 export type NextSession = Session & { userId: string };
 
 export default NextAuth({
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
 	adapter: PrismaAdapter(prisma),
 	providers: [],
 	callbacks: {

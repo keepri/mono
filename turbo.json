@@ -4,7 +4,7 @@
 	"pipeline": {
 		"db:generate": {
 			"inputs": ["prisma/schema.prisma"],
-			"outputs": ["prisma/.generated/**"]
+			"outputs": ["prisma/generated/**"]
 		},
 		"db:push": {
 			"inputs": ["prisma/schema.prisma"],
