@@ -74,16 +74,20 @@ img {
 	cursor: pointer;
 	font-family: Nixie One;
 	line-height: 1;
-	transition: background-color 50ms ease-in-out;
+	transition: background-color 100ms ease-in-out;
+	transition: border-color 100ms ease-in-out;
 
 	&:hover {
-		background-color: var(--clr-black) !important;
+		border-color: var(--clr-orange) !important;
+		background-color: var(--clr-bg-500) !important;
 		color: var(--clr-white) !important;
 	}
 
 	&:active {
-		background-color: transparent !important;
-		color: var(--clr-black) !important;
+		border-color: var(--clr-bg-500) !important;
+		background-color: var(--clr-orange) !important;
+		color: var(--clr-white) !important;
+		scale: 1.013 !important;
 	}
 }
 

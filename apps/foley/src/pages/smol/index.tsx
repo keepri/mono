@@ -72,11 +72,7 @@ const SmolPage: NextPage = () => {
 					value={url}
 					onChange={handleChangeUrl}
 				/>
-				<Button
-					type="submit"
-					className="border-white text-white hover:bg-[var(--clr-bg-500)] active:text-[var(--clr-turquoise)]"
-					disabled={isTransition || loading}
-				>
+				<Button type="submit" className="button border-white text-white" disabled={isTransition || loading}>
 					boop
 				</Button>
 				<a

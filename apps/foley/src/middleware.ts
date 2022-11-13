@@ -11,6 +11,11 @@ const ratelimit = new Ratelimit({
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
+	// TODO: TEMP: exit early if accessing qr code
+	if (req.nextUrl.pathname.startsWith('/qrc')) {
+		return NextResponse.redirect(URLS.HOME);
+	}
+
 	// all api endpoints
 	if (req.nextUrl.pathname.startsWith('/api/')) {
 		const ip = req.ip ?? '127.0.0.1';

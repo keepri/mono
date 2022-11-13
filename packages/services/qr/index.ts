@@ -1,6 +1,7 @@
-export type { QRCode } from 'qrcode';
+import { QRCode, toCanvas, toDataURL } from 'qrcode';
 
-import { QRCode } from 'qrcode';
+export type { QRCode } from 'qrcode';
+export { toDataURL, toCanvas };
 
 export async function makeQRCode(
 	data: string

@@ -22,6 +22,7 @@ module.exports = {
 		indent: ['warn', 'tab', { SwitchCase: 1, VariableDeclarator: 2, ignoredNodes: ['ConditionalExpression'] }],
 		'@typescript-eslint/ban-ts-comment': 'warn',
 		'@typescript-eslint/no-inferrable-types': 'off',
+		'@typescript-eslint/no-non-null-assertion': 'off',
 		'@typescript-eslint/no-var-requires': 'warn',
 		'@typescript-eslint/no-empty-function': 'warn',
 		'@typescript-eslint/no-empty-interface': ['warn', { allowSingleExtends: true }],

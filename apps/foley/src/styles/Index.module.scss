@@ -1,16 +1,3 @@
-.boop {
-	color: var(--clr-white) !important;
-
-	&:hover {
-		background-color: var(--clr-bg-500) !important;
-	}
-
-	&:active {
-		background-color: transparent;
-		color: var(--clr-white) !important;
-	}
-}
-
 @media screen and (max-width: 600px) {
 	.heading {
 		line-height: 1;

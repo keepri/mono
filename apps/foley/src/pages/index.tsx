@@ -1,5 +1,4 @@
 import { URLS } from '@declarations/enums';
-import styles from '@styles/Index.module.scss';
 import { NextPage } from 'next';
 import Link from 'next/link';
 
@@ -16,10 +15,10 @@ const IndexPage: NextPage = () => {
 				<span className="text-4xl"> . dev</span>
 			</a>
 			<section className="flex gap-4">
-				<Link className={`button border-white ${styles.boop}`} href={URLS.REPLACE}>
+				<Link style={{ color: 'white' }} className="button border-white" href={URLS.REPLACE}>
 					boop
 				</Link>
-				<Link className={`button border-white ${styles.boop}`} href={URLS.SMOL}>
+				<Link style={{ color: 'white' }} className="button border-white" href={URLS.SMOL}>
 					smol
 				</Link>
 			</section>

@@ -23,6 +23,7 @@
 	cursor: pointer;
 	line-height: 1;
 	transition: background-color 25ms ease-in-out;
+	transition: border-color 25ms ease-in-out;
 }
 .button-base:hover {
 	background-color: var(--clr-black);
