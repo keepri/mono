@@ -13,7 +13,7 @@ const ratelimit = new Ratelimit({
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 	// TODO: TEMP: exit early if accessing qr code
 	if (req.nextUrl.pathname.startsWith('/qrc')) {
-		return NextResponse.redirect(URLS.HOME);
+		return NextResponse.redirect(`${origin}${URLS.HOME}`);
 	}
 
 	// all api endpoints
