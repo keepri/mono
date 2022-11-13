@@ -36,3 +36,10 @@ export function readFileAsDataUrl(file: Blob, callback: (e: ProgressEvent<FileRe
 	reader.readAsDataURL(file);
 	reader.onload = callback;
 }
+
+export function getTextBytes(data: string) {
+	const encoder = new TextEncoder();
+	const dataEncoded = encoder.encode(data);
+	const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
+	return bytes;
+}

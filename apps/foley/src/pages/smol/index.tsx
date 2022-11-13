@@ -66,7 +66,7 @@ const SmolPage: NextPage = () => {
 				onSubmit={handleMakeSmol}
 				className={`grid auto-rows-auto gap-8 place-items-center w-full ${loading ? 'invisible' : ''}`}
 			>
-				<span className={`text-center scale-[2] ${!Boolean(smol.length) ? 'invisible' : ''}`}>🚀</span>
+				<span className={`text-center text-3xl ${!Boolean(smol.length) ? 'invisible' : ''}`}>🚀</span>
 				<Input
 					className="w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
 					value={url}

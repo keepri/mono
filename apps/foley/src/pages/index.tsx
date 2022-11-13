@@ -21,6 +21,9 @@ const IndexPage: NextPage = () => {
 				<Link style={{ color: 'white' }} className="button border-white" href={URLS.SMOL}>
 					smol
 				</Link>
+				<Link style={{ color: 'white' }} className="button border-white" href={URLS.QR}>
+					qr
+				</Link>
 			</section>
 		</main>
 	);

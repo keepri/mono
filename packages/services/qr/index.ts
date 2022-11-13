@@ -3,9 +3,10 @@ import { create, QRCode, toDataURL, toFile } from 'qrcode';
 export type { QRCode } from 'qrcode';
 export { toDataURL, toFile };
 
-export async function makeQRCode(
+export async function makeQRCodeClient(
 	data: string
 ): Promise<{ ok: false; error?: unknown; code?: undefined } | { ok: true; error?: unknown; code: QRCode }> {
+	if (typeof window === 'undefined') throw new Error("can't build code on the server");
 	if (!data) return { ok: false, error: { message: 'no data' } };
 
 	const encoder = new TextEncoder();
@@ -14,9 +15,6 @@ export async function makeQRCode(
 	// WARN: hardcoded urls
 	const origin = process.env.NODE_ENV === 'production' ? 'https://kipri.dev' : 'http://localhost:3001';
 	const createSmolUrl = origin + '/api/smol/create';
-	const headers = new Headers();
-
-	headers.set('Content-Type', 'application/json');
 
 	if (bytes > 2953) {
 		console.log('bytes?', bytes);
@@ -25,7 +23,10 @@ export async function makeQRCode(
 		const smolRes = await fetch(createSmolUrl, {
 			method: 'POST',
 			body: JSON.stringify({ url: data }),
-			headers,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
 		});
 
 		if (!smolRes.ok) {

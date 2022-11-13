@@ -10,6 +10,7 @@ export enum URLS {
 	HOME = '/',
 	REPLACE = '/replace',
 	SMOL = '/smol',
+	QR = '/qrc',
 
 	// API
 	API_SMOL = '/api/smol',
