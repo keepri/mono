@@ -28,7 +28,7 @@ export function toMB(size: number): number {
 }
 export function toKB(size: number): number {
 	if (typeof size !== 'number') return -1;
-	return parseFloat((size / 1e4).toFixed(6));
+	return parseFloat((size / 1e3).toFixed(6));
 }
 
 export function readFileAsDataUrl(file: Blob, callback: (e: ProgressEvent<FileReader>) => void): void {

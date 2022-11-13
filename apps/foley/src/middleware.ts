@@ -16,11 +16,6 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 	const pathname = req.nextUrl.pathname;
 	const slug = pathname.split('/').pop();
 
-	// TODO: TEMP: exit early if accessing qr code
-	if (req.nextUrl.pathname.startsWith('/qrc')) {
-		return NextResponse.redirect(`${origin}${URLS.HOME}`);
-	}
-
 	// all api endpoints
 	if (req.nextUrl.pathname.startsWith('/api/')) {
 		const { success, pending, limit, remaining, reset } = await ratelimit.limit(`mw_${ip}`);

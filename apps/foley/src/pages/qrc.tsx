@@ -1,4 +1,5 @@
-import { makeQRCode, QRCode, toDataURL } from '@clfxc/services/qr';
+import type { QRCode } from '@clfxc/services/qr';
+import { makeQRCode, toDataURL } from '@clfxc/services/qr';
 import { Button, Input, InputOnChange } from '@clfxc/ui';
 import { readFileAsDataUrl, toKB, validateFile } from '@utils/helpers';
 import type { NextPage } from 'next';
@@ -13,40 +14,6 @@ const QRCodePage: NextPage = () => {
 	const [code, setCode] = useState<QRCode | null>(null);
 
 	const fileSize = useMemo(() => toKB(selectedFile?.size ?? -1), [selectedFile]);
-
-	const makeCode = useCallback(
-		(file: Blob) => {
-			readFileAsDataUrl(file, async (e) => {
-				const data = e.target?.result as string;
-
-				if (!data || !canvasRef.current) return;
-
-				try {
-					const { ok, code: newCode, error } = await makeQRCode(data);
-
-					if (!ok) {
-						console.warn('failed making qr code', error);
-						return;
-					}
-
-					toDataURL(canvasRef.current, newCode.segments, (err, url) => {
-						if (err) {
-							const { message, stack } = err;
-							console.log('could not create code image', { message, stack });
-							return;
-						}
-
-						console.log('url?', url);
-						// TODO: continue here
-					});
-					setCode(newCode);
-				} catch (error) {
-					console.error(error);
-				}
-			});
-		},
-		[canvasRef]
-	);
 
 	const handleChange: InputOnChange = useCallback((e) => {
 		const maxFileSize = 3;
@@ -67,14 +34,48 @@ const QRCodePage: NextPage = () => {
 	}, []);
 
 	const handleMakeCode: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
-		if (!selectedFile) return;
-		makeCode(selectedFile);
-	}, [selectedFile, makeCode]);
+		// no file has been uploaded
+		if (!selectedFile) {
+			return;
+		}
+
+		// handle file uploaded creation
+		readFileAsDataUrl(selectedFile, async (e) => {
+			const data = e.target?.result as string;
+
+			if (!data || !canvasRef.current) return;
+
+			try {
+				const { ok, code: newCode, error } = await makeQRCode(data);
+
+				if (!ok) {
+					console.warn('failed making qr code', error);
+					return;
+				}
+
+				toDataURL(
+					canvasRef.current,
+					newCode.segments.map((segment) => ({ ...segment, mode: segment.mode.id })),
+					(err) => {
+						if (err) {
+							const { message, stack } = err;
+							console.log('could not create code image', { message, stack });
+							return;
+						}
+					}
+				);
+
+				setCode(newCode);
+			} catch (error) {
+				console.error(error);
+			}
+		});
+	}, [selectedFile, canvasRef]);
 
 	return (
 		<>
 			<section className="grid place-items-center place-content-center gap-8 min-h-screen bg-[var(--clr-bg-300)]">
-				<canvas ref={canvasRef} className={`${!code ? 'invisible' : ''}`} width={300} height={300} />
+				<canvas ref={canvasRef} className={`${!code ? 'invisible' : ''}`} />
 
 				<p
 					className={`flex flex-wrap items-center justify-center gap-4 text-white text-center max-w-[40ch] text-xs sm:max-w-[unset] ${

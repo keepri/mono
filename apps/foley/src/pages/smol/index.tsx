@@ -78,10 +78,10 @@ const SmolPage: NextPage = () => {
 				<a
 					className={`underline text-center text-white font-thin text-lg ${!Boolean(smol.length) ? 'invisible' : ''}`}
 					target="_blank"
-					href={'https://' + smol}
+					href={smol}
 					rel="noreferrer"
 				>
-					{smol}
+					{String(smol?.split('://')[1])}
 				</a>
 			</form>
 		</section>

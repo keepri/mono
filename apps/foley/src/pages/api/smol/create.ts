@@ -38,10 +38,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	await prisma.smol.create({ data: smol });
 
-	const protocol = origin.split('://')[0];
-	const short = `${origin}${URLS.SMOL}/${slug}`.split(`${protocol}://`).pop();
+	const originSplit = origin.split('://');
+	// const protocol = originSplit[0];
+	const host = originSplit[1];
+	const smolLink = `${origin}${URLS.SMOL}/${slug}`;
+	const short = `${host}${URLS.SMOL}/${slug}`;
 
-	res.status(200).json({ smol: short });
+	res.status(200).json({ smol: smolLink, short });
 	return;
 };
 
