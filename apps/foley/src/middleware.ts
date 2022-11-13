@@ -11,6 +11,11 @@ const ratelimit = new Ratelimit({
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
+	const ip = req.ip ?? '127.0.0.1';
+	const origin = req.nextUrl.origin;
+	const pathname = req.nextUrl.pathname;
+	const slug = pathname.split('/').pop();
+
 	// TODO: TEMP: exit early if accessing qr code
 	if (req.nextUrl.pathname.startsWith('/qrc')) {
 		return NextResponse.redirect(`${origin}${URLS.HOME}`);
@@ -18,8 +23,6 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 
 	// all api endpoints
 	if (req.nextUrl.pathname.startsWith('/api/')) {
-		const ip = req.ip ?? '127.0.0.1';
-
 		const { success, pending, limit, remaining, reset } = await ratelimit.limit(`mw_${ip}`);
 		ev.waitUntil(pending);
 
@@ -34,9 +37,6 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 
 	// smol pages
 	if (req.nextUrl.pathname.startsWith(`${URLS.SMOL}/`)) {
-		const origin = req.nextUrl.origin;
-		const pathname = req.nextUrl.pathname;
-		const slug = pathname.split('/').pop();
 		const res = await fetch(`${origin}${URLS.API_SMOL}/${slug}`);
 		const resOk = res.ok;
 		const { data } = await res.json();
