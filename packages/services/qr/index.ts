@@ -13,7 +13,6 @@ export async function makeQRCode(
 	const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
 	// WARN: hardcoded urls
 	const origin = process.env.NODE_ENV === 'production' ? 'https://kipri.dev' : 'http://localhost:3001';
-	// const createQRUrl = origin + '/api/qr/create';
 	const createSmolUrl = origin + '/api/smol/create';
 	const headers = new Headers();
 
@@ -39,17 +38,6 @@ export async function makeQRCode(
 	}
 
 	const code = create(data);
-	// const qrRes = await fetch(createQRUrl, {
-	// 	method: 'POST',
-	// 	body: JSON.stringify({ data }),
-	// 	headers,
-	// });
-
-	// if (!qrRes.ok) {
-	// 	return { ok: false, error: { message: 'could not create qr code' } };
-	// }
-
-	// const { code } = await qrRes.json();
 
 	return { code, ok: true };
 }
