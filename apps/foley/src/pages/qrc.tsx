@@ -14,7 +14,9 @@ const QRCodePage: NextPage = () => {
 
 	const [text, setText] = useState<string>('');
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-	const [code, setCode] = useState<QRCode | null>(null);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [_code, setCode] = useState<QRCode | null>(null);
+	const [codeUrl, setCodeUrl] = useState<string | null>(null);
 
 	const fileSize = useMemo(() => toKB(selectedFile?.size ?? -1), [selectedFile]);
 
@@ -44,12 +46,14 @@ const QRCodePage: NextPage = () => {
 				toDataURL(
 					canvasRef.current,
 					newCode.segments.map((segment) => ({ ...segment, mode: segment.mode.id })),
-					(err) => {
+					(err, url) => {
 						if (err) {
 							const { message, stack } = err;
 							console.log('could not create code image', { message, stack });
 							return;
 						}
+
+						setCodeUrl(url);
 					}
 				);
 
@@ -105,11 +109,15 @@ const QRCodePage: NextPage = () => {
 	return (
 		<>
 			<section className="flex flex-col items-center justify-center gap-8 px-2 min-h-screen bg-[var(--clr-bg-300)]">
-				<p className={`text-3xl ${!code ? 'invisible' : ''}`}>🚀</p>
+				<p className={`text-3xl ${!codeUrl ? 'invisible' : ''}`}>🚀</p>
 
-				<div className={`flex items-center justify-center w-[150px] h-[150px] ${!code ? 'invisible' : ''}`}>
-					<canvas ref={canvasRef} width={150} height={150} className="rounded max-w-[150px] max-h-[150px]" />
-				</div>
+				<a
+					download={'i_gib_qr'}
+					href={codeUrl ?? '#'}
+					className={`flex items-center justify-center w-[250px] h-[250px] ${!codeUrl ? 'invisible' : ''}`}
+				>
+					<canvas ref={canvasRef} width={250} height={250} className="rounded max-w-[250px] max-h-[250px]" />
+				</a>
 
 				<Input
 					placeholder="gib text, link or good vibes"
@@ -121,7 +129,7 @@ const QRCodePage: NextPage = () => {
 				<div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
 					<Input
 						type="file"
-						// TODO: TEMP: hidden due to not being done
+						// TODO: TEMP: not done
 						labelclass="hidden text-white font-nixie-one hover:bg-[var(--clr-bg-500)] hover:border-[var(--clr-orange)] active:bg-[var(--clr-orange)] active:border-[var(--clr-bg-500)] active:text-white active:scale-110"
 						onChange={handleChangeFile}
 					/>

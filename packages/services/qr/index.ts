@@ -1,7 +1,7 @@
-import { create, QRCode, toDataURL, toFile } from 'qrcode';
+import { create, QRCode, toDataURL } from 'qrcode';
 
 export type { QRCode } from 'qrcode';
-export { toDataURL, toFile };
+export { toDataURL };
 
 export async function makeQRCodeClient(
 	data: string
