@@ -109,8 +109,6 @@ const QRCodePage: NextPage = () => {
 	return (
 		<>
 			<section className="flex flex-col items-center justify-center gap-8 px-2 min-h-screen bg-[var(--clr-bg-300)]">
-				<p className={`text-3xl ${!codeUrl ? 'invisible' : ''}`}>🚀</p>
-
 				<a
 					download={'i_gib_qr'}
 					href={codeUrl ?? '#'}
@@ -118,6 +116,8 @@ const QRCodePage: NextPage = () => {
 				>
 					<canvas ref={canvasRef} width={250} height={250} className="rounded max-w-[250px] max-h-[250px]" />
 				</a>
+
+				<p className={`text-3xl ${!codeUrl ? 'invisible' : ''}`}>🚀</p>
 
 				<Input
 					placeholder="gib text, link or good vibes"
