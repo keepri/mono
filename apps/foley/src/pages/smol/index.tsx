@@ -1,7 +1,6 @@
 import { Button, Input, Spinner } from '@clfxc/ui';
 import { URLS } from '@declarations/enums';
 import { urlSchema } from '@declarations/schemas';
-import styles from '@styles/Index.module.scss';
 import { baseUrl } from '@utils/misc';
 import type { NextPage } from 'next';
 import { ChangeEvent, FormEvent, useCallback, useState, useTransition } from 'react';
@@ -55,13 +54,29 @@ const SmolPage: NextPage = () => {
 
 	return (
 		<section className="grid place-content-center place-items-center leading-tight min-h-screen px-4 bg-[var(--clr-bg-300)]">
+			<a
+				style={{ textDecorationColor: '#9d679c', color: 'white' }}
+				className={`underline underline-offset-4 text-center font-light text-lg ${
+					!Boolean(smol.length) ? 'invisible' : ''
+				}`}
+				target="_blank"
+				href={smol}
+				rel="noreferrer"
+			>
+				{String(smol?.split('://')[1])}
+				<br />
+				<span className="text-black text-center font-bold">/|\ ^._.^ /|\</span>
+			</a>
+
 			<h1
 				style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }}
-				className={`font-underdog text-center text-white ${styles.heading}`}
+				className="font-underdog text-center text-white sm:leading-none"
 			>
 				make smol
 			</h1>
+
 			<Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? 'invisible' : ''}`} />
+
 			<form
 				onSubmit={handleMakeSmol}
 				className={`grid auto-rows-auto gap-8 place-items-center w-full ${loading ? 'invisible' : ''}`}
@@ -75,14 +90,6 @@ const SmolPage: NextPage = () => {
 				<Button type="submit" className="button border-white text-white" disabled={isTransition || loading}>
 					boop
 				</Button>
-				<a
-					className={`underline text-center text-white font-thin text-lg ${!Boolean(smol.length) ? 'invisible' : ''}`}
-					target="_blank"
-					href={smol}
-					rel="noreferrer"
-				>
-					{String(smol?.split('://')[1])}
-				</a>
 			</form>
 		</section>
 	);

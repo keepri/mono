@@ -110,12 +110,19 @@ const QRCodePage: NextPage = () => {
 		<>
 			<section className="flex flex-col items-center justify-center gap-8 px-2 min-h-screen bg-[var(--clr-bg-300)]">
 				<a
-					download={'i_gib_qr'}
+					download="i_gib_qr"
 					href={codeUrl ?? '#'}
 					className={`flex items-center justify-center w-[250px] h-[250px] ${!codeUrl ? 'invisible' : ''}`}
 				>
 					<canvas ref={canvasRef} width={250} height={250} className="rounded max-w-[250px] max-h-[250px]" />
 				</a>
+
+				<h1
+					style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }}
+					className="font-underdog text-center text-white sm:leading-none"
+				>
+					qr
+				</h1>
 
 				<p className={`text-3xl ${!codeUrl ? 'invisible' : ''}`}>🚀</p>
 
