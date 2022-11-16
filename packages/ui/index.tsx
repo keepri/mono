@@ -4,3 +4,5 @@ export * from './components/Input';
 export * from './components/ReplacePair';
 export * from './components/Spinner';
 export * from './components/Textarea';
+
+export type ReplacePairName = 'replace' | 'replaceValue';

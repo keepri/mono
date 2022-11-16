@@ -18,13 +18,11 @@
 		"clean": "rm -rf node_modules .turbo .vercel",
 		"lint": "turbo lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"foley:dev": "turbo dev --filter=foley",
-		"api:dev": "concurrently \"npm run build:watch --workspace=api\" \"npm run serve-funcs --workspace=api\""
+		"foley:dev": "turbo dev --filter=foley"
 	},
 	"devDependencies": {
 		"concurrently": "^7.4.0",
 		"eslint-config-custom": "*",
-		"firebase-tools": "^11.14.4",
 		"prettier": "latest",
 		"turbo": "latest"
 	},

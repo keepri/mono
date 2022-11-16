@@ -1,5 +1,5 @@
+import type { ReplacePairName } from '@clfxc/ui';
 import { Button, ReplacePair, Textarea } from '@clfxc/ui';
-import { ReplacePairName } from '@clfxc/ui/types';
 import styles from '@styles/Replace.module.scss';
 import type { NextPage } from 'next';
 import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState, useTransition } from 'react';

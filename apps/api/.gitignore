@@ -1,4 +1,0 @@
-*.log
-.runtimeconfig.json
-dist/
-node_modules

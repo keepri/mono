@@ -1,6 +1,5 @@
 import { Langs } from '@declarations/enums';
 import { CookieSerializeOptions } from '@declarations/types';
-// import { FirebaseOptions } from 'firebase/app';
 // import * as Cors from 'cors';
 
 export const isProduction = process.env.NODE_ENV === 'production';

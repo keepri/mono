@@ -9,8 +9,6 @@
 		"clean": "rm -rf node_modules .turbo"
 	},
 	"dependencies": {
-		"firebase": "^9.12.1",
-		"firebase-admin": "^11.1.0",
 		"qrcode": "^1.5.1"
 	},
 	"devDependencies": {
