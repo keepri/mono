@@ -16,10 +16,10 @@ export default withTM(['@clfxc/ui', '@clfxc/services', '@clfxc/db'])(
 		distDir: join(dirname('.'), '.next'),
 		reactStrictMode: true,
 		env: envVars,
-		i18n: {
-			locales: ['en'],
-			defaultLocale: 'en',
-		},
+		// i18n: {
+		// 	locales: ['en'],
+		// 	defaultLocale: 'en',
+		// },
 		images: {
 			domains: ['firebasestorage.googleapis.com'],
 		},
