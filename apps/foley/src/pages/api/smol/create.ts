@@ -16,6 +16,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let slug: string;
 	let exists: boolean = false;
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const _rebuild = true;
+
 	do {
 		slug = makeLetterMix(4);
 		const found = await prisma.smol.findFirst({
