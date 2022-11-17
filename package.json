@@ -14,8 +14,7 @@
 		"db:studio": "npm run dev --workspace @clfxc/db",
 		"build": "turbo build",
 		"dev": "turbo dev --parallel",
-		"clean:workspaces": "turbo clean",
-		"clean": "rm -rf node_modules .turbo .vercel",
+		"clean": "turbo clean && rm -rf node_modules .turbo package-lock.json",
 		"lint": "turbo lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"foley:dev": "turbo dev --filter=foley"
