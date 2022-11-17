@@ -4,12 +4,8 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 
-const ratelimit = new Ratelimit({
-	redis: Redis.fromEnv(),
-	limiter: Ratelimit.fixedWindow(200, '5 s'),
-});
+const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(200, '5 s') });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 	const ip = req.ip ?? '127.0.0.1';
 	const origin = req.nextUrl.origin;
