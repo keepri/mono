@@ -13,9 +13,6 @@ function defineNextConfig(config) {
 
 export default withTM(['@clfxc/ui', '@clfxc/services', '@clfxc/db'])(
 	defineNextConfig({
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore/rules/ban-ts-comment
-		experimental: { images: { allowFutureImage: true } },
 		distDir: join(dirname('.'), '.next'),
 		reactStrictMode: true,
 		env: envVars,
