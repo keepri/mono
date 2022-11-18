@@ -7,6 +7,8 @@ import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(200, '5 s') });
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
+	// eslint-disable-next-line turbo/no-undeclared-env-vars
+	console.log(process.env.VERCEL_URL);
 	const ip = req.ip ?? '127.0.0.1';
 	const origin = req.nextUrl.origin;
 	const pathname = req.nextUrl.pathname;
