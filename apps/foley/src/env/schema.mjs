@@ -1,4 +1,3 @@
-// @ts-check
 import { z } from 'zod';
 
 /**
@@ -12,6 +11,7 @@ export const serverSchema = z.object({
 	REDIS_URL: z.string(),
 	SHADOW_DATABASE_URL: z.string(),
 	DATABASE_URL: z.string(),
+	HOST: z.string(),
 });
 
 /**
