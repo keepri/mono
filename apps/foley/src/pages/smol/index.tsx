@@ -1,8 +1,8 @@
 import { Button, Input, Spinner } from '@clfxc/ui';
 import { URLS } from '@declarations/enums';
 import { urlSchema } from '@declarations/schemas';
-import { baseUrl } from '@utils/misc';
-import type { NextPage } from 'next';
+import { isProduction, origin, port } from '@utils/misc';
+import type { NextPage } from 'next/types';
 import { ChangeEvent, FormEvent, useCallback, useState, useTransition } from 'react';
 
 // interface Props {}
@@ -30,7 +30,7 @@ const SmolPage: NextPage = () => {
 				return;
 			}
 
-			const fetchUrl = `${baseUrl}/api${URLS.SMOL}/create`;
+			const fetchUrl = `${isProduction ? origin : origin + port}/api${URLS.SMOL}/create`;
 			try {
 				const data = await (
 					await fetch(fetchUrl, {
@@ -39,10 +39,11 @@ const SmolPage: NextPage = () => {
 						headers: {
 							'Content-Type': 'application/json',
 						},
+						credentials: 'same-origin',
 					})
 				).json();
 
-				setSmol(data?.smol ?? '');
+				setSmol(data?.smol ?? '#');
 				setLoading(false);
 			} catch (error) {
 				setLoading(false);
@@ -54,20 +55,6 @@ const SmolPage: NextPage = () => {
 
 	return (
 		<section className="grid place-content-center place-items-center leading-tight min-h-screen px-4 bg-[var(--clr-bg-300)]">
-			<a
-				style={{ textDecorationColor: '#9d679c', color: 'white' }}
-				className={`underline underline-offset-4 text-center font-light text-lg ${
-					!Boolean(smol.length) ? 'invisible' : ''
-				}`}
-				target="_blank"
-				href={smol}
-				rel="noreferrer"
-			>
-				{String(smol?.split('://')[1])}
-				<br />
-				<span className="text-black text-center font-bold">/|\ ^._.^ /|\</span>
-			</a>
-
 			<h1
 				style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }}
 				className="font-underdog text-center text-white sm:leading-none"
@@ -77,11 +64,27 @@ const SmolPage: NextPage = () => {
 
 			<Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? 'invisible' : ''}`} />
 
+			{Boolean(smol.length) && !loading && (
+				<>
+					<span className="text-center text-3xl">🚀</span>
+					<a
+						style={{ textDecorationColor: '#9d679c', color: 'white' }}
+						className="underline underline-offset-4 text-center font-light text-lg"
+						target="_blank"
+						href={smol}
+						rel="noreferrer"
+					>
+						{String(smol?.split('://')[1])}
+						<br />
+					</a>
+					<span className="text-[var(--clr-bg-500)] text-center font-bold mb-3">/|\ ^._.^ /|\</span>
+				</>
+			)}
+
 			<form
 				onSubmit={handleMakeSmol}
 				className={`grid auto-rows-auto gap-8 place-items-center w-full ${loading ? 'invisible' : ''}`}
 			>
-				<span className={`text-center text-3xl ${!Boolean(smol.length) ? 'invisible' : ''}`}>🚀</span>
 				<Input
 					className="w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
 					value={url}

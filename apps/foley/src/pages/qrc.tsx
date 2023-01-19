@@ -1,51 +1,48 @@
-import type { QRCode } from '@clfxc/services/qr';
-import { makeQRCodeClient, toDataURL } from '@clfxc/services/qr';
+import { createQRCode, QRCode, QRCodeToDataURLOptions, toDataURL } from '@clfxc/services/qr';
 import { Button, Input, InputOnChange } from '@clfxc/ui';
-import { getTextBytes, readFileAsDataUrl, toKB, validateFile } from '@utils/helpers';
-import type { NextPage } from 'next';
-import { createRef, MouseEventHandler, useCallback, useMemo, useState } from 'react';
-// import { URLS } from '@declarations/enums';
-// import { baseUrl } from '@utils/misc';
+import { getTextBytes, readFileAsDataUrl, validateFile } from '@utils/helpers';
+import { NextPage } from 'next/types';
+import { createRef, FormEventHandler, useCallback, useState } from 'react';
 
 // interface Props {}
 
 const QRCodePage: NextPage = () => {
+	const qrOpts: QRCodeToDataURLOptions = {
+		margin: 2,
+		width: 200,
+		color: {
+			light: '#00000000',
+		},
+		rendererOpts: {
+			quality: 1,
+		},
+	};
+
 	const canvasRef = createRef<HTMLCanvasElement>();
 
 	const [text, setText] = useState<string>('');
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_code, setCode] = useState<QRCode | null>(null);
+	const [code, setCode] = useState<QRCode | null>(null);
 	const [codeUrl, setCodeUrl] = useState<string | null>(null);
 
-	const fileSize = useMemo(() => toKB(selectedFile?.size ?? -1), [selectedFile]);
+	// const fileSize = useMemo(() => toKB(selectedFile?.size ?? -1), [selectedFile]);
 
 	const makeCode = useCallback(
 		async (data: string) => {
 			if (!canvasRef.current) return;
 
 			try {
-				const { ok, code: newCode, error } = await makeQRCodeClient(data);
-
-				// TODO: SERVER SIDE CREATION - not working
-				// const qrRes = await fetch(`${baseUrl}${URLS.API_QR_CREATE}`, {
-				// 	method: 'POST',
-				// 	headers: {
-				// 		'Content-Type': 'application/json',
-				// 	},
-				// 	body: JSON.stringify({ data }),
-				// });
+				const { ok, code: newCode, error } = await createQRCode(data);
 
 				if (!ok) {
 					console.warn('failed making qr code', error);
 					return;
 				}
 
-				// const { code: newCode } = (await qrRes.json()) as { code: QRCode };
-
 				toDataURL(
 					canvasRef.current,
 					newCode.segments.map((segment) => ({ ...segment, mode: segment.mode.id })),
+					qrOpts,
 					(err, url) => {
 						if (err) {
 							const { message, stack } = err;
@@ -62,6 +59,7 @@ const QRCodePage: NextPage = () => {
 				console.error(error);
 			}
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[canvasRef]
 	);
 
@@ -87,66 +85,72 @@ const QRCodePage: NextPage = () => {
 		setText(e.target.value);
 	}, []);
 
-	const handleSubmit: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
-		// no file has been uploaded
-		if (!selectedFile) {
-			if (!Boolean(text.length)) return;
-			const bytes = getTextBytes(text);
-			if (bytes > 2953) return;
+	const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
+		(e) => {
+			e.preventDefault();
+			// no file has been uploaded
+			if (!selectedFile) {
+				if (!Boolean(text.length)) return;
+				const bytes = getTextBytes(text);
+				if (bytes > 2953) return;
 
-			makeCode(text);
-			return;
-		}
+				makeCode(text);
+				return;
+			}
 
-		// handle file uploaded creation
-		readFileAsDataUrl(selectedFile, async (e) => {
-			const data = e.target?.result as string;
-			if (!data) return;
-			makeCode(data);
-		});
-	}, [selectedFile, text, makeCode]);
+			// handle file uploaded creation
+			readFileAsDataUrl(selectedFile, async (e) => {
+				const data = e.target?.result as string;
+				if (!data) return;
+				makeCode(data);
+			});
+		},
+		[selectedFile, text, makeCode]
+	);
 
 	return (
 		<>
-			<section className="flex flex-col items-center justify-center gap-8 px-2 min-h-screen bg-[var(--clr-bg-300)]">
-				<a
-					download="i_gib_qr"
-					href={codeUrl ?? '#'}
-					className={`flex items-center justify-center w-[250px] h-[250px] ${!codeUrl ? 'invisible' : ''}`}
-				>
-					<canvas ref={canvasRef} width={250} height={250} className="rounded max-w-[250px] max-h-[250px]" />
-				</a>
+			<section className="grid place-items-center min-h-screen bg-[var(--clr-bg-300)]">
+				<form className="flex flex-col items-center justify-center gap-8 px-2 w-full" onSubmit={handleSubmit}>
+					<h1
+						style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }}
+						className="font-underdog text-center text-white sm:leading-none"
+					>
+						qr
+					</h1>
 
-				<h1
-					style={{ fontSize: 'clamp(7rem, 14vw, 12rem)' }}
-					className="font-underdog text-center text-white sm:leading-none"
-				>
-					qr
-				</h1>
+					<p className={`text-3xl ${!code ? 'invisible' : ''}`}>🚀</p>
 
-				<p className={`text-3xl ${!codeUrl ? 'invisible' : ''}`}>🚀</p>
-
-				<Input
-					placeholder="gib text, link or good vibes"
-					value={text}
-					className="max-w-[30rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
-					onChange={handleChangeInput}
-				/>
-
-				<div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
 					<Input
-						type="file"
-						// TODO: TEMP: not done
-						labelclass="hidden text-white font-nixie-one hover:bg-[var(--clr-bg-500)] hover:border-[var(--clr-orange)] active:bg-[var(--clr-orange)] active:border-[var(--clr-bg-500)] active:text-white active:scale-110"
-						onChange={handleChangeFile}
+						placeholder="gib text, link or good vibes"
+						value={text}
+						className="max-w-[30rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
+						onChange={handleChangeInput}
 					/>
 
-					<Button className="button border-white text-white" onClick={handleSubmit}>
-						boop
-					</Button>
-				</div>
+					<div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
+						<Input
+							type="file"
+							// TODO: TEMP: not done
+							labelclass="hidden text-white font-nixie-one hover:bg-[var(--clr-bg-500)] hover:border-[var(--clr-orange)] active:bg-[var(--clr-orange)] active:border-[var(--clr-bg-500)] active:text-white active:scale-110"
+							onChange={handleChangeFile}
+						/>
 
-				<p
+						<Button type="submit" className="button border-white text-white">
+							boop
+						</Button>
+					</div>
+
+					<a
+						download="i_gib_qr"
+						href={codeUrl ?? '#'}
+						className={`w-[200px] h-[200px] ml-auto mr-auto ${!codeUrl ? 'invisible' : ''}`}
+					>
+						<canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-white" />
+					</a>
+				</form>
+
+				{/* <p
 					className={`flex flex-wrap items-center justify-center gap-4 text-white text-center max-w-[40ch] text-xs sm:max-w-[unset] ${
 						!selectedFile ? 'invisible' : ''
 					}`}
@@ -156,7 +160,7 @@ const QRCodePage: NextPage = () => {
 					<span className="px-2 py-2 rounded bg-[var(--clr-orange)]">
 						{fileSize.toFixed(2)}kB {fileSize > 1000 ? '🚀' : ''}
 					</span>
-				</p>
+				</p> */}
 			</section>
 		</>
 	);

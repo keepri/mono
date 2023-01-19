@@ -1,8 +1,8 @@
 import { prisma, Smol } from '@clfxc/db';
 import { URLS } from '@declarations/enums';
 import { urlSchema } from '@declarations/schemas';
-import { origin } from '@utils/misc';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { protocol, siteHost } from '@utils/misc';
+import { NextApiRequest, NextApiResponse } from 'next/types';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const urlParse = urlSchema.safeParse(req.body['url']);
@@ -38,23 +38,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	await prisma.smol.create({ data: smol });
 
-	const originSplit = origin.split('://');
-	// const protocol = originSplit[0];
-	const host = originSplit[1];
-	const smolLink = `${origin}${URLS.SMOL}/${slug}`;
-	const short = `${host}${URLS.SMOL}/${slug}`;
+	const smolLink = `${protocol + siteHost}${URLS.SMOL}/${slug}`;
+	const short = `${siteHost}${URLS.SMOL}/${slug}`;
 
 	res.status(200).json({ smol: smolLink, short });
 	return;
 };
-
-const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 function getRandom(upTo?: number) {
 	const random = Math.floor(Math.random() * (upTo ?? 10));
 	return random;
 }
 
+const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' as const;
 function makeLetterMix(len: number) {
 	let mix: string = '';
 	for (let i = 0; i < len; i++) {

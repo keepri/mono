@@ -1,7 +1,7 @@
 import type { ReplacePairName } from '@clfxc/ui';
 import { Button, ReplacePair, Textarea } from '@clfxc/ui';
 import styles from '@styles/Replace.module.scss';
-import type { NextPage } from 'next';
+import type { NextPage } from 'next/types';
 import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState, useTransition } from 'react';
 
 type Declaration = Record<ReplacePairName, string>;
@@ -136,8 +136,8 @@ const ReplaceTextPage: NextPage = () => {
 					)}
 			</aside>
 			<section className="p-2">
-				<Textarea className="font-nixie-one" placeholder="Input" value={input} onChange={handleInputChange} />
-				<Textarea className="font-nixie-one" placeholder="Output" value={output} onChange={handleOutputChange} />
+				<Textarea className="font-nixie-one border" placeholder="Input" value={input} onChange={handleInputChange} />
+				<Textarea className="font-nixie-one border" placeholder="Output" value={output} onChange={handleOutputChange} />
 				<div style={{ minHeight: '50px' }}>
 					<Button className="w-full h-full font-nixie-one" onClick={handleSubmit}>
 						start
