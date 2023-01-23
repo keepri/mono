@@ -1,10 +1,8 @@
-export * from '@next-auth/prisma-adapter';
+export { PrismaAdapter } from '@next-auth/prisma-adapter';
 export * from '@prisma/client';
-// export * from './prisma/generated/client';
 export * from './schemas';
 
 import { PrismaClient } from '@prisma/client';
-// import { PrismaClient } from './prisma/generated/client';
 
 declare global {
 	// eslint-disable-next-line no-var

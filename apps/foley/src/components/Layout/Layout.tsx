@@ -1,12 +1,10 @@
 // import Navbar from '@components/Navbar/Navbar';
-import { FC, ReactNode } from 'react';
+import { FC, PropsWithChildren } from 'react';
 // import Footer from './Footer/Footer';
 
-interface Props {
-	children: ReactNode;
-}
+// interface Props {}
 
-const Layout: FC<Props> = ({ children }) => {
+const Layout: FC<PropsWithChildren> = ({ children }) => {
 	return (
 		<>
 			{/* <Navbar /> */}

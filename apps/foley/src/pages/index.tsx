@@ -1,6 +1,6 @@
 import { URLS } from '@declarations/enums';
-import { NextPage } from 'next';
 import Link from 'next/link';
+import type { NextPage } from 'next/types';
 
 const IndexPage: NextPage = () => {
 	return (
@@ -23,6 +23,9 @@ const IndexPage: NextPage = () => {
 				</Link>
 				<Link style={{ color: 'white' }} className="button border-white" href={URLS.QR}>
 					qr
+				</Link>
+				<Link style={{ color: 'white' }} className="button border-white" href={URLS.CLOSET}>
+					closet
 				</Link>
 			</section>
 		</main>

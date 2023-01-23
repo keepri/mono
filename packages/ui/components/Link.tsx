@@ -1,12 +1,12 @@
-import Link from 'next/link';
-import { ButtonHTMLAttributes, FC, PropsWithChildren } from 'react';
+import { default as NLink } from 'next/link';
+import { AnchorHTMLAttributes, FC, PropsWithChildren } from 'react';
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {}
+interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {}
 
-export const Button: FC<PropsWithChildren<Props>> = ({ children, className, ...rest }) => {
+export const Link: FC<PropsWithChildren<Props>> = ({ children, className, ...rest }) => {
 	return (
-		<Link className={`button-base ${className}`} {...rest}>
+		<NLink className={`button-base ${className}`} {...rest}>
 			{children}
-		</Link>
+		</NLink>
 	);
 };

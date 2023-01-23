@@ -1,5 +1,5 @@
 import { prisma } from '@clfxc/db';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next/types';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const slug = req.query['slug'];

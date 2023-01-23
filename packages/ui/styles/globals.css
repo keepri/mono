@@ -22,16 +22,19 @@
 	border-style: solid;
 	cursor: pointer;
 	line-height: 1;
+	font-family: Nixie One, serif;
+	font-size: 1rem;
 	transition: background-color 25ms ease-in-out;
 	transition: border-color 25ms ease-in-out;
 }
 .button-base:hover {
-	background-color: var(--clr-black);
-	color: var(--clr-white);
+	/* background-color: var(--clr-black); */
+	color: var(--clr-white) !important;
 }
 .button-base:active {
-	background-color: transparent;
-	color: var(--clr-black);
+	background-color: transparent !important;
+	scale: 0.95;
+	/* color: var(--clr-black); */
 }
 .button-varient-dark {
 	background-color: var(--clr-black) !important;

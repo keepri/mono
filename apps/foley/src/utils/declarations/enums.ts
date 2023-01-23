@@ -11,6 +11,7 @@ export enum URLS {
 	REPLACE = '/replace',
 	SMOL = '/smol',
 	QR = '/qrc',
+	CLOSET = '/closet',
 
 	// API
 	API_SMOL = '/api/smol',
