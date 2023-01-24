@@ -13,6 +13,7 @@ const SmolPage: NextPage = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [url, setUrl] = useState<string>('');
 	const [smol, setSmol] = useState<string>('');
+	const [chill, setChill] = useState<string>('');
 
 	const handleChangeUrl = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 		setUrl(e.target.value);
@@ -42,6 +43,12 @@ const SmolPage: NextPage = () => {
 						credentials: 'same-origin',
 					})
 				).json();
+
+				if ('message' in data) {
+					setChill('take a chill pill');
+					setLoading(false);
+					return;
+				}
 
 				setSmol(data?.smol ?? '#');
 				setLoading(false);
@@ -74,7 +81,7 @@ const SmolPage: NextPage = () => {
 						href={smol}
 						rel="noreferrer"
 					>
-						{String(smol?.split('://')[1])}
+						{chill ? chill : String(smol?.split('://')[1])}
 						<br />
 					</a>
 					<span className="text-[var(--clr-bg-500)] text-center font-bold mb-3">/|\ ^._.^ /|\</span>
