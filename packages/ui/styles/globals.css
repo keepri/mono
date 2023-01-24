@@ -59,3 +59,14 @@
 	font-size: 0.8em;
 	color: var(--clr-lightgrey-100);
 }
+
+*[data-tooltip]:hover::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    translate: -50% 0;
+    border-radius: 5px;
+    font-size: .75rem;
+    font-family: Nixie One, serif;
+}

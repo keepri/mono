@@ -17,10 +17,10 @@ const ClosetPage: NextPage = () => {
 			</header>
 			<ProductCard
 				available={true}
-				name="Test product 123 Lalalallalalalala"
+				name="FNATIC Rush G1 MX Blues Mechanical Keyboard"
 				description="A product that is for testing purposes and lalalalala 123 haha xD"
 				photo="/images/keyboard.png"
-				price={100}
+				price={350}
 			/>
 		</main>
 	);
