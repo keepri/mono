@@ -15,7 +15,7 @@ interface Props {
 
 export const ProductCard: FC<Props> = ({ photo, name, description, price, currency }) => {
 	return (
-		<div className="flex flex-col justify-center items-center gap-10 bg-[var(--clr-bg-500)] px-4 py-5 rounded border-[var(--clr-orange)] border-[1px] w-[17rem] h-[27rem]">
+		<div className="flex flex-col justify-center items-center gap-10 px-4 py-5 bg-[var(--clr-bg-500)] rounded border-[var(--clr-orange)] border-[1px] w-[17rem] h-[27rem]">
 			<Image
 				src={photo}
 				alt={`A photo of the ${name} that I am selling. It ain't no lie, baby, buy buy buy!`}
