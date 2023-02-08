@@ -1,30 +1,12 @@
-// @ts-check
-import { clientEnv, clientSchema } from './schema.mjs';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { clientScheme, formatErrors } from "./schema.mjs";
 
-const _clientEnv = clientSchema.strip().safeParse(clientEnv);
+// @ts-ignore
+const env = clientScheme.safeParse(import.meta.env);
 
-export const formatErrors = (
-	/** @type {import('zod').ZodFormattedError<Map<string,string>,string>} */
-	errors
-) =>
-	Object.entries(errors)
-		.map(([name, value]) => {
-			if (value && '_errors' in value) return `${name}: ${value._errors.join(', ')}\n`;
-			return null;
-		})
-		.filter(Boolean);
-
-if (!_clientEnv.success) {
-	console.error('❌ Invalid environment variables:\n', ...formatErrors(_clientEnv.error.format()));
-	throw new Error('Invalid environment variables');
+if (!env.success) {
+    console.error("❌ Invalid environment variables:\n", ...formatErrors(env.error.format()));
+    throw new Error("Invalid environment variables");
 }
 
-for (let key of Object.keys(_clientEnv.data)) {
-	if (!key.startsWith('NEXT_PUBLIC_')) {
-		console.warn('❌ Invalid public environment variable name:', key);
-
-		throw new Error('Invalid public environment variable name');
-	}
-}
-
-export const env = _clientEnv.data;
+export const clientEnv = env.data;

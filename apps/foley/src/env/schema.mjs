@@ -1,34 +1,50 @@
-import { z } from 'zod';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { z } from "zod";
 
-/**
- * Specify your server-side environment variables schema here.
- * This way you can ensure the app isn't built with invalid env vars.
- */
-export const serverSchema = z.object({
-	// NODE_ENV: z.enum(['development', 'test', 'production']),
-	UPSTASH_REDIS_REST_URL: z.string(),
-	UPSTASH_REDIS_REST_TOKEN: z.string(),
-	REDIS_URL: z.string(),
-	SHADOW_DATABASE_URL: z.string(),
-	DATABASE_URL: z.string(),
-	HOST: z.string(),
+export const upstashScheme = z.object({
+    UPSTASH_REDIS_REST_URL: z.string(),
+    UPSTASH_REDIS_REST_TOKEN: z.string(),
 });
 
-/**
- * Specify your client-side environment variables schema here.
- * This way you can ensure the app isn't built with invalid env vars.
- * To expose them to the client, prefix them with `NEXT_PUBLIC_`.
- */
-export const clientSchema = z.object({
-	// NEXT_PUBLIC_BAR: z.string(),
+export const githubScheme = z.object({
+    GITHUB_ID: z.string(),
+    GITHUB_SECRET: z.string(),
 });
 
-/**
- * You can't destruct `process.env` as a regular object, so you have to do
- * it manually here. This is because Next.js evaluates this at build time,
- * and only used environment variables are included in the build.
- * @type {{ [k in keyof z.infer<typeof clientSchema>]: z.infer<typeof clientSchema>[k] | undefined }}
- */
-export const clientEnv = {
-	// NEXT_PUBLIC_BAR: process.env.NEXT_PUBLIC_BAR,
-};
+export const discordScheme = z.object({
+    DISCORD_ID: z.string(),
+    DISCORD_SECRET: z.string(),
+});
+
+export const serverScheme = z
+    .object({
+        NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+        ENABLE_VC_BUILD: z
+            .string()
+            .default("1")
+            .transform((v) => parseInt(v, 10)),
+        DISCORD_ID: z.string().optional(),
+        DISCORD_SECRET: z.string().optional(),
+        AUTH_SECRET: z.string(),
+        AUTH_TRUST_HOST: z.string().optional(),
+        AUTH_URL: z.string().optional(),
+        DATABASE_URL: z.string(),
+    })
+    // TODO: remove .partial() if using service
+    // .merge(githubScheme)
+    // .merge(discordScheme)
+    .merge(upstashScheme.partial());
+
+export const clientScheme = z.object({
+    MODE: z.enum(["development", "production", "test"]).default("development"),
+});
+
+// : ZodFormattedError<Map<string, string>>
+// @ts-ignore
+export const formatErrors = (errors) =>
+    Object.entries(errors)
+        .map(([name, value]) => {
+            if ("_errors" in value) return `${name}: ${value._errors.join(", ")}\n`;
+            return "";
+        })
+        .filter(Boolean);

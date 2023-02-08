@@ -19,7 +19,7 @@ module.exports = {
 	rules: {
 		'@next/next/no-html-link-for-pages': 'off',
 		'turbo/no-undeclared-env-vars': 'warn',
-		indent: ['warn', 'tab', { SwitchCase: 1, VariableDeclarator: 2, ignoredNodes: ['ConditionalExpression'] }],
+		indent: ['warn', 4, { SwitchCase: 1, VariableDeclarator: 2, ignoredNodes: ['ConditionalExpression'] }],
 		'@typescript-eslint/ban-ts-comment': 'warn',
 		'@typescript-eslint/no-inferrable-types': 'off',
 		'@typescript-eslint/no-non-null-assertion': 'off',
@@ -32,7 +32,7 @@ module.exports = {
 		'react/prop-types': 'off',
 		'react-hooks/exhaustive-deps': 'warn',
 		'react-hooks/rules-of-hooks': 'warn',
-		quotes: ['warn', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
+		quotes: ['warn', 'double', { avoidEscape: true, allowTemplateLiterals: true }],
 		semi: ['error', 'always'],
 		'no-empty-pattern': ['warn'],
 		'import/no-unresolved': 'warn',
