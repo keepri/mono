@@ -18,7 +18,7 @@ export const discordScheme = z.object({
 
 export const serverScheme = z
     .object({
-        NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+        // NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
         ENABLE_VC_BUILD: z
             .string()
             .default("1")
@@ -39,8 +39,7 @@ export const clientScheme = z.object({
     MODE: z.enum(["development", "production", "test"]).default("development"),
 });
 
-// : ZodFormattedError<Map<string, string>>
-// @ts-ignore
+// @ts-ignore : ZodFormattedError<Map<string, string>>
 export const formatErrors = (errors) =>
     Object.entries(errors)
         .map(([name, value]) => {
