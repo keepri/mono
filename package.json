@@ -16,7 +16,7 @@
 		"dev": "turbo dev --parallel",
 		"clean": "turbo clean && rm -rf node_modules .turbo package-lock.json",
 		"lint": "turbo lint",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,md}\"",
 		"foley:dev": "turbo dev --filter=foley",
 		"foley:build": "turbo build --filter=foley"
 	},
