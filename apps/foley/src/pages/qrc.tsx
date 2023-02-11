@@ -2,7 +2,7 @@
 import { createQRCode, QRCode, QRCodeToDataURLOptions, toDataURL } from "@clfxc/services/qr";
 import { Button, Input, InputOnChange } from "@clfxc/ui";
 import { Storage } from "@declarations/enums";
-import { getTextBytes, readFileAsDataUrl, validateFile } from "@utils/helpers";
+import { getTextBytes } from "@utils/helpers";
 import { NextPage } from "next/types";
 import { createRef, FormEventHandler, useCallback, useEffect, useState } from "react";
 
@@ -14,6 +14,7 @@ const QRCodePage: NextPage = () => {
     const canvasRef = createRef<HTMLCanvasElement>();
 
     const [text, setText] = useState<string>("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectedFile, _setSelectedFile] = useState<File | null>(null);
     const [code, setCode] = useState<QRCode | null>(null);
     const [codeUrl, setCodeUrl] = useState<string | null>(null);
