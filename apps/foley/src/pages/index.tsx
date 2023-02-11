@@ -8,14 +8,14 @@ const IndexPage: NextPage = () => {
         <main className="grid place-content-center place-items-center gap-4 min-h-screen bg-[var(--clr-bg-300)]">
             <a
                 href="mailto:hi@kipri.dev"
-                style={{ fontSize: "clamp(4rem, 20vw, 15rem)" }}
-                className={`relative text-[var(--clr-white)] ${londrinaSketch.variable} font-londrina-sketch leading-tight whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors`}
+                style={{ fontSize: "clamp(3rem, 17vw, 15rem)" }}
+                className={`relative text-[var(--clr-white)] text-center px-4 ${londrinaSketch.variable} font-londrina-sketch max-[290px]:leading-none leading-tight sm:whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors max-[290px]:max-w-[8rem]`}
             >
-                <span className="text-4xl">hi @ </span>
+                <span className="text-4xl max-[290px]:leading-none leading-tight">hi @ </span>
                 KIPRI
-                <span className="text-4xl"> . dev</span>
+                <span className="text-4xl max-[290px]:leading-none leading-tight"> . dev</span>
             </a>
-            <section className="flex gap-4">
+            <section className="flex flex-wrap justify-center gap-4">
                 <Link style={{ color: "white" }} className="button border-white" href={URLS.REPLACE}>
                     boop
                 </Link>
