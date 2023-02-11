@@ -13,6 +13,7 @@
         "@clfxc/db": "*",
         "@clfxc/services": "*",
         "@clfxc/ui": "*",
+        "@next/font": "^13.1.6",
         "@upstash/ratelimit": "^0.1.5",
         "@upstash/redis": "^1.16.1",
         "next": "^13.1.2",
@@ -20,7 +21,8 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "sass": "^1.55.0",
-        "zod": "^3.19.1"
+        "zod": "^3.19.1",
+        "zod-error": "^1.1.1"
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",

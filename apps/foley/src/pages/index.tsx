@@ -1,4 +1,5 @@
 import { URLS } from "@declarations/enums";
+import { londrinaSketch } from "@utils/misc";
 import Link from "next/link";
 import type { NextPage } from "next/types";
 
@@ -8,7 +9,7 @@ const IndexPage: NextPage = () => {
             <a
                 href="mailto:hi@kipri.dev"
                 style={{ fontSize: "clamp(4rem, 20vw, 15rem)" }}
-                className="relative text-[var(--clr-white)] font-londrina-sketch leading-tight whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors"
+                className={`relative text-[var(--clr-white)] ${londrinaSketch.variable} font-londrina-sketch leading-tight whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors`}
             >
                 <span className="text-4xl">hi @ </span>
                 KIPRI

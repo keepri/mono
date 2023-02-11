@@ -1,7 +1,7 @@
 import { Button, Input, Spinner } from "@clfxc/ui";
 import { URLS } from "@declarations/enums";
 import { urlSchema } from "@declarations/schemas";
-import { isProduction, origin, port } from "@utils/misc";
+import { isProduction, origin, port, underdog } from "@utils/misc";
 import type { NextPage } from "next/types";
 import { ChangeEvent, FormEvent, useCallback, useState, useTransition } from "react";
 
@@ -64,7 +64,7 @@ const SmolPage: NextPage = () => {
         <section className="grid place-content-center place-items-center leading-tight min-h-screen px-4 bg-[var(--clr-bg-300)]">
             <h1
                 style={{ fontSize: "clamp(7rem, 14vw, 12rem)" }}
-                className="font-underdog text-center text-white sm:leading-none"
+                className={`${underdog.variable} font-underdog text-center text-white sm:leading-none`}
             >
                 make smol
             </h1>

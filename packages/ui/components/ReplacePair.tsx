@@ -4,18 +4,18 @@ import { Button } from "./Button";
 type ReplacePairProps = Omit<InputHTMLAttributes<HTMLInputElement>, "placeholder" | "id" | "name" | "onChange">;
 
 interface Props extends ReplacePairProps {
-	replace?: string;
-	replaceValue?: string;
-	wrapperClass?: string;
-	labelClass?: string;
-	placeholder1?: string;
-	placeholder2?: string;
-	label1?: string;
-	label2?: string;
-	index?: number;
-	remove?: (index: number) => void;
-	clear?: (index: number) => void;
-	onChange: (e: ChangeEvent<HTMLInputElement>, index: number) => void;
+    replace?: string;
+    replaceValue?: string;
+    wrapperClass?: string;
+    labelClass?: string;
+    placeholder1?: string;
+    placeholder2?: string;
+    label1?: string;
+    label2?: string;
+    index?: number;
+    remove?: (index: number) => void;
+    clear?: (index: number) => void;
+    onChange: (e: ChangeEvent<HTMLInputElement>, index: number) => void;
 }
 
 export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
@@ -87,12 +87,12 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
                     <div className="flex justify-between flex-wrap gap-2 w-full">
                         {Boolean(clear) && (
                             <Button className="text-xs flex-1 bg-white" onClick={handleClear}>
-								clear
+                                clear
                             </Button>
                         )}
                         {Boolean(remove) && (
                             <Button varient="dark" className="text-xs flex-1" onClick={handleRemove}>
-								remove
+                                remove
                             </Button>
                         )}
                     </div>

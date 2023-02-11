@@ -1,6 +1,7 @@
 import type { ReplacePairName } from "@clfxc/ui";
 import { Button, ReplacePair, Textarea } from "@clfxc/ui";
 import styles from "@styles/Replace.module.scss";
+import { nixieOne } from "@utils/misc";
 import type { NextPage } from "next/types";
 import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState, useTransition } from "react";
 
@@ -97,7 +98,7 @@ const ReplaceTextPage: NextPage = () => {
     return (
         <div className={styles["container"]}>
             <aside className="flex flex-col gap-2.5 p-2">
-                <Button className="w-full font-nixie-one font-bold my-1" onClick={handleAddReplacePair}>
+                <Button className={`button w-full ${nixieOne.variable} my-1`} onClick={handleAddReplacePair}>
 					+
                 </Button>
                 <ReplacePair
@@ -107,9 +108,8 @@ const ReplaceTextPage: NextPage = () => {
                     replaceValue={declarations[0].replaceValue}
                     label1="replace"
                     label2="with"
-                    wrapperClass={`py-2 ${styles.pair}`}
-                    className="w-full font-nixie-one"
-                    labelClass="font-nixie-one"
+                    wrapperClass={`py-2 ${styles.pair} ${nixieOne.variable} font-nixie-one`}
+                    className="w-full"
                     onChange={handleChangeReplacePair}
                     clear={handleClearReplacePair}
                     remove={handleRemoveReplacePair}
@@ -125,9 +125,8 @@ const ReplaceTextPage: NextPage = () => {
 					                replaceValue={replaceValue}
 					                label1="replace"
 					                label2="with"
-					                wrapperClass={`py-2 ${styles.pair}`}
-					                className="w-full font-nixie-one"
-					                labelClass="font-nixie-one"
+					                wrapperClass={`py-2 ${styles.pair} ${nixieOne.variable} font-nixie-one`}
+					                className="w-full"
 					                onChange={handleChangeReplacePair}
 					                clear={handleClearReplacePair}
 					                remove={handleRemoveReplacePair}
@@ -136,10 +135,10 @@ const ReplaceTextPage: NextPage = () => {
 					)}
             </aside>
             <section className="p-2">
-                <Textarea className="font-nixie-one border" placeholder="Input" value={input} onChange={handleInputChange} />
-                <Textarea className="font-nixie-one border" placeholder="Output" value={output} onChange={handleOutputChange} />
+                <Textarea className={`${nixieOne.variable} border`} placeholder="Input" value={input} onChange={handleInputChange} />
+                <Textarea className={`${nixieOne.variable} border`} placeholder="Output" value={output} onChange={handleOutputChange} />
                 <div style={{ minHeight: "50px" }}>
-                    <Button className="w-full h-full font-nixie-one" onClick={handleSubmit}>
+                    <Button className={`${nixieOne.variable} w-full h-full`} onClick={handleSubmit}>
 						start
                     </Button>
                 </div>

@@ -1,11 +1,12 @@
 import { create, QRCode, toDataURL, toFile } from "qrcode";
 
-export type { QRCode, QRCodeToDataURLOptions } from "qrcode";
+export type { QRCode, QRCodeToDataURLOptions, QRCodeToFileOptions } from "qrcode";
 export { toDataURL, toFile };
 
+type CreateQRError = { message: string };
 export async function createQRCode(
     data: string
-): Promise<{ ok: false; error?: unknown; code?: undefined } | { ok: true; error?: unknown; code: QRCode }> {
+): Promise<{ ok: false; error?: CreateQRError; code?: undefined } | { ok: true; error?: CreateQRError; code: QRCode }> {
     if (typeof window === "undefined") throw new Error("can't build code on the server");
     if (!data) return { ok: false, error: { message: "no data" } };
 

@@ -22,7 +22,7 @@
 	border-style: solid;
 	cursor: pointer;
 	line-height: 1;
-	font-family: Nixie One, serif;
+	font-family: var(--font-nixie-one), serif;
 	font-size: 1rem;
 	transition: background-color 25ms ease-in-out;
 	transition: border-color 25ms ease-in-out;
@@ -54,13 +54,14 @@
 	border-style: solid;
 	border-radius: var(--radius);
 	padding: 0.5rem 0.75rem;
+    font-family: var(--font-nixie-one), serif;
 }
-/* label:has(input[id]) { */
-/* } */
 label:has(input[id]) > input {
     margin-top: .25em;
+    font-family: var(--font-nixie-one), serif;
 }
 .input-base::placeholder {
+    font-family: var(--font-nixie-one), serif;
 	font-size: 0.8em;
 	color: var(--clr-lightgrey-100);
 }

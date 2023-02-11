@@ -1,3 +1,4 @@
+import { createQRCode, QRCode } from "@clfxc/services/qr";
 import { acceptedFileTypeSchema } from "@declarations/schemas";
 import { ValidateFileReturn } from "@declarations/types";
 
@@ -42,4 +43,15 @@ export function getTextBytes(data: string) {
     const dataEncoded = encoder.encode(data);
     const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
     return bytes;
+}
+
+export async function makeCode(data: string): Promise<QRCode> {
+    const { ok, code: newCode, error } = await createQRCode(data);
+
+    if (!ok) {
+        console.error("failed making qr code");
+        throw error;
+    }
+
+    return newCode;
 }

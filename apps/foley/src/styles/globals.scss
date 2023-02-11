@@ -71,8 +71,8 @@ img {
 	border-radius: var(--radius);
 	border-width: 1px;
 	border-style: solid;
+    font-family: var(--font-nixie-one), serif;
 	cursor: pointer;
-	font-family: Nixie One;
 	line-height: 1;
 	transition: background-color 100ms ease-in-out;
 	transition: border-color 100ms ease-in-out;
