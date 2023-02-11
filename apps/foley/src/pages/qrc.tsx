@@ -160,7 +160,7 @@ const QRCodePage: NextPage = () => {
                     <form className="flex flex-col items-center justify-center gap-8 px-2 w-full" onSubmit={handleSubmit}>
                         <h1
                             style={{ fontSize: "clamp(7rem, 14vw, 12rem)" }}
-                            className={`${underdog.variable} font-underdog text-center text-white sm:leading-none`}
+                            className={`${underdog.variable} font-underdog text-center text-white sm:leading-none md:mb-10`}
                         >
                             qr
                         </h1>
