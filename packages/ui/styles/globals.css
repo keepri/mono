@@ -55,6 +55,11 @@
 	border-radius: var(--radius);
 	padding: 0.5rem 0.75rem;
 }
+/* label:has(input[id]) { */
+/* } */
+label:has(input[id]) > input {
+    margin-top: .25em;
+}
 .input-base::placeholder {
 	font-size: 0.8em;
 	color: var(--clr-lightgrey-100);

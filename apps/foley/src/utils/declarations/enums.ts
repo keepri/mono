@@ -42,6 +42,12 @@ export enum AccountType {
 	premium = "premium",
 }
 
+export enum Storage {
+    qrMargin = "kdv-qr-margin",
+    qrPatternColor = "kdv-qr-dark",
+    qrBackgroundColor = "kdv-qr-light",
+}
+
 export enum ImageType {
 	png = "image/png",
 	jpeg = "image/jpeg",
