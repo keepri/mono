@@ -2,15 +2,15 @@ import { QRCodeToDataURLOptions, toDataURL } from "@clfxc/services/qr";
 import { Button, Input, InputOnChange } from "@clfxc/ui";
 import { Storage } from "@declarations/enums";
 import { getTextBytes, makeCode } from "@utils/helpers";
-import { origin, underdog } from "@utils/misc";
+import { nixieOne, origin, underdog } from "@utils/misc";
 import { NextPage } from "next/types";
 import { createRef, FormEvent, startTransition, useCallback, useEffect, useState } from "react";
 
 const QRCodePage: NextPage = () => {
-    const DEFAULT_MARGIN: number = 2;
-    const MAX_MARGIN: number = 7;
-    const QR_OPTIONS = {
-        margin: typeof window !== "undefined" ? +(localStorage.getItem(Storage.qrMargin) || DEFAULT_MARGIN) : DEFAULT_MARGIN,
+    const defaultMargin: number = 2;
+    const maxMargin: number = 7;
+    const qrOptions = {
+        margin: typeof window !== "undefined" ? +(localStorage.getItem(Storage.qrMargin) || defaultMargin) : defaultMargin,
         width: 200,
         color: {
             light: typeof window !== "undefined" ? localStorage.getItem(Storage.qrBackgroundColor) || "#ffffff" : "#ffffff",
@@ -27,10 +27,9 @@ const QRCodePage: NextPage = () => {
     // TODO:
     const selectedFile = null;
     // const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    // const [code, setCode] = useState<QRCode | null>(null);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
     const [svgUrl, setSvgUrl] = useState<string | null>(null);
-    const [qrOpts, setQrOpts] = useState<QRCodeToDataURLOptions>(QR_OPTIONS);
+    const [qrOpts, setQrOpts] = useState<QRCodeToDataURLOptions>(qrOptions);
 
     // const fileSize = useMemo(() => toKB(selectedFile?.size ?? -1), [selectedFile]);
 
@@ -44,7 +43,7 @@ const QRCodePage: NextPage = () => {
 
         if (name === "qr-margin") {
             const parsed = value.startsWith("0") ? Number(value.slice(1, value.length)) : Number(value);
-            const isValid = isNaN(parsed) === false && parsed <= MAX_MARGIN && parsed >= 0;
+            const isValid = isNaN(parsed) === false && parsed <= maxMargin && parsed >= 0;
             setQrOpts((opts) => {
                 const margin: number = isValid ? parsed : opts.margin!;
                 localStorage.setItem(Storage.qrMargin, JSON.stringify(margin));
@@ -92,54 +91,53 @@ const QRCodePage: NextPage = () => {
                 e && e.preventDefault();
                 if (!canvasRef.current) return;
 
-                // no file has been uploaded
-                if (!selectedFile) {
-                    if (!Boolean(text.length)) return;
+                if (selectedFile) {
+                    // handle file uploaded creation
+                    // readFileAsDataUrl(selectedFile, async (e) => {
+                    //     const data = e.target?.result as string;
+                    //     if (!data) return;
+                    //     makeCode(data);
+                    // });
 
-                    const bytes = getTextBytes(text);
-                    if (bytes > 2953) return;
-
-                    const code = await makeCode(text);
-
-                    startTransition(() => {
-                        const headers = new Headers();
-                        headers.set("Content-Type", "application/json");
-                        fetch(origin + "/api/qr/create", {
-                            method: "POST",
-                            body: JSON.stringify({ data: text, options: qrOpts }),
-                            headers,
-                        })
-                            .then(async (res) => await res.json())
-                            .then((json) => setSvgUrl(json?.file))
-                            .catch((err) => console.error("json error:", err));
-
-                        toDataURL(
-                            canvasRef.current!,
-                            code.segments.map((segment) => ({ ...segment, mode: segment.mode.id })),
-                            qrOpts,
-                            (err, url) => {
-                                if (err) {
-                                    const { message, stack } = err;
-                                    console.error("could not create code image", { message, stack });
-                                    return;
-                                }
-
-                                setPngUrl(url);
-
-                            }
-                        );
-
-
-                    });
                     return;
                 }
 
-                // handle file uploaded creation
-                // readFileAsDataUrl(selectedFile, async (e) => {
-                //     const data = e.target?.result as string;
-                //     if (!data) return;
-                //     makeCode(data);
-                // });
+                // no file has been uploaded
+                if (!Boolean(text.length)) return;
+
+                const bytes = getTextBytes(text);
+                if (bytes > 2953) return;
+
+                const code = await makeCode(text);
+
+                toDataURL(
+                    canvasRef.current!,
+                    code.segments.map((segment) => ({ ...segment, mode: segment.mode.id })),
+                    qrOpts,
+                    (err, url) => {
+                        if (err) {
+                            const { message, stack } = err;
+                            console.error("could not create code image", { message, stack });
+                            return;
+                        }
+
+                        setPngUrl(url);
+
+                    }
+                );
+
+                startTransition(() => {
+                    const headers = new Headers();
+                    headers.set("Content-Type", "application/json");
+                    fetch(origin + "/api/qr/create", {
+                        method: "POST",
+                        body: JSON.stringify({ data: text, options: qrOpts }),
+                        headers,
+                    })
+                        .then(async (res) => await res.json())
+                        .then((json) => setSvgUrl(json?.file))
+                        .catch((err) => console.error("json error:", err));
+                });
             } catch (error) {
                 console.error("submit failed", error);
             }
@@ -155,8 +153,11 @@ const QRCodePage: NextPage = () => {
 
     return (
         <>
-            <main className="grid grid-cols-[repeat(auto-fit,_minmax(15rem,_1fr))] sm:gap-0 gap-8 p-4 min-h-screen bg-[var(--clr-bg-300)]">
-                <section className="flex flex-col items-center sm:justify-center xl:gap-24 gap-8">
+            {
+                // grid grid-cols-[repeat(auto-fit,_minmax(15rem,_1fr))] 
+            }
+            <main className="flex flex-wrap sm:gap-0 gap-8 p-4 min-h-screen bg-[var(--clr-bg-300)]">
+                <section className="flex flex-col flex-[2.5] items-center sm:justify-center xl:gap-24 gap-8">
                     <form className="flex flex-col items-center justify-center gap-8 px-2 w-full" onSubmit={handleSubmit}>
                         <h1
                             style={{ fontSize: "clamp(7rem, 14vw, 12rem)" }}
@@ -168,7 +169,7 @@ const QRCodePage: NextPage = () => {
                             name="qr-input"
                             placeholder="gib text, link or good vibes"
                             value={text}
-                            className="max-w-[30rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
+                            className={`${nixieOne.variable} font-nixie-one max-w-[25rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed`}
                             onChange={handleChangeInput}
                         />
                         <div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
@@ -180,7 +181,7 @@ const QRCodePage: NextPage = () => {
                                 //     onChange={handleChangeFile}
                                 // />
                             }
-                            <Button type="submit" className="button border-white text-white">
+                            <Button type="submit" className={`${nixieOne.variable} font-nixie-one button border-white text-white`}>
                                 boop
                             </Button>
                         </div>
@@ -188,8 +189,8 @@ const QRCodePage: NextPage = () => {
                     <div className="flex flex-wrap justify-center gap-4">
                         <Input
                             label="pattern color"
-                            labelclass="text-white font-light whitespace-nowrap"
-                            className="text-[var(--clr-bg-500)] block"
+                            labelclass={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-white font-light whitespace-nowrap`}
+                            className={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-[var(--clr-bg-500)] block`}
                             value={qrOpts.color!.dark?.toUpperCase()}
                             placeholder="pattern color"
                             name="qr-color"
@@ -197,8 +198,8 @@ const QRCodePage: NextPage = () => {
                         />
                         <Input
                             label="background color"
-                            labelclass="text-white font-light whitespace-nowrap"
-                            className="text-[var(--clr-bg-500)] block"
+                            labelclass={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-white font-light whitespace-nowrap`}
+                            className={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-[var(--clr-bg-500)] block`}
                             value={qrOpts.color!.light?.toUpperCase()}
                             placeholder="background color"
                             name="qr-color-bg"
@@ -207,8 +208,8 @@ const QRCodePage: NextPage = () => {
                         <Input
                             type="number"
                             label="margin"
-                            labelclass="text-white font-light whitespace-nowrap"
-                            className="text-[var(--clr-bg-500)] block"
+                            labelclass={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-white font-light whitespace-nowrap`}
+                            className={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-[var(--clr-bg-500)] block`}
                             value={qrOpts.margin}
                             placeholder="background color"
                             name="qr-margin"
@@ -228,9 +229,9 @@ const QRCodePage: NextPage = () => {
 					</span>
 				</p> */}
                 </section>
-                <section className="flex flex-col justify-center gap-8">
-                    <div className="flex flex-col items-center justify-center gap-8 flex-[1]">
-                        <canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-white" />
+                <section className="flex flex-col flex-[1] justify-center gap-8">
+                    <div className="flex flex-col items-center justify-center sm:gap-8 gap-4 flex-[1]">
+                        <canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-[var(--clr-bg-500)]" />
                         <div className="flex justify-around items-center gap-4">
                             <a
                                 href={pngUrl ?? "#"}

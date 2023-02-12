@@ -1,7 +1,7 @@
 import { Button, Input, Spinner } from "@clfxc/ui";
 import { URLS } from "@declarations/enums";
 import { urlSchema } from "@declarations/schemas";
-import { isProduction, origin, port, underdog } from "@utils/misc";
+import { isProduction, nixieOne, origin, port, underdog } from "@utils/misc";
 import type { NextPage } from "next/types";
 import { ChangeEvent, FormEvent, useCallback, useState, useTransition } from "react";
 
@@ -64,7 +64,7 @@ const SmolPage: NextPage = () => {
         <section className="grid place-content-center place-items-center leading-tight min-h-screen px-4 bg-[var(--clr-bg-300)]">
             <h1
                 style={{ fontSize: "clamp(7rem, 14vw, 12rem)" }}
-                className={`${underdog.variable} font-underdog text-center text-white sm:leading-none`}
+                className={`${underdog.variable} font-underdog text-center text-white leading-none`}
             >
                 make smol
             </h1>
@@ -94,11 +94,11 @@ const SmolPage: NextPage = () => {
             >
                 <Input
                     placeholder="gib text, link or good vibes"
-                    className="w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed"
+                    className={`${nixieOne.variable} font-nixie-one w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed`}
                     value={url}
                     onChange={handleChangeUrl}
                 />
-                <Button type="submit" className="button border-white text-white" disabled={isTransition || loading}>
+                <Button type="submit" className={`${nixieOne.variable} font-nixie-one button border-white text-white`} disabled={isTransition || loading}>
                     boop
                 </Button>
             </form>
