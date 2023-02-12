@@ -8,6 +8,8 @@ interface Props extends ReplacePairProps {
     replaceValue?: string;
     wrapperClass?: string;
     labelClass?: string;
+    button1Class?: string;
+    button2Class?: string;
     placeholder1?: string;
     placeholder2?: string;
     label1?: string;
@@ -25,6 +27,8 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
             className,
             wrapperClass,
             labelClass,
+            button1Class,
+            button2Class,
             replace,
             replaceValue,
             placeholder1,
@@ -62,42 +66,44 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
         );
 
         return (
-            <span ref={ref} id={id} className={`flex justify-center items-center flex-wrap gap-2 ${wrapperClass}`}>
-                {label1 && <label className={`text-sm leading-none text-left w-full ${labelClass}`}>{label1}</label>}
-                <input
-                    ref={inputRef1}
-                    name="replace"
-                    className={`input-base max-w-full ${className}`}
-                    value={replace}
-                    placeholder={placeholder1 ?? "replace"}
-                    onChange={handleInputChange}
-                    {...rest}
-                />
-                {label2 && <label className={`text-sm leading-none text-left w-full ${labelClass}`}>{label2}</label>}
-                <input
-                    ref={inputRef2}
-                    name="replaceValue"
-                    className={`input-base max-w-full ${className}`}
-                    value={replaceValue}
-                    placeholder={placeholder2 ?? "with"}
-                    onChange={handleInputChange}
-                    {...rest}
-                />
+            <>
+                <span ref={ref} id={id} className={`flex justify-center items-center flex-wrap gap-2 ${wrapperClass}`}>
+                    {label1 && <label className={`text-sm leading-none text-left w-full ${labelClass}`}>{label1}</label>}
+                    <input
+                        ref={inputRef1}
+                        name="replace"
+                        className={`input-base max-w-full ${className}`}
+                        value={replace}
+                        placeholder={placeholder1 ?? "replace"}
+                        onChange={handleInputChange}
+                        {...rest}
+                    />
+                    {label2 && <label className={`text-sm leading-none text-left w-full ${labelClass}`}>{label2}</label>}
+                    <input
+                        ref={inputRef2}
+                        name="replaceValue"
+                        className={`input-base max-w-full ${className}`}
+                        value={replaceValue}
+                        placeholder={placeholder2 ?? "with"}
+                        onChange={handleInputChange}
+                        {...rest}
+                    />
+                </span>
                 {Boolean(clear || remove) && (
                     <div className="flex justify-between flex-wrap gap-2 w-full">
                         {Boolean(clear) && (
-                            <Button className="text-xs flex-1 bg-white" onClick={handleClear}>
+                            <Button className={`text-xs flex-1 ${button1Class}`} onClick={handleClear}>
                                 clear
                             </Button>
                         )}
                         {Boolean(remove) && (
-                            <Button varient="dark" className="text-xs flex-1" onClick={handleRemove}>
+                            <Button className={`text-xs flex-1 ${button2Class}`} onClick={handleRemove}>
                                 remove
                             </Button>
                         )}
                     </div>
                 )}
-            </span>
+            </>
         );
     }
 );

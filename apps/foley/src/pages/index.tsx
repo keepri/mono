@@ -17,7 +17,7 @@ const IndexPage: NextPage = () => {
             </a>
             <section className="flex flex-wrap justify-center gap-4">
                 <Link style={{ color: "white" }} className="button border-white" href={URLS.REPLACE}>
-                    boop
+                    replace
                 </Link>
                 <Link style={{ color: "white" }} className="button border-white" href={URLS.SMOL}>
                     smol

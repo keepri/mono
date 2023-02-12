@@ -1,30 +1,25 @@
 import type { ReplacePairName } from "@clfxc/ui";
 import { Button, ReplacePair, Textarea } from "@clfxc/ui";
-import styles from "@styles/Replace.module.scss";
 import { nixieOne } from "@utils/misc";
 import type { NextPage } from "next/types";
-import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState, useTransition } from "react";
+import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState } from "react";
 
 type Declaration = Record<ReplacePairName, string>;
 
 const initDeclaration: Declaration = { replace: "", replaceValue: "" };
 
 const ReplaceTextPage: NextPage = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, startTransition] = useTransition();
-
     const [declarations, updateDeclarations] = useState<Declaration[]>([initDeclaration]);
     const [input, updateInput] = useState<string>("");
     const [output, updateOutput] = useState<string>("");
-    const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
 
     const handleChangeReplacePair = useCallback((e: ChangeEvent<HTMLInputElement>, index: number) => {
         updateDeclarations((d) => {
             const target = e.target;
             const name = target.name as ReplacePairName;
             const value = target.value;
-            const newDeclarations = Array.from(d).map((declaration, idx) =>
-				index === idx ? { ...declaration, [name]: value } : declaration
+            const newDeclarations = d.map((declaration, idx) =>
+                index === idx ? { ...declaration, [name]: value } : declaration
             );
 
             return newDeclarations;
@@ -34,7 +29,7 @@ const ReplaceTextPage: NextPage = () => {
     const handleClearReplacePair = useCallback((index: number) => {
         updateDeclarations((d) => {
             // eslint-disable-next-line max-len
-            const newDeclarations = Array.from(d).map((declaration, idx) => (index === idx ? initDeclaration : declaration));
+            const newDeclarations = d.map((declaration, idx) => (index === idx ? initDeclaration : declaration));
 
             return newDeclarations;
         });
@@ -59,7 +54,7 @@ const ReplaceTextPage: NextPage = () => {
         [declarations.length]
     );
 
-    const handleSubmit = () => {
+    const handleSubmit = useCallback(() => {
         if (!input?.length) return;
         let output: string = String(input);
 
@@ -70,36 +65,27 @@ const ReplaceTextPage: NextPage = () => {
         }
 
         updateOutput(output);
-    };
+    }, [declarations, input]);
 
     // submit key combination event listener
     useEffect(() => {
         const listener = (e: DocumentEventMap["keydown"]) => {
             const isMetaKey = e.metaKey;
             const isEnterKey = e.code.toLowerCase() === "enter";
-            isMetaKey && isEnterKey && setAutoSubmit(true);
+            isMetaKey && isEnterKey && handleSubmit();
         };
 
+        document.removeEventListener("keydown", listener);
         document.addEventListener("keydown", listener);
 
         return () => document.removeEventListener("keydown", listener);
-    }, []);
-
-    // auto submit
-    useEffect(() => {
-        if (!autoSubmit) return;
-        startTransition(() => {
-            handleSubmit();
-        });
-        setAutoSubmit(false);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [autoSubmit]);
+    }, [handleSubmit]);
 
     return (
-        <div className={styles["container"]}>
-            <aside className="flex flex-col gap-2.5 p-2">
-                <Button className={`button w-full ${nixieOne.variable} my-1`} onClick={handleAddReplacePair}>
-					+
+        <div className="flex h-screen overflow-y-hidden">
+            <aside className="flex flex-col flex-1 gap-2.5 p-2 bg-[var(--clr-bg-300)] overflow-y-scroll">
+                <Button className={`button w-full ${nixieOne.variable} my-1 border-white text-white`} onClick={handleAddReplacePair}>
+                    +
                 </Button>
                 <ReplacePair
                     key={"replace-pair-" + 1}
@@ -108,38 +94,54 @@ const ReplaceTextPage: NextPage = () => {
                     replaceValue={declarations[0].replaceValue}
                     label1="replace"
                     label2="with"
-                    wrapperClass={`py-2 ${styles.pair} ${nixieOne.variable} font-nixie-one`}
-                    className="w-full"
+                    wrapperClass={`${nixieOne.variable} p-2 font-nixie-one bg-[var(--clr-bg-500)] border border-[var(--clr-orange)] rounded-md`}
+                    button1Class={`text-white border-white ${nixieOne.variable} font-nixie-one`}
+                    button2Class={`text-white border-white ${nixieOne.variable} font-nixie-one`}
+                    className="w-full bg-[var(--clr-bg-500)] border boder-white text-white"
+                    labelClass="text-white"
                     onChange={handleChangeReplacePair}
                     clear={handleClearReplacePair}
                     remove={handleRemoveReplacePair}
                 />
                 {Boolean(declarations.length > 1) &&
-					declarations.map(
-					    ({ replace, replaceValue }, index) =>
-					        index > 0 && (
-					            <ReplacePair
-					                key={"replace-pair-" + index + 1}
-					                index={index}
-					                replace={replace}
-					                replaceValue={replaceValue}
-					                label1="replace"
-					                label2="with"
-					                wrapperClass={`py-2 ${styles.pair} ${nixieOne.variable} font-nixie-one`}
-					                className="w-full"
-					                onChange={handleChangeReplacePair}
-					                clear={handleClearReplacePair}
-					                remove={handleRemoveReplacePair}
-					            />
-					        )
-					)}
+                    declarations.map(
+                        ({ replace, replaceValue }, index) =>
+                            index > 0 && (
+                                <ReplacePair
+                                    key={"replace-pair-" + index + 1}
+                                    index={index}
+                                    replace={replace}
+                                    replaceValue={replaceValue}
+                                    label1="replace"
+                                    label2="with"
+                                    wrapperClass={`${nixieOne.variable} p-2 font-nixie-one bg-[var(--clr-bg-500)] border border-[var(--clr-orange)] rounded-md`}
+                                    button1Class={`text-white border-white ${nixieOne.variable} font-nixie-one`}
+                                    button2Class={`text-white border-white ${nixieOne.variable} font-nixie-one`}
+                                    className="w-full bg-[var(--clr-bg-500)] border boder-white text-white"
+                                    labelClass="text-white"
+                                    onChange={handleChangeReplacePair}
+                                    clear={handleClearReplacePair}
+                                    remove={handleRemoveReplacePair}
+                                />
+                            )
+                    )}
             </aside>
-            <section className="p-2">
-                <Textarea className={`${nixieOne.variable} border`} placeholder="Input" value={input} onChange={handleInputChange} />
-                <Textarea className={`${nixieOne.variable} border`} placeholder="Output" value={output} onChange={handleOutputChange} />
-                <div style={{ minHeight: "50px" }}>
-                    <Button className={`${nixieOne.variable} w-full h-full`} onClick={handleSubmit}>
-						start
+            <section className="flex flex-col flex-[2.5] gap-2 p-2 bg-[var(--clr-bg-300)]">
+                <Textarea
+                    className={`${nixieOne.variable} font-nixie-one flex-1 border border-white text-white bg-[var(--clr-bg-500)]`}
+                    placeholder="Input"
+                    value={input}
+                    onChange={handleInputChange}
+                />
+                <Textarea
+                    className={`${nixieOne.variable} font-nixie-one flex-1 border border-white text-white bg-[var(--clr-bg-500)]`}
+                    placeholder="Output"
+                    value={output}
+                    onChange={handleOutputChange}
+                />
+                <div className="min-h-[50px] rounded-md">
+                    <Button className={`${nixieOne.variable} font-nixie-one w-full h-full border-white text-white`} onClick={handleSubmit}>
+                        boop
                     </Button>
                 </div>
             </section>
