@@ -82,11 +82,13 @@ const ReplaceTextPage: NextPage = () => {
     }, [handleSubmit]);
 
     return (
-        <div className="flex h-screen overflow-y-hidden">
-            <aside className="flex flex-col flex-1 gap-2.5 p-2 bg-[var(--clr-bg-300)] overflow-y-scroll">
-                <Button className={`button w-full ${nixieOne.variable} my-1 border-white text-white`} onClick={handleAddReplacePair}>
-                    +
-                </Button>
+        <div className="grid sm:grid-cols-[minmax(0,_20rem),_1fr] grid-flow-row h-screen overflow-y-hidden">
+            <aside className="relative flex flex-col flex-1 gap-2.5 p-2 bg-[var(--clr-bg-300)] overflow-y-scroll">
+                <div className="sticky top-0 bg-[var(--clr-bg-300)] py-[.15em]">
+                    <Button className={`button w-full ${nixieOne.variable} my-1 border-white text-white`} onClick={handleAddReplacePair}>
+                        +
+                    </Button>
+                </div>
                 <ReplacePair
                     key={"replace-pair-" + 1}
                     index={0}
@@ -126,7 +128,7 @@ const ReplaceTextPage: NextPage = () => {
                             )
                     )}
             </aside>
-            <section className="flex flex-col flex-[2.5] gap-2 p-2 bg-[var(--clr-bg-300)]">
+            <section className="flex flex-col gap-2 p-2 bg-[var(--clr-bg-300)] min-h-[67vh]">
                 <Textarea
                     className={`${nixieOne.variable} font-nixie-one flex-1 border border-white text-white bg-[var(--clr-bg-500)]`}
                     placeholder="Input"

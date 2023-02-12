@@ -1,6 +1,6 @@
+import { Link } from "@clfxc/ui/components/Link";
 import { URLS } from "@declarations/enums";
-import { londrinaSketch } from "@utils/misc";
-import Link from "next/link";
+import { londrinaSketch, nixieOne } from "@utils/misc";
 import type { NextPage } from "next/types";
 
 const IndexPage: NextPage = () => {
@@ -9,27 +9,22 @@ const IndexPage: NextPage = () => {
             <a
                 href="mailto:hi@kipri.dev"
                 style={{ fontSize: "clamp(3rem, 17vw, 15rem)" }}
-                className={`relative text-[var(--clr-white)] text-center px-4 ${londrinaSketch.variable} font-londrina-sketch max-[290px]:leading-none leading-tight sm:whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors max-[290px]:max-w-[8rem]`}
+                className={`relative text-[var(--clr-white)] text-center px-4 ${londrinaSketch.variable} font-londrina-sketch leading-none sm:whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors max-[290px]:max-w-[8rem]`}
             >
-                <span className="text-4xl max-[290px]:leading-none leading-tight">hi @ </span>
+                <span className="text-4xl max-[290px]:leading-none leading-none">hi @ </span>
                 KIPRI
-                <span className="text-4xl max-[290px]:leading-none leading-tight"> . dev</span>
+                <span className="text-4xl max-[290px]:leading-none leading-none"> . dev</span>
             </a>
             <section className="flex flex-wrap justify-center gap-4">
-                <Link style={{ color: "white" }} className="button border-white" href={URLS.REPLACE}>
+                <Link style={{ color: "white" }} className={`button border-white ${nixieOne.variable} font-nixie-one`} href={URLS.REPLACE}>
                     replace
                 </Link>
-                <Link style={{ color: "white" }} className="button border-white" href={URLS.SMOL}>
+                <Link style={{ color: "white" }} className={`button border-white ${nixieOne.variable} font-nixie-one`} href={URLS.SMOL}>
                     smol
                 </Link>
-                <Link style={{ color: "white" }} className="button border-white" href={URLS.QR}>
+                <Link style={{ color: "white" }} className={`button border-white ${nixieOne.variable} font-nixie-one`} href={URLS.QR}>
                     qr
                 </Link>
-                {
-                    /* <Link style={{ color: "white" }} className="button border-white" href={URLS.CLOSET}>
-                    closet
-                    </Link> */
-                }
             </section>
         </main>
     );

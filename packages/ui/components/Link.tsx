@@ -9,7 +9,7 @@ interface Props extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> {
 
 export const Link: FC<PropsWithChildren<Props>> = ({ children, className, ...rest }) => {
     return (
-        <NLink className={`button-base ${className}`} {...rest}>
+        <NLink className={`button-base ${className ? className : ""}`} {...rest}>
             {children}
         </NLink>
     );
