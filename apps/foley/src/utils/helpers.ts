@@ -1,13 +1,13 @@
 import { ErrorStatusSchema, SmolSchema, StatusSmol, SuccessStatusSchema } from "@clfxc/db/schemas";
 import { createQRCode, QRCode } from "@clfxc/services/qr";
-import { acceptedFileTypeSchema } from "@declarations/schemas";
+import { AcceptedFileTypeSchema } from "@declarations/schemas";
 import { ValidateFileReturn } from "@declarations/types";
 import { z } from "zod";
 import { generateErrorMessage } from "zod-error";
 
 export function validateFile(file: File | undefined, maxFileSize?: number): ValidateFileReturn {
     if (!file) return { ok: false };
-    const fileType = acceptedFileTypeSchema.safeParse(file.type);
+    const fileType = AcceptedFileTypeSchema.safeParse(file.type);
     if (!fileType.success) {
         console.warn(`invalid file type`);
         return { ok: false, error: fileType.error };
@@ -57,27 +57,21 @@ export async function makeCode(data: string): Promise<QRCode> {
     return newCode;
 }
 
-const Schema = SmolSchema.pick({ id: true, status: true, url: true });
-type PickedSmol = z.infer<typeof Schema>;
+const PickedSchema = SmolSchema.pick({ id: true, status: true, url: true });
+type PickedSmol = z.infer<typeof PickedSchema>;
 type ErrorStatus = z.infer<typeof ErrorStatusSchema>;
 type SuccessStatus = z.infer<typeof SuccessStatusSchema>;
-type GetSmolUrlOptions =
-    | { client: true; origin: string; }
-    | { client?: false };
-
-export async function getSmolBySlug<
-    SlugType extends string,
-    OptionsType extends GetSmolUrlOptions
->(
+type GetSmolUrlOptions = { client: true; origin: string } | { client?: false };
+export async function getSmolBySlug<SlugType extends string, OptionsType extends GetSmolUrlOptions>(
     slug: SlugType,
-    options?: OptionsType,
+    options?: OptionsType
 ): Promise<{ status: SuccessStatus; smol: PickedSmol } | { status: ErrorStatus; message: string }> {
     let result: unknown | null = null;
 
     if (options?.client === true) {
         const url = `${options.origin}/api/smol/${slug}`;
-        const smolRes = await fetch(url, { method: "POST" });
-        const smolJson = await smolRes.json() as PickedSmol | { message: string };
+        const smolRes = await fetch(url);
+        const smolJson = (await smolRes.json()) as PickedSmol | { message: string };
 
         if ("message" in smolJson && !smolRes.ok) {
             const status = smolRes.status as ErrorStatus;
@@ -107,7 +101,7 @@ export async function getSmolBySlug<
         console.log(`smol ${smolRes$.id} was accessed ${update.accessed} times`);
     }
 
-    const parsed = Schema.safeParse(result);
+    const parsed = PickedSchema.safeParse(result);
     if (!parsed.success) {
         console.error(generateErrorMessage(parsed.error.issues));
         return { status: 500, message: "something went wrong when parsing smol" };

@@ -1,11 +1,11 @@
 import { prisma, Smol } from "@clfxc/db";
 import { URLS } from "@declarations/enums";
-import { urlSchema } from "@declarations/schemas";
+import { UrlSchema } from "@declarations/schemas";
 import { protocol, siteHost } from "@utils/misc";
 import { NextApiRequest, NextApiResponse } from "next/types";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-    const urlParse = urlSchema.safeParse(req.body["url"]);
+    const urlParse = UrlSchema.safeParse(req.body["url"]);
 
     if (!urlParse.success) {
         res.status(400).json({ message: "invalid body sent" });

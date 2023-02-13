@@ -21,7 +21,7 @@ const SmolPage: NextPage = () => {
             e.preventDefault();
             setLoading(true);
 
-            const urlSchema = (await import("@declarations/schemas")).urlSchema;
+            const urlSchema = (await import("@declarations/schemas")).UrlSchema;
             const parsed = urlSchema.safeParse(url);
 
             if (!parsed.success) {
