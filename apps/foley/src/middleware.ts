@@ -6,13 +6,35 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(7, "10 s") });
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
-    const nextUrl = req.nextUrl;
-    const onSmol = nextUrl.pathname.startsWith(`${URLS.SMOL}/`);
-    const onApi = nextUrl.pathname.startsWith("/api/");
+    const { pathname } = req.nextUrl;
+    const origin = req.nextUrl.origin;
+    const pathSplit = pathname.split("/");
+    pathSplit.splice(0, 1);
+    const pathSplitLen = pathSplit.length;
+    const slug = pathSplit.pop();
+
+    const onSmolRedirect = pathname.startsWith(URLS.SMOL) && Boolean(slug?.length) && pathSplitLen === 2;
+    const onApi = pathname.startsWith("/api/");
 
     // early escape
-    if (!onSmol || !onApi) {
+    if (!onSmolRedirect && !onApi) {
         return NextResponse.next();
+    }
+
+    // smol pages
+    if (onSmolRedirect) {
+        if (typeof slug !== "string") {
+            return NextResponse.json({ message: "invalid slug" });
+        }
+
+        const getSmolBySlug = (await import("@utils/helpers")).getSmolBySlug;
+        const smolRes = await getSmolBySlug(slug, { client: true, origin });
+
+        if ("message" in smolRes) {
+            return NextResponse.json({ message: smolRes.message });
+        }
+
+        return NextResponse.redirect(smolRes.smol.url);
     }
 
     // all api endpoints
@@ -30,25 +52,6 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
         }
     }
 
-    // smol pages
-    if (onSmol) {
-        const pathname = req.nextUrl.pathname;
-        const origin = req.nextUrl.origin;
-        const slug = pathname.split("/").pop();
-
-        if (typeof slug !== "string") {
-            return NextResponse.json({ message: "invalid slug" });
-        }
-
-        const getSmolBySlug = (await import("@utils/helpers")).getSmolBySlug;
-        const smolRes = await getSmolBySlug(slug, { client: true, origin });
-
-        if ("message" in smolRes) {
-            return NextResponse.json({ message: smolRes.message });
-        }
-
-        return NextResponse.redirect(smolRes.smol.url);
-    }
 
     return NextResponse.next();
 }
