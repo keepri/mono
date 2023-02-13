@@ -8,7 +8,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const smolRes = await getSmolBySlug(slug);
-    if (smolRes.status !== 200) {
+    if ("message" in smolRes) {
         return res.status(smolRes.status).json({ message: smolRes.message });
     }
 
