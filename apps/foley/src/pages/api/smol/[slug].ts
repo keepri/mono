@@ -1,33 +1,16 @@
-import { prisma } from "@clfxc/db";
+import { getSmolBySlug } from "@utils/helpers";
 import type { NextApiRequest, NextApiResponse } from "next/types";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     const slug = req.query["slug"];
-
     if (typeof slug !== "string") {
-        res.status(400).json({ message: "slug not valid" });
-        return;
+        return res.status(400).json({ message: "slug not valid" });
     }
 
-    // eslint-disable-next-line max-len
-    const data = await prisma.smol.findFirst({ where: { slug: { equals: slug } }, select: { status: true, url: true } });
-
-    if (!data) {
-        res.status(404).json({ message: "not found Sadge" });
-        return;
+    const smolRes = await getSmolBySlug(slug);
+    if (smolRes.status !== 200) {
+        return res.status(smolRes.status).json({ message: smolRes.message });
     }
 
-    if (!data.url) {
-        console.log("no url found");
-        res.status(400).json({ message: "found, but no url exists for redirect 4Head" });
-        return;
-    }
-
-    if (data.status !== "active") {
-        console.warn("inactive url hit");
-        res.status(401).json({ message: "smol not active anymore AnyGifters" });
-    }
-
-    res.status(200).json({ data });
-    return;
+    return res.status(200).json(smolRes.smol);
 };

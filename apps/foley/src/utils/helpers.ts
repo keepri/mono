@@ -1,11 +1,13 @@
+import { ErrorStatusSchema, SmolSchema, StatusSmol, SuccessStatusSchema } from "@clfxc/db/schemas";
 import { createQRCode, QRCode } from "@clfxc/services/qr";
 import { acceptedFileTypeSchema } from "@declarations/schemas";
 import { ValidateFileReturn } from "@declarations/types";
+import { z } from "zod";
+import { generateErrorMessage } from "zod-error";
 
 export function validateFile(file: File | undefined, maxFileSize?: number): ValidateFileReturn {
     if (!file) return { ok: false };
     const fileType = acceptedFileTypeSchema.safeParse(file.type);
-
     if (!fileType.success) {
         console.warn(`invalid file type`);
         return { ok: false, error: fileType.error };
@@ -14,7 +16,6 @@ export function validateFile(file: File | undefined, maxFileSize?: number): Vali
     // convert bytes to megabytes
     // 1e6 = Math.pow(10, 6) ✌️
     const fileSize = toMB(file.size);
-
     if (fileSize >= (maxFileSize ?? 3)) {
         console.warn(`file too big ${fileSize}mb`);
         return { ok: false, error: "file too big" };
@@ -54,4 +55,60 @@ export async function makeCode(data: string): Promise<QRCode> {
     }
 
     return newCode;
+}
+
+const Schema = SmolSchema.pick({ id: true, status: true, url: true });
+type PickedSmol = z.infer<typeof Schema>;
+type ErrorStatus = z.infer<typeof ErrorStatusSchema>;
+type SuccessStatus = z.infer<typeof SuccessStatusSchema>;
+type GetSmolUrlOptions =
+    | { client: true; origin: string; }
+    | { client?: false };
+
+export async function getSmolBySlug<
+    SlugType extends string,
+    OptionsType extends GetSmolUrlOptions
+>(
+    slug: SlugType,
+    options?: OptionsType,
+): Promise<{ status: SuccessStatus; smol: PickedSmol } | { status: ErrorStatus; message: string }> {
+    let result: unknown | null = null;
+
+    if (options?.client === true) {
+        const url = `${options.origin}/api/smol/${slug}`;
+        const smolRes = await fetch(url, { method: "POST" });
+        const smolJson = await smolRes.json() as PickedSmol | { message: string };
+
+        if ("message" in smolJson && !smolRes.ok) {
+            const status = smolRes.status as ErrorStatus;
+            return { status, message: smolJson.message };
+        }
+
+        result = smolJson;
+    } else {
+        const prisma = (await import("@clfxc/db")).prisma;
+        const smolRes$ = await prisma.smol.findFirst({
+            where: { slug: { equals: slug } },
+            select: { status: true, url: true, id: true },
+        });
+
+        if (!smolRes$) {
+            return { status: 404, message: "not found Sadge" };
+        }
+
+        result = smolRes$;
+    }
+
+    const parsed = Schema.safeParse(result);
+    if (!parsed.success) {
+        console.error(generateErrorMessage(parsed.error.issues));
+        return { status: 500, message: "something went wrong when parsing smol" };
+    }
+
+    if (parsed.data.status !== StatusSmol.active) {
+        console.warn("inactive smol url hit");
+        return { status: 401, message: "smol not active anymore" };
+    }
+
+    return { status: 200, smol: parsed.data };
 }

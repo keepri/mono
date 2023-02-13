@@ -1,4 +1,3 @@
-import { Smol } from "@clfxc/db";
 import { URLS } from "@declarations/enums";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -7,13 +6,10 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(7, "10 s") });
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
-    const ip = req.ip ?? "127.0.0.1";
-    const origin = req.nextUrl.origin;
-    const pathname = req.nextUrl.pathname;
-    const slug = pathname.split("/").pop();
 
     // all api endpoints
     if (req.nextUrl.pathname.startsWith("/api/")) {
+        const ip = req.ip ?? "127.0.0.1";
         const { success, pending, limit, remaining, reset } = await ratelimit.limit(`mw_${ip}`);
         ev.waitUntil(pending);
 
@@ -28,25 +24,22 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 
     // smol pages
     if (req.nextUrl.pathname.startsWith(`${URLS.SMOL}/`)) {
-        const res = await fetch(`${origin}${URLS.API_SMOL}/${slug}`);
-        const resOk = res.ok;
-        const { data } = await res.json();
-        const smol = data as Partial<Smol>;
+        const pathname = req.nextUrl.pathname;
+        const origin = req.nextUrl.origin;
+        const slug = pathname.split("/").pop();
 
-        if (!resOk || !smol) {
-            console.warn("slug not found");
-            return NextResponse.redirect(`${origin}${URLS.SMOL}`);
+        if (typeof slug !== "string") {
+            return NextResponse.json({ message: "invalid slug" });
         }
 
-        if (`${origin.toLowerCase()}${pathname}`.localeCompare(data.url.toLowerCase()) === 0) {
-            console.warn("we have a sneaky bastard on the loose");
-            // TODO: add request to remove entry
-            return NextResponse.json({ message: "chill" });
+        const getSmolBySlug = (await import("@utils/helpers")).getSmolBySlug;
+        const smolRes = await getSmolBySlug(slug, { client: true, origin });
+
+        if ("message" in smolRes) {
+            return NextResponse.json({ message: smolRes.message });
         }
 
-        if (smol.url) {
-            return NextResponse.redirect(smol.url);
-        }
+        return NextResponse.redirect(smolRes.smol.url);
     }
 
     return NextResponse.next();

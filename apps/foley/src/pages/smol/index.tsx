@@ -1,15 +1,12 @@
 import { Button, Input, Spinner } from "@clfxc/ui";
 import { URLS } from "@declarations/enums";
-import { urlSchema } from "@declarations/schemas";
 import { isProduction, nixieOne, origin, port, underdog } from "@utils/misc";
 import type { NextPage } from "next/types";
-import { ChangeEvent, FormEvent, useCallback, useState, useTransition } from "react";
+import { ChangeEvent, FormEvent, useCallback, useState } from "react";
 
 // interface Props {}
 
 const SmolPage: NextPage = () => {
-    const [isTransition, startTransition] = useTransition();
-
     const [loading, setLoading] = useState<boolean>(false);
     const [url, setUrl] = useState<string>("");
     const [smol, setSmol] = useState<string>("");
@@ -22,10 +19,12 @@ const SmolPage: NextPage = () => {
     const handleMakeSmol = useCallback(
         async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            startTransition(() => setLoading(true));
+            setLoading(true);
 
+            const urlSchema = (await import("@declarations/schemas")).urlSchema;
             const parsed = urlSchema.safeParse(url);
-            if (!url.length || !parsed.success) {
+
+            if (!parsed.success) {
                 console.warn("invalid url");
                 setLoading(false);
                 return;
@@ -98,7 +97,11 @@ const SmolPage: NextPage = () => {
                     value={url}
                     onChange={handleChangeUrl}
                 />
-                <Button type="submit" className={`${nixieOne.variable} font-nixie-one button border-white text-white`} disabled={isTransition || loading}>
+                <Button
+                    type="submit"
+                    className={`${nixieOne.variable} font-nixie-one button border-white text-white`}
+                    disabled={loading}
+                >
                     boop
                 </Button>
             </form>
