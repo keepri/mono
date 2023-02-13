@@ -30,7 +30,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return;
     }
 
-    const smol: Omit<Smol, "id" | "createdAt" | "updatedAt"> = {
+    const smol: Pick<Smol, "url" | "status" | "slug"> = {
         url,
         status: "active",
         slug,
