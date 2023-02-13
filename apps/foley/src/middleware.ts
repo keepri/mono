@@ -6,9 +6,17 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(7, "10 s") });
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
+    const nextUrl = req.nextUrl;
+    const onSmol = nextUrl.pathname.startsWith(`${URLS.SMOL}/`);
+    const onApi = nextUrl.pathname.startsWith("/api/");
+
+    // early escape
+    if (!onSmol || !onApi) {
+        return NextResponse.next();
+    }
 
     // all api endpoints
-    if (req.nextUrl.pathname.startsWith("/api/")) {
+    if (onApi) {
         const ip = req.ip ?? "127.0.0.1";
         const { success, pending, limit, remaining, reset } = await ratelimit.limit(`mw_${ip}`);
         ev.waitUntil(pending);
@@ -23,7 +31,7 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
     }
 
     // smol pages
-    if (req.nextUrl.pathname.startsWith(`${URLS.SMOL}/`)) {
+    if (onSmol) {
         const pathname = req.nextUrl.pathname;
         const origin = req.nextUrl.origin;
         const slug = pathname.split("/").pop();
