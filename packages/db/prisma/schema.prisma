@@ -18,6 +18,7 @@ model Smol {
     status    String   @default("available")
     slug      String
     url       String   @db.MediumText
+    accessed  Int      @default(0) @db.Int
     createdAt DateTime @default(now())
     updatedAt DateTime @default(now()) @updatedAt
 

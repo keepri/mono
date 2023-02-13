@@ -89,7 +89,7 @@ export async function getSmolBySlug<
         const prisma = (await import("@clfxc/db")).prisma;
         const smolRes$ = await prisma.smol.findFirst({
             where: { slug: { equals: slug } },
-            select: { status: true, url: true, id: true },
+            select: { status: true, url: true, id: true, accessed: true },
         });
 
         if (!smolRes$) {
@@ -97,6 +97,14 @@ export async function getSmolBySlug<
         }
 
         result = smolRes$;
+
+        const update = await prisma.smol.update({
+            where: { id: smolRes$.id },
+            select: { accessed: true },
+            data: { accessed: ++smolRes$.accessed },
+        });
+
+        console.log(`smol ${smolRes$.id} was accessed ${update.accessed} times`);
     }
 
     const parsed = Schema.safeParse(result);

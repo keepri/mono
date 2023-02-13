@@ -10,6 +10,7 @@ export const SmolSchema = z.object({
     status: z.nativeEnum(StatusSmol),
     slug: z.string().length(4),
     url: z.string().url(),
+    accessed: z.number().nonnegative().default(0),
     createdAt: z.date(),
     updatedAt: z.date(),
 });
