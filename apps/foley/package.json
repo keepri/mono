@@ -16,6 +16,7 @@
         "@next/font": "^13.1.6",
         "@upstash/ratelimit": "^0.1.5",
         "@upstash/redis": "^1.16.1",
+        "@vercel/analytics": "^0.1.8",
         "next": "^13.1.2",
         "next-auth": "^4.18.8",
         "react": "^18.2.0",
