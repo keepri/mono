@@ -1,4 +1,3 @@
-import "@styles/font-faces.scss";
 import "@styles/globals.scss";
 // import '@styles/reset.scss';
 import { Analytics } from "@vercel/analytics/react";
