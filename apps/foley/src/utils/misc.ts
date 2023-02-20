@@ -1,6 +1,13 @@
-import { Underdog, Nixie_One, Londrina_Sketch } from "@next/font/google";
+import { Underdog, Nixie_One, Londrina_Sketch, Inconsolata } from "@next/font/google";
 import { Langs } from "@declarations/enums";
 import { CookieSerializeOptions } from "@declarations/types";
+
+export const inconsolata = Inconsolata({
+    weight: ["300", "400", "500", "700"],
+    subsets: ["latin"],
+    preload: true,
+    variable: "--font-inconsolata",
+});
 
 export const underdog = Underdog({
     weight: "400",

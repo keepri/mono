@@ -1,5 +1,4 @@
 import "@styles/font-faces.scss";
-// eslint-disable-next-line import/no-unresolved
 import "@styles/globals.scss";
 // import '@styles/reset.scss';
 import { Analytics } from "@vercel/analytics/react";

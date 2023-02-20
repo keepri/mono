@@ -1,32 +1,34 @@
 import { Link } from "@clfxc/ui/components/Link";
 import { URLS } from "@declarations/enums";
-import { londrinaSketch, nixieOne } from "@utils/misc";
+import { londrinaSketch } from "@utils/misc";
 import type { NextPage } from "next/types";
 
 const IndexPage: NextPage = () => {
     return (
-        <main className="grid place-content-center place-items-center gap-12 min-h-screen bg-[var(--clr-bg-300)]">
-            <a
-                href="mailto:hi@kipri.dev"
-                style={{ fontSize: "clamp(4rem, 15vw, 18rem)" }}
-                className={`relative text-[var(--clr-white)] sm:font-bold text-center px-4 ${londrinaSketch.variable} font-londrina-sketch leading-none sm:whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors max-[365px]:max-w-[11rem]`}
-            >
-                <span className="text-5xl leading-none">hi @ </span>
-                KIPRI
-                <span className="text-5xl leading-none"> . dev</span>
-            </a>
-            <section className="flex flex-wrap justify-center gap-4">
-                <Link style={{ color: "white" }} className={`button border-white ${nixieOne.variable} font-nixie-one`} href={URLS.REPLACE}>
-                    replace
-                </Link>
-                <Link style={{ color: "white" }} className={`button border-white ${nixieOne.variable} font-nixie-one`} href={URLS.SMOL}>
-                    smol
-                </Link>
-                <Link style={{ color: "white" }} className={`button border-white ${nixieOne.variable} font-nixie-one`} href={URLS.QR}>
-                    qr
-                </Link>
+        <>
+            <section className="grid place-content-center place-items-center gap-12 min-h-screen bg-[var(--clr-bg-300)]">
+                <a
+                    href="mailto:hi@kipri.dev"
+                    style={{ fontSize: "clamp(4rem, 15vw, 18rem)" }}
+                    className={`relative text-[var(--clr-white)] sm:font-bold text-center px-4 ${londrinaSketch.variable} font-londrina-sketch leading-none sm:whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors max-[365px]:max-w-[11rem]`}
+                >
+                    <span className="text-5xl leading-none">hi @ </span>
+                    KIPRI
+                    <span className="text-5xl leading-none"> . dev</span>
+                </a>
+                <section className={`flex flex-wrap justify-center gap-4`}>
+                    <Link style={{ color: "white" }} className={`button border-white`} href={URLS.REPLACE}>
+                        replace
+                    </Link>
+                    <Link style={{ color: "white" }} className={`button border-white`} href={URLS.SMOL}>
+                        smol
+                    </Link>
+                    <Link style={{ color: "white" }} className={`button border-white`} href={URLS.QR}>
+                        qr
+                    </Link>
+                </section>
             </section>
-        </main>
+        </>
     );
 };
 

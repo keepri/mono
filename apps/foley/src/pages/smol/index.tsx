@@ -1,6 +1,6 @@
 import { Button, Input, Spinner } from "@clfxc/ui";
 import { URLS } from "@declarations/enums";
-import { isProduction, nixieOne, origin, port, underdog } from "@utils/misc";
+import { origin, underdog } from "@utils/misc";
 import type { NextPage } from "next/types";
 import { ChangeEvent, FormEvent, useCallback, useState } from "react";
 
@@ -30,7 +30,8 @@ const SmolPage: NextPage = () => {
                 return;
             }
 
-            const fetchUrl = `${isProduction ? origin : origin + port}/api${URLS.SMOL}/create`;
+            const fetchUrl = `${origin}/api${URLS.SMOL}/create`;
+
             try {
                 const data = await (
                     await fetch(fetchUrl, {
@@ -39,7 +40,6 @@ const SmolPage: NextPage = () => {
                         headers: {
                             "Content-Type": "application/json",
                         },
-                        credentials: "same-origin",
                     })
                 ).json();
 
@@ -93,13 +93,13 @@ const SmolPage: NextPage = () => {
             >
                 <Input
                     placeholder="gib text, link or good vibes"
-                    className={`${nixieOne.variable} font-nixie-one w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed`}
+                    className={`w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed`}
                     value={url}
                     onChange={handleChangeUrl}
                 />
                 <Button
                     type="submit"
-                    className={`${nixieOne.variable} font-nixie-one button border-white text-white`}
+                    className={`button border-white text-white`}
                     disabled={loading}
                 >
                     boop

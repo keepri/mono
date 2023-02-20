@@ -6,6 +6,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 underdog: ["var(--font-underdog)"],
+                inconsolata: ["var(--font-inconsolata)"],
                 "nixie-one": ["var(--font-nixie-one)"],
                 "londrina-sketch": ["var(--font-londrina-sketch)"],
             },

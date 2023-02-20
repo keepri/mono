@@ -2,7 +2,7 @@ import { QRCodeToDataURLOptions, toDataURL } from "@clfxc/services/qr";
 import { Button, Input, InputOnChange } from "@clfxc/ui";
 import { Storage } from "@declarations/enums";
 import { getTextBytes, makeCode } from "@utils/helpers";
-import { nixieOne, origin, underdog } from "@utils/misc";
+import { inconsolata, nixieOne, origin, underdog } from "@utils/misc";
 import { NextPage } from "next/types";
 import { createRef, FormEvent, startTransition, useCallback, useEffect, useState } from "react";
 
@@ -169,7 +169,7 @@ const QRCodePage: NextPage = () => {
                             name="qr-input"
                             placeholder="gib text, link or good vibes"
                             value={text}
-                            className={`${nixieOne.variable} font-nixie-one max-w-[25rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed`}
+                            className={`max-w-[25rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed`}
                             onChange={handleChangeInput}
                         />
                         <div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
@@ -181,7 +181,7 @@ const QRCodePage: NextPage = () => {
                                 //     onChange={handleChangeFile}
                                 // />
                             }
-                            <Button type="submit" className={`${nixieOne.variable} font-nixie-one button border-white text-white`}>
+                            <Button type="submit" className={`button border-white text-white`}>
                                 boop
                             </Button>
                         </div>
@@ -189,8 +189,8 @@ const QRCodePage: NextPage = () => {
                     <div className="flex flex-wrap justify-center gap-4">
                         <Input
                             label="pattern color"
-                            labelclass={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-white font-light whitespace-nowrap`}
-                            className={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-[var(--clr-bg-500)] block`}
+                            labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
+                            className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
                             value={qrOpts.color!.dark?.toUpperCase()}
                             placeholder="pattern color"
                             name="qr-color"
@@ -198,8 +198,8 @@ const QRCodePage: NextPage = () => {
                         />
                         <Input
                             label="background color"
-                            labelclass={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-white font-light whitespace-nowrap`}
-                            className={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-[var(--clr-bg-500)] block`}
+                            labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
+                            className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
                             value={qrOpts.color!.light?.toUpperCase()}
                             placeholder="background color"
                             name="qr-color-bg"
@@ -208,8 +208,8 @@ const QRCodePage: NextPage = () => {
                         <Input
                             type="number"
                             label="margin"
-                            labelclass={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-white font-light whitespace-nowrap`}
-                            className={`w-full max-w-[10rem] ${nixieOne.variable} font-nixie-one text-[var(--clr-bg-500)] block`}
+                            labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
+                            className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
                             value={qrOpts.margin}
                             placeholder="background color"
                             name="qr-margin"

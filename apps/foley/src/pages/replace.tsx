@@ -85,7 +85,7 @@ const ReplaceTextPage: NextPage = () => {
         <div className="grid sm:grid-cols-[minmax(0,_20rem),_1fr] grid-flow-row h-screen overflow-y-hidden">
             <aside className="relative flex flex-col flex-1 gap-2.5 p-2 bg-[var(--clr-bg-300)] overflow-y-scroll">
                 <div className="sticky top-0 bg-[var(--clr-bg-300)] py-[.15em]">
-                    <Button className={`button w-full ${nixieOne.variable} my-1 border-white text-white`} onClick={handleAddReplacePair}>
+                    <Button className="button w-full my-1 border-white text-white" onClick={handleAddReplacePair}>
                         +
                     </Button>
                 </div>
@@ -96,9 +96,9 @@ const ReplaceTextPage: NextPage = () => {
                     replaceValue={declarations[0].replaceValue}
                     label1="replace"
                     label2="with"
-                    wrapperClass={`${nixieOne.variable} p-2 font-nixie-one bg-[var(--clr-bg-500)] border border-[var(--clr-orange)] rounded-md`}
-                    button1Class={`text-white border-white ${nixieOne.variable} font-nixie-one`}
-                    button2Class={`text-white border-white ${nixieOne.variable} font-nixie-one`}
+                    wrapperClass="p-2 bg-[var(--clr-bg-500)] border border-[var(--clr-orange)] rounded-md"
+                    button1Class="text-white border-white"
+                    button2Class="text-white border-white"
                     className="w-full bg-[var(--clr-bg-500)] border boder-white text-white"
                     labelClass="text-white"
                     onChange={handleChangeReplacePair}
@@ -116,9 +116,9 @@ const ReplaceTextPage: NextPage = () => {
                                     replaceValue={replaceValue}
                                     label1="replace"
                                     label2="with"
-                                    wrapperClass={`${nixieOne.variable} p-2 font-nixie-one bg-[var(--clr-bg-500)] border border-[var(--clr-orange)] rounded-md`}
-                                    button1Class={`text-white border-white ${nixieOne.variable} font-nixie-one`}
-                                    button2Class={`text-white border-white ${nixieOne.variable} font-nixie-one`}
+                                    wrapperClass={`p-2 bg-[var(--clr-bg-500)] border border-[var(--clr-orange)] rounded-md`}
+                                    button1Class="text-white border-white"
+                                    button2Class="text-white border-white"
                                     className="w-full bg-[var(--clr-bg-500)] border boder-white text-white"
                                     labelClass="text-white"
                                     onChange={handleChangeReplacePair}
@@ -130,19 +130,19 @@ const ReplaceTextPage: NextPage = () => {
             </aside>
             <section className="flex flex-col gap-2 p-2 bg-[var(--clr-bg-300)] min-h-[67vh]">
                 <Textarea
-                    className={`${nixieOne.variable} font-nixie-one flex-1 border border-white text-white bg-[var(--clr-bg-500)]`}
+                    className="flex-1 border border-white text-white bg-[var(--clr-bg-500)]"
                     placeholder="Input"
                     value={input}
                     onChange={handleInputChange}
                 />
                 <Textarea
-                    className={`${nixieOne.variable} font-nixie-one flex-1 border border-white text-white bg-[var(--clr-bg-500)]`}
+                    className="flex-1 border border-white text-white bg-[var(--clr-bg-500)]"
                     placeholder="Output"
                     value={output}
                     onChange={handleOutputChange}
                 />
                 <div className="min-h-[50px] rounded-md">
-                    <Button className={`${nixieOne.variable} font-nixie-one w-full h-full border-white text-white`} onClick={handleSubmit}>
+                    <Button className="w-full h-full border-white text-white" onClick={handleSubmit}>
                         boop
                     </Button>
                 </div>
