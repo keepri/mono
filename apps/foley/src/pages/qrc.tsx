@@ -2,7 +2,7 @@ import { QRCodeToDataURLOptions, toDataURL } from "@clfxc/services/qr";
 import { Button, Input, InputOnChange } from "@clfxc/ui";
 import { Storage } from "@declarations/enums";
 import { getTextBytes, makeCode } from "@utils/helpers";
-import { inconsolata, nixieOne, origin, underdog } from "@utils/misc";
+import { origin, underdog } from "@utils/misc";
 import { NextPage } from "next/types";
 import { createRef, FormEvent, startTransition, useCallback, useEffect, useState } from "react";
 

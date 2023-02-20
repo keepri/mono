@@ -1,6 +1,5 @@
 import type { ReplacePairName } from "@clfxc/ui";
 import { Button, ReplacePair, Textarea } from "@clfxc/ui";
-import { nixieOne } from "@utils/misc";
 import type { NextPage } from "next/types";
 import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useState } from "react";
 
