@@ -146,7 +146,11 @@ const QRCodePage: NextPage = () => {
     );
 
     useEffect(() => {
-        if (!pngUrl) return;
+        const backgroudColorLen = qrOpts.color?.light?.length;
+        const patternColorLen = qrOpts.color?.light?.length;
+        const isBackground = backgroudColorLen === 3 || backgroudColorLen === 6 || backgroudColorLen === 8;
+        const isPattern = patternColorLen === 3 || patternColorLen === 6 || patternColorLen === 8;
+        if (!pngUrl || !isBackground || !isPattern) return;
         handleSubmit();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [qrOpts.color?.dark, qrOpts.color?.light, qrOpts.margin]);
