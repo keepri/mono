@@ -1,20 +1,18 @@
-import { URLS } from "@declarations/enums";
-import Link from "next/link";
-import { FC } from "react";
+// import { Button } from "@clfxc/ui";
+import { Link } from "@clfxc/ui/components/Link";
+import { inconsolata, londrinaSketch } from "@utils/misc";
+import { FC, HTMLAttributes } from "react";
 
-import styles from "./Navbar.module.scss";
-
-// interface Props {}
-
-const Navbar: FC = () => {
+type Props = HTMLAttributes<HTMLElement>;
+const Navbar: FC<Props> = ({ className, ...rest }) => {
     return (
-        <nav className="flex gap-4 px-4 py-5">
-            <Link className={`button border-white ${styles.boop}`} href={URLS.REPLACE}>
-				boop
+        <nav className={`container min-h-[4rem] flex justify-between gap-4 px-4 py-5 bg-[var(--clr-bg-500)] ${inconsolata.variable} font-inconsolata ${className ? className : ""}`} {...rest}>
+            <Link plain href="/" className="px-4">
+                <h1 className={`${londrinaSketch.variable} font-londrina-sketch hover:text-[var(--clr-orange)] text-white text-6xl`}>K</h1>
             </Link>
-            <Link className={`button border-white ${styles.boop}`} href={URLS.SMOL}>
-				smol
-            </Link>
+            {
+                // <Button varient="sign-in" /> 
+            }
         </nav>
     );
 };

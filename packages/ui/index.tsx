@@ -1,9 +1,10 @@
-import './styles/globals.css';
-export * from './components/Button';
-export * from './components/Input';
-export * from './components/ProductCard';
-export * from './components/ReplacePair';
-export * from './components/Spinner';
-export * from './components/Textarea';
+import "./styles/globals.css";
+export * from "./components/Button";
+export * from "./components/Input";
+export * from "./components/ProductCard";
+export * from "./components/ReplacePair";
+export * from "./components/Spinner";
+export * from "./components/Textarea";
+export * from "./components/Svg";
 
-export type ReplacePairName = 'replace' | 'replaceValue';
+export type ReplacePairName = "replace" | "replaceValue";
