@@ -24,11 +24,6 @@ export const nextAuthScheme = z.object({
 
 export const serverScheme = z
     .object({
-        // NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-        // ENABLE_VC_BUILD: z
-        //     .string()
-        //     .default("1")
-        //     .transform((v) => parseInt(v, 10)),
         HOST: z.string(),
         DATABASE_URL: z.string(),
         SHADOW_DATABASE_URL: z.string(),
@@ -37,14 +32,10 @@ export const serverScheme = z
     .merge(githubScheme)
     .merge(upstashScheme);
 
-export const clientScheme = z.object({
-    MODE: z.enum(["development", "production", "test"]).default("development"),
-});
+export const clientScheme = z.object({});
 
 // @ts-ignore : ZodFormattedError<Map<string, string>>
-export const formatErrors = (errors) => Object.entries(errors)
-    .map(([name, value]) => {
-        if ("_errors" in value) return `${name}: ${value._errors.join(", ")}\n`;
-        return "";
-    })
-    .filter(Boolean);
+export const formatErrors = (errors) => Object.entries(errors).map(([name, value]) => {
+    if ("_errors" in value) return `${name}: ${value._errors.join(", ")}\n`;
+    return "";
+}).filter(Boolean);
