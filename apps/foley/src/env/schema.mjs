@@ -23,8 +23,8 @@ export const serverScheme = z
             .string()
             .default("1")
             .transform((v) => parseInt(v, 10)),
-        DISCORD_ID: z.string(),
-        DISCORD_SECRET: z.string(),
+        DISCORD_ID: z.string().optional(),
+        DISCORD_SECRET: z.string().optional(),
         GITHUB_ID: z.string(),
         GITHUB_SECRET: z.string(),
         AUTH_SECRET: z.string(),
