@@ -23,19 +23,15 @@ export const serverScheme = z
             .string()
             .default("1")
             .transform((v) => parseInt(v, 10)),
-        DISCORD_ID: z.string().optional(),
-        DISCORD_SECRET: z.string().optional(),
-        GITHUB_ID: z.string(),
-        GITHUB_SECRET: z.string(),
         AUTH_SECRET: z.string(),
         AUTH_TRUST_HOST: z.string().optional(),
         AUTH_URL: z.string().optional(),
+        NEXTAUTH_URL: z.string(),
         DATABASE_URL: z.string(),
     })
-    // TODO: remove .partial() if using service
-    // .merge(githubScheme)
     // .merge(discordScheme)
-    .merge(upstashScheme.partial());
+    .merge(githubScheme)
+    .merge(upstashScheme);
 
 export const clientScheme = z.object({
     MODE: z.enum(["development", "production", "test"]).default("development"),
