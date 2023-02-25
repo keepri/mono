@@ -23,9 +23,6 @@ export const serverScheme = z
             .string()
             .default("1")
             .transform((v) => parseInt(v, 10)),
-        AUTH_SECRET: z.string(),
-        AUTH_TRUST_HOST: z.string().optional(),
-        AUTH_URL: z.string().optional(),
         NEXTAUTH_URL: z.string(),
         DATABASE_URL: z.string(),
     })
@@ -38,10 +35,9 @@ export const clientScheme = z.object({
 });
 
 // @ts-ignore : ZodFormattedError<Map<string, string>>
-export const formatErrors = (errors) =>
-    Object.entries(errors)
-        .map(([name, value]) => {
-            if ("_errors" in value) return `${name}: ${value._errors.join(", ")}\n`;
-            return "";
-        })
-        .filter(Boolean);
+export const formatErrors = (errors) => Object.entries(errors)
+    .map(([name, value]) => {
+        if ("_errors" in value) return `${name}: ${value._errors.join(", ")}\n`;
+        return "";
+    })
+    .filter(Boolean);
