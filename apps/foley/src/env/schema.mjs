@@ -17,6 +17,11 @@ export const discordScheme = z.object({
     DISCORD_SECRET: z.string(),
 });
 
+export const twitterScheme = z.object({
+    TWITTER_ID: z.string(),
+    TWITTER_SECRET: z.string(),
+});
+
 export const nextAuthScheme = z.object({
     NEXTAUTH_URL: z.string().optional(),
     NEXTAUTH_SECRET: z.string(),
@@ -28,6 +33,7 @@ export const serverScheme = z
         DATABASE_URL: z.string(),
         SHADOW_DATABASE_URL: z.string(),
     })
+    .merge(twitterScheme.partial())
     .merge(nextAuthScheme)
     .merge(githubScheme)
     .merge(upstashScheme);
