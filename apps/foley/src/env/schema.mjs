@@ -25,10 +25,11 @@ export const nextAuthScheme = z.object({
 export const serverScheme = z
     .object({
         // NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-        ENABLE_VC_BUILD: z
-            .string()
-            .default("1")
-            .transform((v) => parseInt(v, 10)),
+        // ENABLE_VC_BUILD: z
+        //     .string()
+        //     .default("1")
+        //     .transform((v) => parseInt(v, 10)),
+        HOST: z.string(),
         DATABASE_URL: z.string(),
         SHADOW_DATABASE_URL: z.string(),
     })
