@@ -2,6 +2,7 @@
 import { z } from "zod";
 
 export const upstashScheme = z.object({
+    REDIS_URL: z.string(),
     UPSTASH_REDIS_REST_URL: z.string(),
     UPSTASH_REDIS_REST_TOKEN: z.string(),
 });
@@ -16,6 +17,11 @@ export const discordScheme = z.object({
     DISCORD_SECRET: z.string(),
 });
 
+export const nextAuthScheme = z.object({
+    NEXTAUTH_URL: z.string().optional(),
+    NEXTAUTH_SECRET: z.string(),
+});
+
 export const serverScheme = z
     .object({
         // NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
@@ -23,13 +29,10 @@ export const serverScheme = z
             .string()
             .default("1")
             .transform((v) => parseInt(v, 10)),
-        AUTH_SECRET: z.string(),
-        AUTH_TRUST_HOST: z.string().optional(),
-        AUTH_URL: z.string().optional(),
-        NEXTAUTH_URL: z.string(),
         DATABASE_URL: z.string(),
+        SHADOW_DATABASE_URL: z.string(),
     })
-    // .merge(discordScheme)
+    .merge(nextAuthScheme)
     .merge(githubScheme)
     .merge(upstashScheme);
 
@@ -38,10 +41,9 @@ export const clientScheme = z.object({
 });
 
 // @ts-ignore : ZodFormattedError<Map<string, string>>
-export const formatErrors = (errors) =>
-    Object.entries(errors)
-        .map(([name, value]) => {
-            if ("_errors" in value) return `${name}: ${value._errors.join(", ")}\n`;
-            return "";
-        })
-        .filter(Boolean);
+export const formatErrors = (errors) => Object.entries(errors)
+    .map(([name, value]) => {
+        if ("_errors" in value) return `${name}: ${value._errors.join(", ")}\n`;
+        return "";
+    })
+    .filter(Boolean);
