@@ -29,6 +29,12 @@ export enum Currency {
     USD = "USD",
 }
 
+export enum AuthProvider {
+    GITHUB = "github",
+    DISCORD = "discord",
+    TWITTER = "twitter",
+}
+
 export enum PaymentProvider {
     STRIPE = "stripe",
     PAYPAL = "paypal",
@@ -72,21 +78,21 @@ export enum FileType {
 
 // HEAD
 export enum TITLE {
-    HOME = "Home xD",
+    HOME = "Home",
 }
 
 export enum DESCRIPTION {
-    HOME = "Description xD",
+    HOME = "Description",
 }
 
 export enum OG_DESCRIPTION {
-    HOME = "Description xD",
+    HOME = "Description",
 }
 
 export enum OG_TITLE {
-    HOME = "Home xD",
+    HOME = "Home",
 }
 
 export enum KEYWORDS {
-    HOME = "home xd",
+    HOME = "home",
 }
