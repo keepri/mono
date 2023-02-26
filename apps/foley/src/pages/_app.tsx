@@ -5,6 +5,7 @@ import Layout from "@components/Layout/Layout";
 import { AppProps } from "next/app";
 import { type NextPage } from "next/types";
 import { SessionProvider } from "next-auth/react";
+import { isProduction } from "@utils/misc";
 
 const KIPRI: NextPage<AppProps> = ({ Component, pageProps: { session, ...pageProps } }) => {
     return (
@@ -14,7 +15,7 @@ const KIPRI: NextPage<AppProps> = ({ Component, pageProps: { session, ...pagePro
                     <Component {...pageProps} />
                 </Layout>
             </SessionProvider>
-            <Analytics />
+            <Analytics debug={isProduction} />
         </>
     );
 };
