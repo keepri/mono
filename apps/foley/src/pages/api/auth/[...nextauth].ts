@@ -1,10 +1,8 @@
 import { prisma, PrismaAdapter } from "@clfxc/db";
 import { serverEnv } from "@env/server.mjs";
-import NextAuth, { Session } from "next-auth";
+import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 // import Twitter from "next-auth/providers/twitter";
-
-export type NextSession = Session & { userId: string };
 
 export default NextAuth({
     adapter: PrismaAdapter(prisma),
@@ -21,8 +19,12 @@ export default NextAuth({
     ],
     callbacks: {
         session: async ({ session, user }) => {
-            const updatedSession: NextSession = { ...session, userId: user.id };
-            return updatedSession;
+            if (session.user) {
+                const sess = { ...session, user: { ...session.user, id: user.id } };
+                return sess;
+            }
+
+            return session;
         },
     },
 });

@@ -33,7 +33,7 @@ export const serverScheme = z
         DATABASE_URL: z.string(),
         SHADOW_DATABASE_URL: z.string(),
     })
-    .merge(twitterScheme.partial())
+    // .merge(twitterScheme.partial())
     .merge(nextAuthScheme)
     .merge(githubScheme)
     .merge(upstashScheme);

@@ -1,15 +1,12 @@
-import Navbar from "@components/Navbar/Navbar";
+import Navbar from "@components/Navbar";
 import { inconsolata } from "@utils/misc";
-// import { useRouter } from "next/router";
 import { FC, PropsWithChildren } from "react";
-import Footer from "./Footer/Footer";
-
-// interface Props {}
+import Footer from "./Footer";
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
     return (
         <>
-            <Navbar className="sticky top-0" />
+            <Navbar className={`sticky top-0 ${inconsolata.variable} font-inconsolata`} />
             <main className={`${inconsolata.variable} font-inconsolata sticky top-0`}>
                 {children}
                 <Footer />

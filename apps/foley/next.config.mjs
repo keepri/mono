@@ -23,7 +23,7 @@ export default withTM(["@clfxc/ui", "@clfxc/services", "@clfxc/db"])(
         // 	defaultLocale: 'en',
         // },
         images: {
-            domains: ["firebasestorage.googleapis.com"],
+            domains: ["firebasestorage.googleapis.com", "avatars.githubusercontent.com"],
         },
         sassOptions: {
             includePaths: [join(dirname("."), "src", "styles")],
