@@ -23,7 +23,7 @@ export const twitterScheme = z.object({
 });
 
 export const nextAuthScheme = z.object({
-    NEXTAUTH_URL: z.string().optional(),
+    NEXTAUTH_URL: z.string(),
     NEXTAUTH_SECRET: z.string(),
 });
 
