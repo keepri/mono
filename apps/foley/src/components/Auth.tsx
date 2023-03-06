@@ -43,7 +43,7 @@ export function Auth({ session }: AuthProps) {
                 <LoadingBounce enabled={loading} className="justify-end">
                     <span className={!isSignedIn ? "hidden" : "flex items-end gap-2"}>
                         <p className="text-white font-medium">
-                            {session.data?.user?.name ?? "it u"}
+                            Hi, {session.data?.user?.name ?? "it u"}
                         </p>
                         {session.data?.user?.image ?
                             <Image
