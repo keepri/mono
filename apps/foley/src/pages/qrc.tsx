@@ -24,7 +24,7 @@ const QRCodePage: NextPage = () => {
     const canvasRef = createRef<HTMLCanvasElement>();
 
     const [text, setText] = useState<string>("");
-    // TODO:
+    // TODO FIXME
     const selectedFile = null;
     // const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
@@ -35,14 +35,14 @@ const QRCodePage: NextPage = () => {
 
     const handleChangeInput: InputOnChange = useCallback((e) => {
         const name = e.target.name;
-        const value = e.target.value;
+        const value = e.target.value.trim();
 
         if (name === "qr-input") {
             setText(e.target.value);
         }
 
         if (name === "qr-margin") {
-            const parsed = value.startsWith("0") ? Number(value.slice(1, value.length)) : Number(value);
+            const parsed = value.at(0) === "-" ? 0 : Number(value.charAt(value.length - 1));
             const isValid = isNaN(parsed) === false && parsed <= maxMargin && parsed >= 0;
             setQrOpts((opts) => {
                 const margin: number = isValid ? parsed : opts.margin!;
@@ -135,7 +135,7 @@ const QRCodePage: NextPage = () => {
                         headers,
                     })
                         .then(async (res) => await res.json())
-                        .then((json) => setSvgUrl(json?.file))
+                        .then((json) => setSvgUrl(json?.uri))
                         .catch((err) => console.error("json error:", err));
                 });
             } catch (error) {
@@ -147,19 +147,19 @@ const QRCodePage: NextPage = () => {
 
     useEffect(() => {
         const backgroudColorLen = qrOpts.color?.light?.length;
-        const patternColorLen = qrOpts.color?.light?.length;
-        const isBackground = backgroudColorLen === 3 || backgroudColorLen === 6 || backgroudColorLen === 8;
-        const isPattern = patternColorLen === 3 || patternColorLen === 6 || patternColorLen === 8;
-        if (!pngUrl || !isBackground || !isPattern) return;
+        const isBackgroundLen = backgroudColorLen === 4 || backgroudColorLen === 7 || backgroudColorLen === 9;
+
+        const patternColorLen = qrOpts.color?.dark?.length;
+        const isPatternLen = patternColorLen === 4 || patternColorLen === 7 || patternColorLen === 9;
+
+        if (!pngUrl || !isBackgroundLen || !isPatternLen) return;
+
         handleSubmit();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [qrOpts.color?.dark, qrOpts.color?.light, qrOpts.margin]);
 
     return (
         <>
-            {
-                // grid grid-cols-[repeat(auto-fit,_minmax(15rem,_1fr))] 
-            }
             <main className="flex flex-wrap sm:gap-0 gap-8 p-4 min-h-screen bg-[var(--clr-bg-300)]">
                 <section className="flex flex-col flex-[2.5] items-center sm:justify-center xl:gap-24 gap-8">
                     <form className="flex flex-col items-center justify-center gap-8 px-2 w-full" onSubmit={handleSubmit}>
@@ -196,7 +196,7 @@ const QRCodePage: NextPage = () => {
                             labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
                             className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
                             value={qrOpts.color!.dark?.toUpperCase()}
-                            placeholder="pattern color"
+                            placeholder="hex code"
                             name="qr-color"
                             onChange={handleChangeInput}
                         />
@@ -205,7 +205,7 @@ const QRCodePage: NextPage = () => {
                             labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
                             className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
                             value={qrOpts.color!.light?.toUpperCase()}
-                            placeholder="background color"
+                            placeholder="hex code"
                             name="qr-color-bg"
                             onChange={handleChangeInput}
                         />

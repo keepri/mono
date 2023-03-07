@@ -43,6 +43,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const filePath = `/tmp/${fileName}_${Date.now()}.svg`;
     await toFile(filePath, data, options);
     const url = readFileSync(filePath, { encoding: "base64" });
-    res.status(200).json({ message: "success", file: "data:image/svg+xml;base64," + url });
+    res.status(200).json({ message: "success", uri: "data:image/svg+xml;base64," + url });
     return;
 };
