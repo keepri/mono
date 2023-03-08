@@ -9,7 +9,8 @@
     ],
     "scripts": {
         "db:connect": "turbo db:connect",
-        "db:generate": "turbo db:generate",
+        "db:generate": "turbo db:generate --filter=@clfxc/db",
+        "db-nika:generate": "turbo db:generate --filter=nika",
         "db:push": "turbo db:push --filter=@clfxc/db",
         "db-nika:push": "turbo db:push --filter=nika",
         "db:studio": "npm run dev --workspace @clfxc/db",
