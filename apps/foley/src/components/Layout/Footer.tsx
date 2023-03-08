@@ -1,11 +1,11 @@
 import { GitHub } from "@clfxc/ui";
-import { FC, HTMLAttributes } from "react";
+import { type HTMLAttributes } from "react";
 
 type Props = HTMLAttributes<HTMLElement>;
 
 const PERSONAL_GITHUB = "https://github.com/keepri" as const;
 
-const Footer: FC<Props> = ({ className, ...rest }) => {
+export default function Footer({ className, ...rest }: Props): JSX.Element {
     return (
         <footer
             className={`${className ? className : ""} flex justify-center items-center gap-4 p-2 bg-[var(--clr-bg-500)]`}
@@ -22,6 +22,4 @@ const Footer: FC<Props> = ({ className, ...rest }) => {
             </a>
         </footer>
     );
-};
-
-export default Footer;
+}

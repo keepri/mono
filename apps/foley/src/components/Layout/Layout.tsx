@@ -1,18 +1,18 @@
 import Navbar from "@components/Navbar";
 import { inconsolata } from "@utils/misc";
-import { FC, PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import Footer from "./Footer";
 
-const Layout: FC<PropsWithChildren> = ({ children }) => {
+type Props = PropsWithChildren;
+
+export default function Layout({ children }: Props): JSX.Element {
     return (
         <>
             <Navbar className={`sticky top-0 ${inconsolata.variable} font-inconsolata`} />
-            <main className={`${inconsolata.variable} font-inconsolata sticky top-0`}>
+            <main className={`sticky top-0 ${inconsolata.variable} font-inconsolata`}>
                 {children}
                 <Footer />
             </main>
         </>
     );
-};
-
-export default Layout;
+}

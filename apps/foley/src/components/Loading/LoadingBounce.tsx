@@ -1,16 +1,11 @@
 import { londrinaSketch } from "@utils/misc";
-import { HTMLAttributes, PropsWithChildren } from "react";
+import { type HTMLAttributes, type PropsWithChildren } from "react";
 
-type LoadingProps = HTMLAttributes<HTMLSpanElement> & PropsWithChildren & {
+type Props = HTMLAttributes<HTMLSpanElement> & PropsWithChildren & {
     enabled?: boolean;
 };
 
-export function LoadingBounce({
-    children,
-    enabled = true,
-    className,
-    ...rest
-}: LoadingProps) {
+export default function LoadingBounce({ children, enabled = true, className, ...rest }: Props): JSX.Element {
     const font = londrinaSketch.variable + " font-londrina-sketch";
 
     return (
@@ -19,7 +14,7 @@ export function LoadingBounce({
             {...rest}
         >
             <span
-                ref={(dotOne) => setTimeout(() => dotOne?.classList.add("animate-bounce"), 342)}
+                ref={(dotOne) => setTimeout(() => dotOne?.classList.add("animate-bounce"), 342.0)}
                 className={`${!enabled ? "hidden" : ""} ${font} m-0 p-0 text-xl text-white leading-none`}
             >
                 .

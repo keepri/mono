@@ -1,27 +1,25 @@
+import { useRouter } from "next/router";
 import { default as NextHead } from "next/head";
-import { FC } from "react";
-
 import { DESCRIPTION, KEYWORDS, Langs, OG_DESCRIPTION, OG_TITLE, TITLE } from "@declarations/enums";
 import { siteName } from "@utils/misc";
-import { useRouter } from "next/router";
 
 interface Props {
-	keywords?: KEYWORDS;
-	title?: TITLE;
-	desc?: DESCRIPTION;
-	ogTitle?: OG_TITLE;
-	ogDesc?: OG_DESCRIPTION;
-	previewImage?: string;
+    keywords?: KEYWORDS;
+    title?: TITLE;
+    desc?: DESCRIPTION;
+    ogTitle?: OG_TITLE;
+    ogDesc?: OG_DESCRIPTION;
+    previewImage?: string;
 }
 
-const Head: FC<Props> = ({
+export default function Head({
     keywords = KEYWORDS.HOME,
     title = TITLE.HOME,
     desc = DESCRIPTION.HOME,
     ogTitle = OG_TITLE.HOME,
     ogDesc = OG_DESCRIPTION.HOME,
     previewImage,
-}) => {
+}: Props): JSX.Element {
     const { locale } = useRouter();
     const url = typeof location !== "undefined" && location.href;
 
@@ -45,6 +43,4 @@ const Head: FC<Props> = ({
             <meta property="og:site_name" content={siteName} key="ogsitename" />
         </NextHead>
     );
-};
-
-export default Head;
+}

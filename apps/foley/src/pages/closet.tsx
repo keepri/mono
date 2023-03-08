@@ -1,9 +1,6 @@
 import { ProductCard } from "@clfxc/ui";
-import type { NextPage } from "next/types";
 
-// interface Props {}
-
-const ClosetPage: NextPage = () => {
+export default function ClosetPage(): JSX.Element {
     return (
         <main className="min-h-screen bg-[var(--clr-bg-300)]">
             <header className="grid place-items-center py-4">
@@ -25,6 +22,4 @@ const ClosetPage: NextPage = () => {
             />
         </main>
     );
-};
-
-export default ClosetPage;
+}

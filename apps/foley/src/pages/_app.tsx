@@ -1,13 +1,11 @@
 import "@styles/globals.scss";
-import { Analytics } from "@vercel/analytics/react";
-
-import Layout from "@components/Layout/Layout";
 import { AppProps } from "next/app";
-import { type NextPage } from "next/types";
 import { SessionProvider } from "next-auth/react";
+import { Analytics } from "@vercel/analytics/react";
+import Layout from "@components/Layout/Layout";
 import { isProduction } from "@utils/misc";
 
-const KIPRI: NextPage<AppProps> = ({ Component, pageProps: { session, ...pageProps } }) => {
+export default function KIPRI({ Component, pageProps: { session, ...pageProps } }: AppProps): JSX.Element {
     return (
         <>
             <SessionProvider session={session}>
@@ -18,6 +16,4 @@ const KIPRI: NextPage<AppProps> = ({ Component, pageProps: { session, ...pagePro
             <Analytics debug={isProduction} />
         </>
     );
-};
-
-export default KIPRI;
+}

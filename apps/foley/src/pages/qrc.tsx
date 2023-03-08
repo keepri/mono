@@ -3,7 +3,7 @@ import { Button, Input, InputOnChange } from "@clfxc/ui";
 import { Storage } from "@declarations/enums";
 import { getTextBytes, makeCode } from "@utils/helpers";
 import { origin, underdog } from "@utils/misc";
-import { NextPage } from "next/types";
+import { type NextPage } from "next/types";
 import { createRef, FormEvent, startTransition, useCallback, useEffect, useState } from "react";
 
 const QRCodePage: NextPage = () => {

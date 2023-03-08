@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import { toFile } from "@clfxc/services/qr";
-import { NextApiRequest, NextApiResponse } from "next/types";
+import { type NextApiRequest, type NextApiResponse } from "next/types";
 import { z } from "zod";
 import { generateErrorMessage } from "zod-error";
 

@@ -1,7 +1,7 @@
 import { Link } from "@clfxc/ui/components/Link";
 import { URLS } from "@declarations/enums";
 import { londrinaSketch } from "@utils/misc";
-import type { NextPage } from "next/types";
+import { type NextPage } from "next/types";
 
 const IndexPage: NextPage = () => {
     return (
