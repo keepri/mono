@@ -1,5 +1,5 @@
 import { GitHub } from "@clfxc/ui";
-import { FC, HTMLAttributes } from "react";
+import { type FC, type HTMLAttributes } from "react";
 
 type Props = HTMLAttributes<HTMLElement>;
 

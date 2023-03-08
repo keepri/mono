@@ -1,13 +1,15 @@
 import Navbar from "@components/Navbar";
 import { inconsolata } from "@utils/misc";
-import { FC, PropsWithChildren } from "react";
+import { type FC, PropsWithChildren } from "react";
 import Footer from "./Footer";
 
-const Layout: FC<PropsWithChildren> = ({ children }) => {
+type Props = PropsWithChildren;
+
+const Layout: FC<Props> = ({ children }) => {
     return (
         <>
             <Navbar className={`sticky top-0 ${inconsolata.variable} font-inconsolata`} />
-            <main className={`${inconsolata.variable} font-inconsolata sticky top-0`}>
+            <main className={`sticky top-0 ${inconsolata.variable} font-inconsolata`}>
                 {children}
                 <Footer />
             </main>
