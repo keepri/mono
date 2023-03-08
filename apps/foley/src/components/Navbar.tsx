@@ -8,7 +8,7 @@ type Props = HTMLAttributes<HTMLElement>;
 export default function Navbar({ className, ...rest }: Props): JSX.Element {
     return (
         <nav
-            className={`${className ? className : ""} container min-h-[4rem] flex flex-wrap items-center justify-between gap-4 py-2 px-4 bg-[var(--clr-bg-500)]`}
+            className={`${className ? className : ""} container sticky top-0 flex flex-wrap items-center max-sm:justify-around justify-between gap-4 py-4 px-6 bg-[var(--clr-bg-500)]`}
             {...rest}
         >
             <Logo />
@@ -20,7 +20,7 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
 function Logo(): JSX.Element {
     return (
         <Link href="/">
-            <h1 className={`hover:text-[var(--clr-orange)] text-white text-6xl ${londrinaSketch.variable} font-londrina-sketch`}>
+            <h1 className={`hover:text-[var(--clr-orange)] text-white text-6xl leading-none ${londrinaSketch.variable} font-londrina-sketch`}>
                 K
             </h1>
         </Link>
