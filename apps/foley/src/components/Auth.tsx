@@ -10,6 +10,7 @@ export const DEFAULT_AUTH_PROVIDER: AuthProvider = AuthProvider.GITHUB;
 export default function Auth(): JSX.Element {
     const session = useSession();
     const isSignedIn = session.status === "authenticated";
+    const loadingSession = session.status === "loading";
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -35,11 +36,11 @@ export default function Auth(): JSX.Element {
 
     return (
         <>
-            <span className={`flex flex-col py-1 px-2 ${isSignedIn ? "gap-[.17rem]" : "gap-1"}`}>
-                <span className={!isSignedIn && !loading ? "hidden" : "flex flex-wrap items-center justify-center gap-2"}>
-                    <LoadingBounce enabled={loading}>
-                        <p className="text-white text-center font-medium">
-                            Hi, {session.data?.user?.name ?? "u"}
+            <span className={`flex flex-col ${isSignedIn ? "gap-[.27rem]" : "gap-1"}`}>
+                <span className={!isSignedIn && !loading ? "hidden" : "flex flex-wrap items-center justify-end gap-2"}>
+                    <LoadingBounce enabled={loading} className="justify-end">
+                        <p className="max-w-[17ch] text-white text-center font-medium whitespace-nowrap overflow-x-hidden text-ellipsis">
+                            hi, {session.data?.user?.name ?? "u"}
                         </p>
                     </LoadingBounce>
                     {session.data?.user?.image ?
@@ -52,16 +53,16 @@ export default function Auth(): JSX.Element {
                         /> :
                         <i> ✌️ </i>}
                 </span>
-                <span className="group flex items-center justify-end gap-2 overflow-y-hidden">
-                    <div className={`flex gap-2 items-center justify-evenly group-hover:translate-y-0 -translate-y-full group-hover:opacity-100 opacity-0 transition-transform duration-[150ms] delay-75 ${isSignedIn || loading ? "hidden" : ""}`}>
+                <span className="group flex items-center justify-end gap-2">
+                    <div className={`${isSignedIn || loading ? "hidden" : ""} flex gap-2 items-center justify-evenly group-hover:scale-100 scale-0 transition-transform group-hover:duration-[117ms]`}>
                         <GitHub onClick={() => onSignIn(AuthProvider.GITHUB)} />
                     </div>
                     <button
-                        disabled={loading}
+                        disabled={loading || loadingSession}
                         onClick={() => isSignedIn ? onSignOut() : onSignIn(DEFAULT_AUTH_PROVIDER)}
                         className={`${isSignedIn || loading ? "text-xs" : "font-medium"} text-lg group-hover:text-[var(--clr-orange)] text-white transition-colors duration-100`}
                     >
-                        {isSignedIn ? "sign out" : "sign in"}
+                        {loading ? "on it" : isSignedIn ? "sign out" : "sign in"}
                     </button>
                 </span>
             </span>

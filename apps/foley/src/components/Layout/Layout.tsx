@@ -8,7 +8,7 @@ type Props = PropsWithChildren;
 export default function Layout({ children }: Props): JSX.Element {
     return (
         <>
-            <Navbar className={`sticky top-0 ${inconsolata.variable} font-inconsolata`} />
+            <Navbar className={`${inconsolata.variable} font-inconsolata`} />
             <main className={`sticky top-0 ${inconsolata.variable} font-inconsolata`}>
                 {children}
                 <Footer />
