@@ -1,4 +1,4 @@
-import { Underdog, Nixie_One, Londrina_Sketch, Inconsolata } from "@next/font/google";
+import { Underdog, Nixie_One, Londrina_Sketch, Inconsolata } from "next/font/google";
 import { Langs } from "@declarations/enums";
 import { CookieSerializeOptions } from "@declarations/types";
 

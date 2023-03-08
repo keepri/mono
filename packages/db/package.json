@@ -1,24 +1,24 @@
 {
-	"name": "@clfxc/db",
-	"version": "0.0.0",
-	"main": "./index.ts",
-	"types": "./index.ts",
-	"license": "MIT",
-	"scripts": {
-		"clean": "rm -rf .turbo node_modules",
-		"dev": "prisma studio --port 5556",
-		"db:push": "prisma db push --skip-generate",
-		"db:generate": "prisma generate",
-		"db:connect": "pscale connect clfxc main --port 3309"
-	},
-	"dependencies": {
-		"@next-auth/prisma-adapter": "^1.0.5",
-		"@prisma/client": "^4.10.0",
-		"zod": "^3.19.1"
-	},
-	"devDependencies": {
-		"prisma": "^4.10.0",
-		"tsconfig": "*",
-		"typescript": "^4.9.3"
-	}
+    "name": "@clfxc/db",
+    "version": "0.0.0",
+    "main": "./index.ts",
+    "types": "./index.ts",
+    "license": "MIT",
+    "scripts": {
+        "clean": "rm -rf .turbo node_modules",
+        "dev": "prisma studio --port 5556",
+        "db:push": "prisma db push",
+        "db:generate": "prisma generate",
+        "db:connect": "pscale connect clfxc main --port 3309"
+    },
+    "dependencies": {
+        "@next-auth/prisma-adapter": "^1.0.5",
+        "@prisma/client": "^4.11.0",
+        "zod": "^3.21.4"
+    },
+    "devDependencies": {
+        "prisma": "^4.11.0",
+        "tsconfig": "*",
+        "typescript": "^4.9.5"
+    }
 }

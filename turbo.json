@@ -19,6 +19,12 @@
             ],
             "cache": false
         },
+        "db-nika:push": {
+            "inputs": [
+                "prisma/schema.prisma"
+            ],
+            "cache": false
+        },
         "db:dev": {
             "persistent": true,
             "cache": false
@@ -38,10 +44,19 @@
                 "DATABASE_URL",
                 "SHADOW_DATABASE_URL",
                 "UPSTASH_REDIS_REST_TOKEN",
-                "UPSTASH_REDIS_REST_URL"
+                "UPSTASH_REDIS_REST_URL",
+                "AUTH_SECRET",
+                "AUTH_TRUST_HOST"
             ]
         },
         "foley:dev": {
+            "persistent": true,
+            "dependsOn": [
+                "^db-generate"
+            ],
+            "cache": false
+        },
+        "nika:dev": {
             "persistent": true,
             "dependsOn": [
                 "^db-generate"

@@ -1,33 +1,36 @@
 {
-	"name": "kipri",
-	"version": "0.0.0",
-	"license": "MIT",
-	"private": true,
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
-	"scripts": {
-		"db:connect": "turbo db:connect",
-		"db:generate": "turbo db:generate",
-		"db:push": "turbo db:push",
-		"db:studio": "npm run dev --workspace @clfxc/db",
-		"build": "turbo build",
-		"dev": "turbo dev --parallel",
-		"clean": "turbo clean && rm -rf node_modules .turbo package-lock.json",
-		"lint": "turbo lint",
-		"format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,md}\"",
-		"foley:dev": "turbo dev --filter=foley",
-		"foley:build": "turbo build --filter=foley"
-	},
-	"devDependencies": {
-		"concurrently": "^7.4.0",
-		"eslint-config-custom": "*",
-		"prettier": "latest",
-		"turbo": "^1.8.3"
-	},
-	"engines": {
-		"node": "^16.0.0"
-	},
-	"packageManager": "npm@8.19.2"
+    "name": "kipri",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "db:connect": "turbo db:connect",
+        "db:generate": "turbo db:generate",
+        "db:push": "turbo db:push --filter=@clfxc/db",
+        "db-nika:push": "turbo db:push --filter=nika",
+        "db:studio": "npm run dev --workspace @clfxc/db",
+        "build": "turbo build",
+        "dev": "turbo dev --parallel",
+        "clean": "turbo clean && rm -rf node_modules .turbo package-lock.json",
+        "lint": "turbo lint",
+        "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,md}\"",
+        "foley:dev": "turbo dev --filter=foley",
+        "foley:build": "turbo build --filter=foley",
+        "nika:dev": "turbo dev --filter=nika",
+        "nika:build": "turbo build --filter=nika"
+    },
+    "devDependencies": {
+        "concurrently": "^7.4.0",
+        "eslint-config-custom": "*",
+        "prettier": "latest",
+        "turbo": "^1.8.3"
+    },
+    "engines": {
+        "node": "^16.0.0"
+    },
+    "packageManager": "npm@8.19.2"
 }
