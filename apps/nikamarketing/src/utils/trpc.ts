@@ -9,7 +9,7 @@ const getBaseUrl = () => {
     if (typeof window !== "undefined") return "";
     // TODO PROD: replace example.com with your actual production url
     if (process.env.NODE_ENV === "production") return `https://example.vercel.app${BASE_TRPC_PATHNAME}`;
-    return `http://localhost:3001${BASE_TRPC_PATHNAME}`;
+    return `http://localhost:3000${BASE_TRPC_PATHNAME}`;
 };
 
 export const trpc = createTRPCSolidStart<AppRouter>({
