@@ -21,7 +21,7 @@ const IndexPage: NextPage = () => {
                         replace
                     </Link>
                     <Link style={{ color: "white" }} className={`button border-white`} href={URLS.SMOL}>
-                        smol.
+                        smol
                     </Link>
                     <Link style={{ color: "white" }} className={`button border-white`} href={URLS.QR}>
                         qr
