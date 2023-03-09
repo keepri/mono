@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/ban-types */
 import {
     type DefaultSession,
@@ -7,24 +8,24 @@ import {
 } from "@auth/core/types";
 
 declare module "@auth/core/types" {
-    type Session = {
+    interface Session extends DefaultSession.user {
         user?: {
             id?: string;
-        } & DefaultSession["user"];
-    };
+        };
+    }
 
     /**
      * The shape of the user object returned in the OAuth providers' `profile` callback,
      * or the second parameter of the `session` callback, when using a database.
      */
-    type User = {} & DefaultUser;
+    interface User extends DefaultUser {}
 
     /**
      * Usually contains information about the provider being used
      * and also extends `TokenSet`, which is different tokens returned by OAuth Providers.
      */
-    type Account = {} & DefaultAccount;
+    interface Account extends DefaultAccount {}
 
     /** The OAuth profile returned from your provider */
-    type Profile = {} & DefaultProfile;
+    interface Profile extends DefaultProfile {}
 }

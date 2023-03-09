@@ -31,6 +31,10 @@
     "include": [
         "src",
         "auth.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.cjs",
+        "**/*.mjs",
         "vite.config.ts"
     ],
     "exclude": [

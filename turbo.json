@@ -19,12 +19,6 @@
             ],
             "cache": false
         },
-        "db-nika:push": {
-            "inputs": [
-                "prisma/schema.prisma"
-            ],
-            "cache": false
-        },
         "db:dev": {
             "persistent": true,
             "cache": false
@@ -52,14 +46,14 @@
         "foley:dev": {
             "persistent": true,
             "dependsOn": [
-                "^db-generate"
+                "^db:generate"
             ],
             "cache": false
         },
         "nika:dev": {
             "persistent": true,
             "dependsOn": [
-                "^db-generate"
+                "^db:generate"
             ],
             "cache": false
         },
