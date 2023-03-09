@@ -5,9 +5,6 @@
         "TZ"
     ],
     "pipeline": {
-        "test": {
-            "cache": false
-        },
         "db:generate": {
             "inputs": [
                 "prisma/schema.prisma"
