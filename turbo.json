@@ -33,7 +33,8 @@
                 "^build"
             ],
             "outputs": [
-                ".next/**"
+                ".next/**",
+                ".solid/**"
             ],
             "env": [
                 "DATABASE_URL",
