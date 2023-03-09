@@ -1,6 +1,7 @@
-import { QueryClient } from "@tanstack/solid-query";
+import { QueryClient } from "@adeora/solid-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
-import { createTRPCSolid } from "solid-trpc";
+import { isServer } from "solid-js/web";
+import { createTRPCSolidStart } from "solid-trpc";
 import { type AppRouter } from "~/server/trpc/router/_app";
 
 export const BASE_TRPC_PATHNAME = "/api/trpc" as const;
@@ -11,10 +12,23 @@ const getBaseUrl = () => {
     return `http://localhost:3000${BASE_TRPC_PATHNAME}`;
 };
 
-export const trpc = createTRPCSolid<AppRouter>();
-
-export const client = trpc.createClient({
-    links: [loggerLink(), httpBatchLink({ url: getBaseUrl() })],
+export const trpc = createTRPCSolidStart<AppRouter>({
+    config(event) {
+        return {
+            links: [
+                loggerLink(),
+                httpBatchLink({
+                    url: getBaseUrl(),
+                    headers: () => {
+                        if (isServer && event?.request) {
+                            // do something
+                        }
+                        return {};
+                    },
+                }),
+            ],
+        };
+    },
 });
 
 export const queryClient = new QueryClient();

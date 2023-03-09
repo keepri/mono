@@ -6,7 +6,7 @@ const NotFound: VoidComponent = () => {
         <>
             <HttpStatusCode code={404} />
             <main>
-                <h1>something went wrong</h1>
+                <h1>ow neooowww</h1>
             </main>
         </>
     );
