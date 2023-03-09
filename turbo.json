@@ -34,7 +34,8 @@
             ],
             "outputs": [
                 ".next/**",
-                ".solid/**"
+                ".solid/**",
+                ".output/**"
             ],
             "env": [
                 "DATABASE_URL",
