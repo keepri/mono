@@ -24,7 +24,7 @@ const Home: VoidComponent = (): JSXElement => {
         <main class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#222] to-[#000]">
             <div class="container flex flex-col items-center justify-center gap-12 px-4 py-16 max-w-[45ch]">
                 <h1 class="text-5xl font-extrabold tracking-tight text-center text-white sm:text-[5rem]">
-                    {data} marketing agency!
+                    {data} marketing agency
                 </h1>
                 <div class="flex flex-col items-center gap-2">
                     <Suspense fallback={<p>Loading...</p>}>

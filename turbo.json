@@ -13,14 +13,6 @@
                 "prisma/generated/**"
             ]
         },
-        "db-nika:generate": {
-            "inputs": [
-                "prisma/schema.prisma"
-            ],
-            "outputs": [
-                "prisma/generated/**"
-            ]
-        },
         "db:push": {
             "inputs": [
                 "prisma/schema.prisma"
@@ -51,28 +43,15 @@
                 "AUTH_TRUST_HOST"
             ]
         },
-        "foley:dev": {
+        "dev": {
             "persistent": true,
             "dependsOn": [
-                "^db:generate"
-            ],
-            "cache": false
-        },
-        "nika:dev": {
-            "persistent": true,
-            "dependsOn": [
-                "^db-nika:generate"
+                "^db:generate",
+                "db:generate"
             ],
             "cache": false
         },
         "lint": {},
-        "dev": {
-            "persistent": true,
-            "dependsOn": [
-                "^db:generate"
-            ],
-            "cache": false
-        },
         "clean": {
             "cache": false
         }
