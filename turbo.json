@@ -35,7 +35,7 @@
             "outputs": [
                 ".next/**",
                 ".solid/**",
-                ".output/**"
+                ".vercel/output/**"
             ],
             "env": [
                 "DATABASE_URL",
