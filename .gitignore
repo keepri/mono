@@ -10,9 +10,13 @@ coverage
 
 # next.js
 .vercel
-.next/
+.next
 out/
 build
+
+# solid.js
+.solid
+.output
 
 # misc
 .DS_Store
