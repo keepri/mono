@@ -3,13 +3,16 @@ import { Button, Input, InputOnChange } from "@clfxc/ui";
 import { Storage } from "@declarations/enums";
 import { getTextBytes, makeCode } from "@utils/helpers";
 import { origin, underdog } from "@utils/misc";
+import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
-import { createRef, FormEvent, startTransition, useCallback, useEffect, useState } from "react";
+import { createRef, type FormEvent, useCallback, useEffect, useState, startTransition } from "react";
+
+const FILE_NAME = "gib_qr";
 
 const QRCodePage: NextPage = () => {
     const defaultMargin: number = 2;
     const maxMargin: number = 7;
-    const qrOptions = {
+    const defaultQrOptions = {
         margin: typeof window !== "undefined" ? +(localStorage.getItem(Storage.qrMargin) || defaultMargin) : defaultMargin,
         width: 200,
         color: {
@@ -21,21 +24,28 @@ const QRCodePage: NextPage = () => {
         },
     } satisfies QRCodeToDataURLOptions;
 
+    const session = useSession();
+    const isAuthenticated = session.status === "authenticated";
+
     const canvasRef = createRef<HTMLCanvasElement>();
 
     const [text, setText] = useState<string>("");
-    // TODO FIXME
+    // TODO
     const selectedFile = null;
     // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
-    const [svgUrl, setSvgUrl] = useState<string | null>(null);
-    const [qrOpts, setQrOpts] = useState<QRCodeToDataURLOptions>(qrOptions);
+    const [qrOpts, setQrOpts] = useState<QRCodeToDataURLOptions>(defaultQrOptions);
 
     // const fileSize = useMemo(() => toKB(selectedFile?.size ?? -1), [selectedFile]);
 
     const handleChangeInput: InputOnChange = useCallback((e) => {
         const name = e.target.name;
         const value = e.target.value.trim();
+
+        // we clear the cache anytime the user tries to generate a new qr code
+        setSvgUriCache(null);
 
         if (name === "qr-input") {
             setText(e.target.value);
@@ -85,6 +95,54 @@ const QRCodePage: NextPage = () => {
     //     setSelectedFile(file);
     // }, []);
 
+    const handleSvgDownload = useCallback(async () => {
+        try {
+            if (!isAuthenticated) {
+                // TODO: add some way to tell the user he has to be signed in
+                return;
+            }
+
+            setLoading(true);
+
+            startTransition(() => {
+                const linkTag = document.createElement("a");
+
+                if (svgUriCache) {
+                    linkTag.href = svgUriCache;
+                    linkTag.download = FILE_NAME;
+                    linkTag.click();
+                    setLoading(false);
+
+                    return;
+                }
+
+                const headers = new Headers();
+                headers.set("Content-Type", "application/json");
+                fetch(origin + "/api/qr/create", {
+                    headers,
+                    method: "POST",
+                    body: JSON.stringify({ data: text, options: qrOpts }),
+                }).then(async (res) => {
+                    const qrCode = await res.json();
+                    linkTag.href = qrCode.uri;
+                    linkTag.download = FILE_NAME;
+                    linkTag.click();
+
+                    setSvgUriCache(qrCode.uri);
+                    setLoading(false);
+                }).catch(({ message, stack }) => {
+                    setLoading(false);
+                    console.warn(stack);
+                    console.error(message);
+                });
+            });
+        } catch ({ message, stack }) {
+            setLoading(false);
+            console.warn(stack);
+            console.error("could not download svg", message);
+        }
+    }, [isAuthenticated, qrOpts, svgUriCache, text]);
+
     const handleSubmit = useCallback(
         async (e?: FormEvent<HTMLFormElement>) => {
             try {
@@ -122,22 +180,8 @@ const QRCodePage: NextPage = () => {
                         }
 
                         setPngUrl(url);
-
                     }
                 );
-
-                startTransition(() => {
-                    const headers = new Headers();
-                    headers.set("Content-Type", "application/json");
-                    fetch(origin + "/api/qr/create", {
-                        method: "POST",
-                        body: JSON.stringify({ data: text, options: qrOpts }),
-                        headers,
-                    })
-                        .then(async (res) => await res.json())
-                        .then((json) => setSvgUrl(json?.uri))
-                        .catch((err) => console.error("json error:", err));
-                });
             } catch (error) {
                 console.error("submit failed", error);
             }
@@ -239,18 +283,20 @@ const QRCodePage: NextPage = () => {
                         <div className="flex justify-around items-center gap-4">
                             <a
                                 href={pngUrl ?? "#"}
-                                download="i_gib_qr"
-                                className={`button border-white text-white visited:text-white ${!pngUrl ? "invisible" : ""}`}>
+                                download={FILE_NAME}
+                                className={`button border-white text-white visited:text-white ${!pngUrl ? "invisible" : ""}`}
+                            >
                                 png
                             </a>
-                            <a
-                                href={svgUrl ?? "#"}
-                                download="i_gib_qr_svg"
-                                className={`button border-white text-white visited:text-white ${!svgUrl ? "hidden" : ""}`}>
-                                svg
-                            </a>
+                            <Button
+                                disabled={loading}
+                                className={`button border-white text-white ${!pngUrl ? "invisible" : ""}`}
+                                onClick={handleSvgDownload}
+                            >
+                                {loading ? "on it..." : "svg"}
+                            </Button>
                         </div>
-                        <p className={`text-3xl ${!pngUrl && !svgUrl ? "invisible" : ""}`}>🚀</p>
+                        <p className={`text-3xl ${!pngUrl ? "invisible" : ""}`}>🚀</p>
                     </div>
                 </section>
             </main>

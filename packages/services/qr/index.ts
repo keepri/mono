@@ -15,7 +15,7 @@ export async function createQRCode(
     const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
 
     if (bytes >= 2953) {
-        console.warn(bytes, "qr code data too big -> making smol");
+        console.warn(bytes, "qr code data too big");
         return { ok: false, error: { message: "data too big" } };
     }
 
