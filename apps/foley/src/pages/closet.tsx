@@ -10,7 +10,7 @@ export default function ClosetPage(): JSX.Element {
                 >
                     CLOSET
                 </h1>
-                <p className="font-underdog text-white">Stuff I no longer use or need.</p>
+                <p className="font-underdog text-white">Stuff I no longer use or need</p>
                 <p className="font-underdog text-white">How did you get here, you sneaky snake? 🐍</p>
             </header>
             <ProductCard
