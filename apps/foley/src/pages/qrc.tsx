@@ -10,7 +10,8 @@ import { createRef, type FormEvent, useCallback, useEffect, useState, startTrans
 const FILE_NAME = "gib_qr";
 
 const QRCodePage: NextPage = () => {
-    const defaultInputText: string = typeof window !== "undefined" ? JSON.parse(localStorage.getItem(Storage.qrInput) ?? "") : "";
+    const inputCache = typeof window !== "undefined" ? localStorage.getItem(Storage.qrInput) : undefined;
+    const defaultInputText: string = inputCache ? JSON.parse(inputCache) : "";
     const defaultMargin: number = 2;
     const maxMargin: number = 7;
     const defaultQrOptions = {
