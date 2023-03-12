@@ -10,6 +10,7 @@ import { createRef, type FormEvent, useCallback, useEffect, useState, startTrans
 const FILE_NAME = "gib_qr";
 
 const QRCodePage: NextPage = () => {
+    const defaultInputText: string = typeof window !== "undefined" ? JSON.parse(localStorage.getItem(Storage.qrInput) ?? "") : "";
     const defaultMargin: number = 2;
     const maxMargin: number = 7;
     const defaultQrOptions = {
@@ -28,11 +29,10 @@ const QRCodePage: NextPage = () => {
     const isAuthenticated = session.status === "authenticated";
 
     const canvasRef = createRef<HTMLCanvasElement>();
+    const signInAlertRef = createRef<HTMLParagraphElement>();
 
-    const [text, setText] = useState<string>("");
-    // TODO
-    const selectedFile = null;
-    // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [text, setText] = useState<string>(defaultInputText);
+    // const [selectedFile, setSelectedFile] = useState<File | null>(null); TODO
     const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
@@ -48,7 +48,9 @@ const QRCodePage: NextPage = () => {
         setSvgUriCache(null);
 
         if (name === "qr-input") {
-            setText(e.target.value);
+            const text = e.target.value;
+            localStorage.setItem(Storage.qrInput, JSON.stringify(text));
+            setText(text);
         }
 
         if (name === "qr-margin") {
@@ -76,7 +78,6 @@ const QRCodePage: NextPage = () => {
         // colors block ---
     }, []);
 
-
     // const handleChangeFile: InputOnChange = useCallback((e) => {
     //     const maxFileSize = 3;
     //     const { ok, file, error } = validateFile(e.target.files?.[0], maxFileSize);
@@ -98,7 +99,10 @@ const QRCodePage: NextPage = () => {
     const handleSvgDownload = useCallback(async () => {
         try {
             if (!isAuthenticated) {
-                // TODO: add some way to tell the user he has to be signed in
+                signInAlertRef.current?.classList.toggle("invisible");
+                setTimeout(() => {
+                    signInAlertRef.current?.classList.toggle("invisible");
+                }, 2000);
                 return;
             }
 
@@ -141,7 +145,7 @@ const QRCodePage: NextPage = () => {
             console.warn(stack);
             console.error("could not download svg", message);
         }
-    }, [isAuthenticated, qrOpts, svgUriCache, text]);
+    }, [isAuthenticated, qrOpts, signInAlertRef, svgUriCache, text]);
 
     const handleSubmit = useCallback(
         async (e?: FormEvent<HTMLFormElement>) => {
@@ -149,18 +153,17 @@ const QRCodePage: NextPage = () => {
                 e && e.preventDefault();
                 if (!canvasRef.current) return;
 
-                if (selectedFile) {
-                    // handle file uploaded creation
-                    // readFileAsDataUrl(selectedFile, async (e) => {
-                    //     const data = e.target?.result as string;
-                    //     if (!data) return;
-                    //     makeCode(data);
-                    // });
+                // if (selectedFile) {
+                // handle file uploaded creation
+                // readFileAsDataUrl(selectedFile, async (e) => {
+                //     const data = e.target?.result as string;
+                //     if (!data) return;
+                //     makeCode(data);
+                // });
 
-                    return;
-                }
+                // return;
+                // }
 
-                // no file has been uploaded
                 if (!Boolean(text.length)) return;
 
                 const bytes = getTextBytes(text);
@@ -186,7 +189,7 @@ const QRCodePage: NextPage = () => {
                 console.error("submit failed", error);
             }
         },
-        [canvasRef, qrOpts, selectedFile, text]
+        [canvasRef, qrOpts, text]
     );
 
     useEffect(() => {
@@ -196,17 +199,17 @@ const QRCodePage: NextPage = () => {
         const patternColorLen = qrOpts.color?.dark?.length;
         const isPatternLen = patternColorLen === 4 || patternColorLen === 7 || patternColorLen === 9;
 
-        if (!pngUrl || !isBackgroundLen || !isPatternLen) return;
+        if (!text.length || !isBackgroundLen || !isPatternLen) return;
 
         handleSubmit();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [qrOpts.color?.dark, qrOpts.color?.light, qrOpts.margin]);
+    }, [text, qrOpts.color?.dark, qrOpts.color?.light, qrOpts.margin]);
 
     return (
         <>
             <main className="flex flex-wrap sm:gap-0 gap-8 p-4 min-h-screen bg-[var(--clr-bg-300)]">
                 <section className="flex flex-col flex-[2.5] items-center sm:justify-center xl:gap-24 gap-8">
-                    <form className="flex flex-col items-center justify-center gap-8 px-2 w-full" onSubmit={handleSubmit}>
+                    <form className="flex flex-col items-center justify-center gap-8 px-2 w-full">
                         <h1
                             style={{ fontSize: "clamp(7rem, 14vw, 12rem)" }}
                             className={`${underdog.variable} font-underdog text-center text-white sm:leading-none md:mb-10`}
@@ -229,9 +232,11 @@ const QRCodePage: NextPage = () => {
                                 //     onChange={handleChangeFile}
                                 // />
                             }
-                            <Button type="submit" className={`button border-white text-white`}>
-                                boop
-                            </Button>
+                            {
+                                // <Button type="submit" className={`button border-white text-white`}>
+                                //     boop
+                                // </Button>
+                            }
                         </div>
                     </form>
                     <div className="flex flex-wrap justify-center gap-4">
@@ -279,6 +284,7 @@ const QRCodePage: NextPage = () => {
                 </section>
                 <section className="flex flex-col flex-[1] justify-center gap-8">
                     <div className="flex flex-col items-center justify-center sm:gap-8 gap-4 flex-[1]">
+                        <p ref={signInAlertRef} className="invisible text-lg text-yellow-300 animate-bounce">please sign in</p>
                         <canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-[var(--clr-bg-500)]" />
                         <div className="flex justify-around items-center gap-4">
                             <a
@@ -296,7 +302,9 @@ const QRCodePage: NextPage = () => {
                                 {loading ? "on it..." : "svg"}
                             </Button>
                         </div>
-                        <p className={`text-3xl ${!pngUrl ? "invisible" : ""}`}>🚀</p>
+                        <p className={`text-3xl ${!pngUrl ? "invisible" : ""}`}>
+                            🚀
+                        </p>
                     </div>
                 </section>
             </main>
