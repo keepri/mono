@@ -28,14 +28,10 @@
         "concurrently": "^7.4.0",
         "eslint-config-custom": "*",
         "prettier": "latest",
-        "prisma": "^4.13.0",
         "turbo": "^1.9.3"
     },
     "engines": {
         "node": "^16.0.0"
     },
-    "packageManager": "npm@8.19.2",
-    "dependencies": {
-        "@prisma/client": "^4.13.0"
-    }
+    "packageManager": "npm@8.19.2"
 }
