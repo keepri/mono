@@ -5,26 +5,37 @@ import { getTextBytes, makeCode } from "@utils/helpers";
 import { origin, underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
-import { createRef, type FormEvent, useCallback, useEffect, useState, startTransition, ChangeEventHandler } from "react";
+import { createRef, type FormEvent, useCallback, useEffect, useState, startTransition, ChangeEventHandler, useMemo } from "react";
 
 const FILE_NAME = "gib_qr";
+
+function isHexCode(str: string): boolean {
+    if (str.charAt(0) !== "#" || !(str.length === 4 || str.length === 7 || str.length === 9)) {
+        return false;
+    }
+
+    for (let i = 1; i < str.length; i++) {
+        const charCode = str.charCodeAt(i);
+
+        if (
+            !(charCode >= 48 && charCode <= 57) && // 0-9
+            !(charCode >= 65 && charCode <= 70) && // A-F
+            !(charCode >= 97 && charCode <= 102) // a-f
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 const QRCodePage: NextPage = () => {
     const inputCache = typeof window !== "undefined" ? localStorage.getItem(Storage.qrInput) : undefined;
     const defaultInputText: string = inputCache ? JSON.parse(inputCache) : "";
-    const defaultMargin: number = 2;
-    const maxMargin: number = 7;
-    const defaultQrOptions = {
-        margin: typeof window !== "undefined" ? +(localStorage.getItem(Storage.qrMargin) || defaultMargin) : defaultMargin,
-        width: 200,
-        color: {
-            light: typeof window !== "undefined" ? localStorage.getItem(Storage.qrBackgroundColor) || "#ffffff" : "#ffffff",
-            dark: typeof window !== "undefined" ? localStorage.getItem(Storage.qrPatternColor) || "#000000" : "#000000",
-        },
-        rendererOpts: {
-            quality: 1,
-        },
-    } satisfies QRCodeToDataURLOptions;
+    const MAX_MARGIN: number = 7;
+    const DEFAULT_MARGIN: number = 2;
+    const DEFAULT_PATTERN_COLOR = "#000000";
+    const DEFAULT_BACKGROUND_COLOR = "#ffffff";
 
     const session = useSession();
     const isAuthenticated = session.status === "authenticated";
@@ -36,16 +47,63 @@ const QRCodePage: NextPage = () => {
     const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
-    const [qrOpts, setQrOpts] = useState<QRCodeToDataURLOptions>(defaultQrOptions);
-    const [transparent, setTransparent] = useState({ pattern: false, background: false });
+    const [qrPatternColor, setQrPatternColor] = useState<string>(
+        typeof window !== "undefined" ?
+            localStorage.getItem(Storage.qrPatternColor) || DEFAULT_PATTERN_COLOR :
+            DEFAULT_PATTERN_COLOR
+    );
+    const [qrBackgroundColor, setQrBackgroundColor] = useState<string>(
+        typeof window !== "undefined" ?
+            localStorage.getItem(Storage.qrBackgroundColor) || DEFAULT_BACKGROUND_COLOR :
+            DEFAULT_BACKGROUND_COLOR
+    );
+    const [qrMargin, setQrMargin] = useState<number>(
+        typeof window !== "undefined" ?
+            +(localStorage.getItem(Storage.qrMargin) || DEFAULT_MARGIN) :
+            DEFAULT_MARGIN
+    );
 
-    // const [selectedFile, setSelectedFile] = useState<File | null>(null); TODO
-    // const fileSize = useMemo(() => toKB(selectedFile?.size ?? -1), [selectedFile]);
+    const qrOpts: QRCodeToDataURLOptions = useMemo(() => {
+        return {
+            margin: qrMargin,
+            width: 270,
+            color: {
+                dark: qrPatternColor,
+                light: qrBackgroundColor,
+            },
+            rendererOpts: {
+                quality: 1,
+            },
+        };
+    }, [qrMargin, qrPatternColor, qrBackgroundColor]);
 
-    const handleToggleTransparent: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+    const handleToggleTransparent: ChangeEventHandler<HTMLInputElement> = (e) => {
         const name = e.target.name;
-        setTransparent((t) => ({ ...t, [name]: !t[name as keyof typeof transparent] }));
-    }, []);
+        const isPattern = name === "pattern";
+        const color = isPattern ? qrPatternColor : qrBackgroundColor;
+        const updateFunc = isPattern ? setQrPatternColor : setQrBackgroundColor;
+        const checked = e.target.checked;
+
+        if (!isHexCode(color)) return;
+
+        if (color.length === 4) {
+            if (!checked) return;
+            updateFunc(color + color.slice(1, 5) + "00");
+            return;
+        }
+
+        if (color.length === 7) {
+            if (!checked) return;
+            updateFunc(color + "00");
+            return;
+        }
+
+        if (color.length === 9) {
+            if (checked) return;
+            updateFunc(color.slice(0, 7));
+            return;
+        }
+    };
 
     const handleChangeInput: InputOnChange = useCallback((e) => {
         const name = e.target.name;
@@ -61,13 +119,13 @@ const QRCodePage: NextPage = () => {
         }
 
         if (name === "qr-margin") {
-            const parsed = value.at(0) === "-" ? 0 : Number(value.charAt(value.length - 1));
-            const isValid = isNaN(parsed) === false && parsed <= maxMargin && parsed >= 0;
-            setQrOpts((opts) => {
-                const margin: number = isValid ? parsed : opts.margin!;
-                localStorage.setItem(Storage.qrMargin, JSON.stringify(margin));
-                return { ...opts, margin };
-            });
+            const margin = value.at(0) === "-" ? 0 : Number(value.charAt(value.length - 1));
+            const isValid = isNaN(margin) === false && margin <= MAX_MARGIN && margin >= 0;
+
+            if (!isValid) return;
+
+            localStorage.setItem(Storage.qrMargin, JSON.stringify(margin));
+            setQrMargin(margin);
         }
 
         // colors block ---
@@ -76,11 +134,11 @@ const QRCodePage: NextPage = () => {
         }
         if (name === "qr-color-bg") {
             localStorage.setItem(Storage.qrBackgroundColor, value);
-            setQrOpts((opts) => ({ ...opts, color: { ...opts.color, light: value } }));
+            setQrBackgroundColor(value);
         }
         if (name === "qr-color") {
             localStorage.setItem(Storage.qrPatternColor, value);
-            setQrOpts((opts) => ({ ...opts, color: { ...opts.color, dark: value } }));
+            setQrPatternColor(value);
         }
         // colors block ---
     }, []);
@@ -200,17 +258,16 @@ const QRCodePage: NextPage = () => {
     );
 
     useEffect(() => {
-        const backgroudColorLen = qrOpts.color?.light?.length;
+        const backgroudColorLen = qrBackgroundColor.length;
         const isBackgroundLen = backgroudColorLen === 4 || backgroudColorLen === 7 || backgroudColorLen === 9;
 
-        const patternColorLen = qrOpts.color?.dark?.length;
+        const patternColorLen = qrPatternColor.length;
         const isPatternLen = patternColorLen === 4 || patternColorLen === 7 || patternColorLen === 9;
 
         if (!text.length || !isBackgroundLen || !isPatternLen) return;
 
         handleSubmit();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [text, qrOpts.color?.dark, qrOpts.color?.light, qrOpts.margin, transparent.pattern, transparent.background]);
+    }, [handleSubmit, qrBackgroundColor, qrPatternColor, text]);
 
     return (
         <>
@@ -252,14 +309,13 @@ const QRCodePage: NextPage = () => {
                                 label="pattern color"
                                 labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
                                 className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
-                                value={qrOpts.color!.dark?.toUpperCase()}
+                                value={qrPatternColor}
                                 placeholder="hex code"
                                 name="qr-color"
                                 onChange={handleChangeInput}
                             />
                             <Input
                                 type='checkbox'
-                                checked={transparent.pattern}
                                 label="transparent"
                                 labelclass="mt-2 text-white font-light select-none cursor-pointer"
                                 className="cursor-pointer"
@@ -272,14 +328,13 @@ const QRCodePage: NextPage = () => {
                                 label="background color"
                                 labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
                                 className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
-                                value={qrOpts.color!.light?.toUpperCase()}
+                                value={qrBackgroundColor}
                                 placeholder="hex code"
                                 name="qr-color-bg"
                                 onChange={handleChangeInput}
                             />
                             <Input
                                 type='checkbox'
-                                checked={transparent.background}
                                 label="transparent"
                                 labelclass="mt-2 text-white font-light select-none cursor-pointer"
                                 className="cursor-pointer"
@@ -292,7 +347,7 @@ const QRCodePage: NextPage = () => {
                             label="margin"
                             labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
                             className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
-                            value={qrOpts.margin}
+                            value={qrMargin}
                             placeholder="background color"
                             name="qr-margin"
                             onChange={handleChangeInput}
