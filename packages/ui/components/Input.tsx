@@ -39,15 +39,46 @@ export const Input = forwardRef<HTMLInputElement, PropsWithRef<Props>>(
             [index, onChange]
         );
 
-        if (type.toLowerCase() === "file") {
+        if (type.toLowerCase() === "checkbox") {
+            if (label) {
+                return (
+                    <label className={`${labelclass} flex flex-wrap items-center gap-2`} htmlFor={id}>
+                        <input
+                            id={id}
+                            ref={ref}
+                            type="checkbox"
+                            value={value}
+                            className={className}
+                            onChange={handleChange}
+                            {...rest}
+                        />
+                        {label}
+                    </label>
+                );
+            }
 
+            return (
+                <input
+                    id={id}
+                    ref={ref}
+                    type="checkbox"
+                    value={value}
+                    className={className}
+                    onChange={handleChange}
+                    {...rest}
+                />
+            );
+        }
+
+        if (type.toLowerCase() === "file") {
+            // this is wrong, change it
             return (
                 <label className={`input-base ${labelclass}`} htmlFor={id}>
                     {label ?? "gib file"}
                     <input
                         id={id}
                         ref={ref}
-                        type={type}
+                        type="file"
                         value={value}
                         className={className}
                         onChange={handleChange}

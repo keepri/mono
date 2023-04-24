@@ -5,7 +5,7 @@ import { getTextBytes, makeCode } from "@utils/helpers";
 import { origin, underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
-import { createRef, type FormEvent, useCallback, useEffect, useState, startTransition } from "react";
+import { createRef, type FormEvent, useCallback, useEffect, useState, startTransition, ChangeEventHandler } from "react";
 
 const FILE_NAME = "gib_qr";
 
@@ -33,13 +33,19 @@ const QRCodePage: NextPage = () => {
     const signInAlertRef = createRef<HTMLParagraphElement>();
 
     const [text, setText] = useState<string>(defaultInputText);
-    // const [selectedFile, setSelectedFile] = useState<File | null>(null); TODO
     const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
     const [qrOpts, setQrOpts] = useState<QRCodeToDataURLOptions>(defaultQrOptions);
+    const [transparent, setTransparent] = useState({ pattern: false, background: false });
 
+    // const [selectedFile, setSelectedFile] = useState<File | null>(null); TODO
     // const fileSize = useMemo(() => toKB(selectedFile?.size ?? -1), [selectedFile]);
+
+    const handleToggleTransparent: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+        const name = e.target.name;
+        setTransparent((t) => ({ ...t, [name]: !t[name as keyof typeof transparent] }));
+    }, []);
 
     const handleChangeInput: InputOnChange = useCallback((e) => {
         const name = e.target.name;
@@ -103,7 +109,7 @@ const QRCodePage: NextPage = () => {
                 signInAlertRef.current?.classList.toggle("invisible");
                 setTimeout(() => {
                     signInAlertRef.current?.classList.toggle("invisible");
-                }, 2000);
+                }, 2769);
                 return;
             }
 
@@ -204,7 +210,7 @@ const QRCodePage: NextPage = () => {
 
         handleSubmit();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [text, qrOpts.color?.dark, qrOpts.color?.light, qrOpts.margin]);
+    }, [text, qrOpts.color?.dark, qrOpts.color?.light, qrOpts.margin, transparent.pattern, transparent.background]);
 
     return (
         <>
@@ -241,24 +247,46 @@ const QRCodePage: NextPage = () => {
                         </div>
                     </form>
                     <div className="flex flex-wrap justify-center gap-4">
-                        <Input
-                            label="pattern color"
-                            labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
-                            className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
-                            value={qrOpts.color!.dark?.toUpperCase()}
-                            placeholder="hex code"
-                            name="qr-color"
-                            onChange={handleChangeInput}
-                        />
-                        <Input
-                            label="background color"
-                            labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
-                            className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
-                            value={qrOpts.color!.light?.toUpperCase()}
-                            placeholder="hex code"
-                            name="qr-color-bg"
-                            onChange={handleChangeInput}
-                        />
+                        <span>
+                            <Input
+                                label="pattern color"
+                                labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
+                                className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
+                                value={qrOpts.color!.dark?.toUpperCase()}
+                                placeholder="hex code"
+                                name="qr-color"
+                                onChange={handleChangeInput}
+                            />
+                            <Input
+                                type='checkbox'
+                                checked={transparent.pattern}
+                                label="transparent"
+                                labelclass="mt-2 text-white font-light select-none cursor-pointer"
+                                className="cursor-pointer"
+                                name="pattern"
+                                onChange={handleToggleTransparent}
+                            />
+                        </span>
+                        <span>
+                            <Input
+                                label="background color"
+                                labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
+                                className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
+                                value={qrOpts.color!.light?.toUpperCase()}
+                                placeholder="hex code"
+                                name="qr-color-bg"
+                                onChange={handleChangeInput}
+                            />
+                            <Input
+                                type='checkbox'
+                                checked={transparent.background}
+                                label="transparent"
+                                labelclass="mt-2 text-white font-light select-none cursor-pointer"
+                                className="cursor-pointer"
+                                name="background"
+                                onChange={handleToggleTransparent}
+                            />
+                        </span>
                         <Input
                             type="number"
                             label="margin"
