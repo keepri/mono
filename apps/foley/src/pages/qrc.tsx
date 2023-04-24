@@ -86,15 +86,12 @@ const QRCodePage: NextPage = () => {
 
         if (!isHexCode(color)) return;
 
-<<<<<<< HEAD
-=======
         if (color.length === 4) {
             if (!checked) return;
             updateFunc(color + color.slice(1, 5) + "00");
             return;
         }
 
->>>>>>> 2de9527ab07377af5a2021d2aad7ac3a8c23a19c
         if (color.length === 7) {
             if (!checked) return;
             updateFunc(color + "00");
