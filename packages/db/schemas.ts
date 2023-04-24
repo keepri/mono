@@ -2,7 +2,8 @@ import { z } from "zod";
 
 export enum StatusSmol {
     active = "active",
-    inactive = "inactive"
+    inactive = "inactive",
+    another = "nothing",
 }
 
 export const SmolSchema = z.object({
