@@ -85,7 +85,8 @@ const QRCodePage: NextPage = () => {
         const checked = e.target.checked;
 
         if (!isHexCode(color)) return;
-
+        // eslint-disable-next-line @typescript-eslint/no-extra-semi
+        ;
         if (color.length === 4) {
             if (!checked) return;
             updateFunc(`#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`);
