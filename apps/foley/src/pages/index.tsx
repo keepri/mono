@@ -10,7 +10,7 @@ const IndexPage: NextPage = () => {
                 <a
                     href="mailto:hi@kipri.dev"
                     style={{ fontSize: "clamp(4rem, 15vw, 18rem)" }}
-                    className={`relative text-[var(--clr-white)] sm:font-bold text-center px-4 ${londrinaSketch.variable} font-londrina-sketch leading-none sm:whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors max-[365px]:max-w-[11rem]`}
+                    className={`relative text-[var(--clr-white)] text-center px-4 ${londrinaSketch.variable} font-londrina-sketch leading-none sm:whitespace-nowrap hover:text-[var(--clr-bg-500)] transition-colors max-[365px]:max-w-[11rem]`}
                 >
                     <span className="text-5xl leading-none">hi @ </span>
                     KIPRI
