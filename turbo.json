@@ -11,7 +11,8 @@
             ],
             "outputs": [
                 "prisma/generated/**"
-            ]
+            ],
+            "cache": false
         },
         "db:push": {
             "inputs": [
