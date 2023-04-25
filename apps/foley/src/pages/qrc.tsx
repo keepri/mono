@@ -10,7 +10,7 @@ import { createRef, type FormEvent, useCallback, useEffect, useState, startTrans
 const FILE_NAME = "gib_qr";
 
 function isHexCode(str: string): boolean {
-    if (str.charAt(0) !== "#" || !(str.length === 7 || str.length === 9)) {
+    if (str.charAt(0) !== "#" || !(str.length === 4 || str.length === 7 || str.length === 9)) {
         return false;
     }
 
@@ -88,7 +88,7 @@ const QRCodePage: NextPage = () => {
 
         if (color.length === 4) {
             if (!checked) return;
-            updateFunc(color + color.slice(1, 5) + "00");
+            updateFunc(`#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`);
             return;
         }
 
