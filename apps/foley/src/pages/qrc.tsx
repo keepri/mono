@@ -33,7 +33,7 @@ const QRCodePage: NextPage = () => {
     const inputCache = typeof window !== "undefined" ? localStorage.getItem(Storage.qrInput) : undefined;
     const defaultInputText: string = inputCache ? JSON.parse(inputCache) : "";
     const MAX_MARGIN: number = 7;
-    const DEFAULT_MARGIN: number = 1;
+    const DEFAULT_MARGIN: number = 2;
     const DEFAULT_PATTERN_COLOR = "#000000";
     const DEFAULT_BACKGROUND_COLOR = "#ffffff";
 
