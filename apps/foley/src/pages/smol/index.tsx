@@ -3,6 +3,7 @@ import { URLS } from "@declarations/enums";
 import { origin, underdog } from "@utils/misc";
 import type { NextPage } from "next/types";
 import { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import { generateErrorMessage } from "zod-error";
 
 // interface Props {}
 
@@ -25,12 +26,13 @@ const SmolPage: NextPage = () => {
             const parsed = urlSchema.safeParse(url);
 
             if (!parsed.success) {
-                console.warn("invalid url");
+                const message = generateErrorMessage(parsed.error.issues);
+                console.warn("invalid url", message);
                 setLoading(false);
                 return;
             }
 
-            const fetchUrl = `${origin}/api${URLS.SMOL}/create`;
+            const fetchUrl = `${origin}/api${URLS.SMOL}/create` as const;
 
             try {
                 const data = await (
@@ -60,9 +62,9 @@ const SmolPage: NextPage = () => {
     );
 
     return (
-        <section className="grid place-content-center place-items-center leading-tight min-h-screen px-4 bg-[var(--clr-bg-300)]">
+        <section className="grid place-items-center place-content-center leading-tight min-h-screen p-4 bg-[var(--clr-bg-300)]">
             <h1
-                style={{ fontSize: "clamp(7rem, 14vw, 12rem)" }}
+                style={{ fontSize: "clamp(4rem, 14vw, 12rem)" }}
                 className={`${underdog.variable} font-underdog text-center text-white leading-none`}
             >
                 make smol
@@ -93,7 +95,7 @@ const SmolPage: NextPage = () => {
             >
                 <Input
                     placeholder="gib text, link or good vibes"
-                    className={`w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed`}
+                    className={`w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4`}
                     value={url}
                     onChange={handleChangeUrl}
                 />

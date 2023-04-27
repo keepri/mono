@@ -284,7 +284,7 @@ const QRCodePage: NextPage = () => {
                             name="qr-input"
                             placeholder="gib text, link or good vibes"
                             value={text}
-                            className={`max-w-[25rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-offset-8 focus:outline-dashed`}
+                            className={`max-w-[25rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4`}
                             onChange={handleChangeInput}
                         />
                         <div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
@@ -295,11 +295,6 @@ const QRCodePage: NextPage = () => {
                                 //     labelclass="hidden text-white font-nixie-one hover:bg-[var(--clr-bg-500)] hover:border-[var(--clr-orange)] active:bg-[var(--clr-orange)] active:border-[var(--clr-bg-500)] active:text-white active:scale-110"
                                 //     onChange={handleChangeFile}
                                 // />
-                            }
-                            {
-                                // <Button type="submit" className={`button border-white text-white`}>
-                                //     boop
-                                // </Button>
                             }
                         </div>
                     </form>
