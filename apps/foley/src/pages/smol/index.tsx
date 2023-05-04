@@ -62,7 +62,7 @@ const SmolPage: NextPage = () => {
     );
 
     return (
-        <section className="grid place-items-center place-content-center leading-tight min-h-screen p-4 bg-[var(--clr-bg-300)]">
+        <section className="grid place-items-center place-content-center leading-tight min-h-screen p-4 bg-gradient-to-t from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
             <h1
                 style={{ fontSize: "clamp(4rem, 14vw, 12rem)" }}
                 className={`${underdog.variable} font-underdog text-center text-white leading-none`}

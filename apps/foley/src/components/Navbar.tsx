@@ -4,15 +4,17 @@ import { type HTMLAttributes } from "react";
 import Auth from "./Auth";
 
 type Props = HTMLAttributes<HTMLElement>;
-
+// bg-gradient-to-br from-[var(--clr-bg-300)] to-[var(--clr-bg-500)]
 export default function Navbar({ className, ...rest }: Props): JSX.Element {
     return (
         <nav
-            className={`${className ? className : ""} container sticky top-0 flex flex-wrap items-center max-sm:justify-around justify-between gap-4 py-4 px-6 bg-[var(--clr-bg-500)]`}
+            className={`${className ? className : ""} sticky top-0 py-4 px-6 bg-[var(--clr-bg-500)]`}
             {...rest}
         >
-            <Logo />
-            <Auth />
+            <div className="container flex flex-wrap items-center max-sm:justify-around justify-between gap-4">
+                <Logo />
+                <Auth />
+            </div>
         </nav>
     );
 }
