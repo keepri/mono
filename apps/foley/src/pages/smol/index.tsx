@@ -80,7 +80,7 @@ const SmolPage: NextPage = () => {
 
             <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
                 <p className="mb-4 text-lg text-yellow-300 animate-bounce">
-                    please sign in.
+                    please sign in
                 </p>
             </LoadingBounce>
 
