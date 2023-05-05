@@ -18,7 +18,8 @@ export default function Auth(): JSX.Element {
         try {
             setLoading(true);
             await signIn(provider);
-        } catch ({ message }) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch ({ message }: any) {
             setLoading(false);
             console.error("can't sign in", message);
         }
@@ -28,7 +29,8 @@ export default function Auth(): JSX.Element {
         try {
             setLoading(true);
             await signOut();
-        } catch ({ message }) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch ({ message }: any) {
             setLoading(false);
             console.error("can't sign out", message);
         }

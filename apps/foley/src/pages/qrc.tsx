@@ -205,7 +205,8 @@ const QRCodePage: NextPage = () => {
                     console.error(message);
                 });
             });
-        } catch ({ message, stack }) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch ({ message, stack }: any) {
             setLoading(false);
             console.warn(stack);
             console.error("could not download svg", message);
