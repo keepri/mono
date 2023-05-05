@@ -1,8 +1,10 @@
 import { prisma, Smol } from "@clfxc/db";
+import { type AsyncReturnType } from "@clfxc/services/utils";
 import { URLS } from "@declarations/enums";
 import { UrlSchema } from "@declarations/schemas";
+import { createSmol } from "@utils/helpers";
 import { protocol, siteHost } from "@utils/misc";
-import { NextApiRequest, NextApiResponse } from "next/types";
+import { type NextApiRequest, type NextApiResponse } from "next/types";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     const urlParse = UrlSchema.safeParse(req.body["url"]);
@@ -41,7 +43,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const smolLink = `${protocol + siteHost}${URLS.SMOL}/${slug}`;
     const short = `${siteHost}${URLS.SMOL}/${slug}`;
 
-    res.status(200).json({ smol: smolLink, short });
+    res.status(200).json({ smol: smolLink, short } satisfies AsyncReturnType<typeof createSmol>);
     return;
 };
 
