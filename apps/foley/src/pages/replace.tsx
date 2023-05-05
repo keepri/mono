@@ -82,8 +82,8 @@ const ReplaceTextPage: NextPage = () => {
 
     return (
         <div className="grid sm:grid-cols-[minmax(0,_20rem),_1fr] grid-flow-row h-screen overflow-y-hidden">
-            <aside className="relative flex flex-col flex-1 gap-2.5 p-2 overflow-y-scroll bg-gradient-to-t from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
-                <div className="sticky top-0 bg-[var(--clr-bg-300)] py-[.15em]">
+            <aside className="relative flex flex-col flex-1 gap-2.5 p-2 overflow-y-scroll bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
+                <div className="sticky top-0 bg-[var(--clr-bg-500)] py-[.15em]">
                     <Button className="button w-full my-1 border-white text-white" onClick={handleAddReplacePair}>
                         +
                     </Button>
@@ -95,10 +95,10 @@ const ReplaceTextPage: NextPage = () => {
                     replaceValue={declarations[0].replaceValue}
                     label1="replace"
                     label2="with"
-                    wrapperClass="p-2 bg-[var(--clr-bg-500)] border border-[var(--clr-orange)] rounded-md"
+                    wrapperClass="p-2 bg-[var(--clr-bg-500)] border border-white rounded-md"
                     button1Class="text-white border-white"
                     button2Class="text-white border-white"
-                    className="w-full bg-[var(--clr-bg-500)] border boder-white text-white"
+                    className="w-full bg-[var(--clr-bg-500)] border border-white text-white"
                     labelClass="text-white"
                     onChange={handleChangeReplacePair}
                     clear={handleClearReplacePair}
@@ -127,7 +127,7 @@ const ReplaceTextPage: NextPage = () => {
                             )
                     )}
             </aside>
-            <section className="flex flex-col gap-2 p-2 bg-gradient-to-t from-[var(--clr-bg-500)] to-[var(--clr-bg-300)] min-h-[67vh]">
+            <section className="flex flex-col gap-2 p-2 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)] min-h-[67vh]">
                 <Textarea
                     className="flex-1 border border-white text-white bg-[var(--clr-bg-500)]"
                     placeholder="Input"
