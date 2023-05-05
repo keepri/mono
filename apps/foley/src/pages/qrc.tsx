@@ -5,7 +5,16 @@ import { getTextBytes, makeCode } from "@utils/helpers";
 import { origin, underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
-import { createRef, type FormEvent, useCallback, useEffect, useState, startTransition, ChangeEventHandler, useMemo } from "react";
+import {
+    createRef,
+    useCallback,
+    useEffect,
+    useState,
+    startTransition,
+    useMemo,
+    type FormEvent,
+    type ChangeEventHandler,
+} from "react";
 
 const FILE_NAME = "gib_qr";
 
@@ -365,7 +374,7 @@ const QRCodePage: NextPage = () => {
                 <section className="flex flex-col flex-[1] justify-center gap-8">
                     <div className="flex flex-col items-center justify-center sm:gap-8 gap-4 flex-[1]">
                         <p ref={signInAlertRef} className="invisible text-lg text-yellow-300 animate-bounce">please sign in</p>
-                        <canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-[var(--clr-bg-500)]" />
+                        <canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-gradient-to-br from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]" />
                         <div className="flex justify-around items-center gap-4">
                             <a
                                 href={pngUrl ?? "#"}
