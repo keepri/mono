@@ -19,6 +19,6 @@
     "devDependencies": {
         "prisma": "^4.13.0",
         "tsconfig": "*",
-        "typescript": "^4.9.5"
+        "typescript": "^5.0.4"
     }
 }
