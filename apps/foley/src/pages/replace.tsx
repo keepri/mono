@@ -115,10 +115,10 @@ const ReplaceTextPage: NextPage = () => {
                                     replaceValue={replaceValue}
                                     label1="replace"
                                     label2="with"
-                                    wrapperClass={`p-2 bg-[var(--clr-bg-500)] border border-[var(--clr-orange)] rounded-md`}
+                                    wrapperClass={`p-2 bg-[var(--clr-bg-500)] border border-white rounded-md`}
                                     button1Class="text-white border-white"
                                     button2Class="text-white border-white"
-                                    className="w-full bg-[var(--clr-bg-500)] border boder-white text-white"
+                                    className="w-full bg-[var(--clr-bg-500)] border border-white text-white"
                                     labelClass="text-white"
                                     onChange={handleChangeReplacePair}
                                     clear={handleClearReplacePair}
