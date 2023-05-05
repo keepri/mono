@@ -1,13 +1,17 @@
 import { Button, Input, Spinner } from "@clfxc/ui";
-import { URLS } from "@declarations/enums";
-import { origin, underdog } from "@utils/misc";
-import type { NextPage } from "next/types";
-import { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import LoadingBounce from "@components/Loading/LoadingBounce";
+import { createSmol } from "@utils/helpers";
+import { underdog } from "@utils/misc";
+import { useSession } from "next-auth/react";
+import { type NextPage } from "next/types";
+import { type ChangeEvent, type FormEvent, useCallback, useState, startTransition } from "react";
 import { generateErrorMessage } from "zod-error";
 
-// interface Props {}
-
 const SmolPage: NextPage = () => {
+    const session = useSession();
+    const isAuthenticated = session.status === "authenticated";
+
+    const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [url, setUrl] = useState<string>("");
     const [smol, setSmol] = useState<string>("");
@@ -20,10 +24,21 @@ const SmolPage: NextPage = () => {
     const handleMakeSmol = useCallback(
         async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            setLoading(true);
 
+            if (!isAuthenticated) {
+                setAlertSignIn(true);
+                startTransition(() => {
+                    setTimeout(() => {
+                        setAlertSignIn(false);
+                    }, 2769);
+                });
+                return;
+            }
+
+            setLoading(true);
             const urlSchema = (await import("@declarations/schemas")).UrlSchema;
             const parsed = urlSchema.safeParse(url);
+
 
             if (!parsed.success) {
                 const message = generateErrorMessage(parsed.error.issues);
@@ -32,18 +47,8 @@ const SmolPage: NextPage = () => {
                 return;
             }
 
-            const fetchUrl = `${origin}/api${URLS.SMOL}/create` as const;
-
             try {
-                const data = await (
-                    await fetch(fetchUrl, {
-                        method: "POST",
-                        body: JSON.stringify({ url }),
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    })
-                ).json();
+                const data = await createSmol(url);
 
                 if ("message" in data) {
                     setChill("take a chill pill");
@@ -53,12 +58,13 @@ const SmolPage: NextPage = () => {
 
                 setSmol(data?.smol ?? "#");
                 setLoading(false);
-            } catch (error) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch ({ message }: any) {
                 setLoading(false);
-                console.log("something went wrong", error);
+                console.log("something went wrong", message);
             }
         },
-        [url]
+        [isAuthenticated, url]
     );
 
     return (
@@ -71,6 +77,12 @@ const SmolPage: NextPage = () => {
             </h1>
 
             <Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? "invisible" : ""}`} />
+
+            <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
+                <p className="mb-4 text-lg text-yellow-300 animate-bounce">
+                    please sign in
+                </p>
+            </LoadingBounce>
 
             {Boolean(smol.length) && !loading && (
                 <>

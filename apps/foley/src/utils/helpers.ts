@@ -1,7 +1,8 @@
 import { ErrorStatusSchema, SmolSchema, StatusSmol, SuccessStatusSchema } from "@clfxc/db/schemas";
-import { createQRCode, QRCode } from "@clfxc/services/qr";
+import { createQRCode, type QRCode } from "@clfxc/services/qr";
 import { AcceptedFileTypeSchema } from "@declarations/schemas";
-import { ValidateFileReturn } from "@declarations/types";
+import { URLS } from "@declarations/enums";
+import { type ValidateFileReturn } from "@declarations/types";
 import { z } from "zod";
 import { generateErrorMessage } from "zod-error";
 
@@ -113,4 +114,22 @@ export async function getSmolBySlug<SlugType extends string, OptionsType extends
     }
 
     return { status: 200, smol: parsed.data };
+}
+
+export async function createSmol(url: string): Promise<{ message: string } | {
+    short: string,
+    smol: string,
+}> {
+    const fetchUrl = `${origin}/api${URLS.SMOL}/create` as const;
+    const data = await (
+        await fetch(fetchUrl, {
+            method: "POST",
+            body: JSON.stringify({ url }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+    ).json();
+
+    return data;
 }

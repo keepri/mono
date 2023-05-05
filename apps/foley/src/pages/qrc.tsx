@@ -1,5 +1,6 @@
-import { QRCodeToDataURLOptions, toDataURL } from "@clfxc/services/qr";
-import { Button, Input, InputOnChange } from "@clfxc/ui";
+import { type QRCodeToDataURLOptions, toDataURL } from "@clfxc/services/qr";
+import { Button, Input, type InputOnChange } from "@clfxc/ui";
+import LoadingBounce from "@components/Loading/LoadingBounce";
 import { Storage } from "@declarations/enums";
 import { getTextBytes, makeCode } from "@utils/helpers";
 import { origin, underdog } from "@utils/misc";
@@ -50,8 +51,8 @@ const QRCodePage: NextPage = () => {
     const isAuthenticated = session.status === "authenticated";
 
     const canvasRef = createRef<HTMLCanvasElement>();
-    const signInAlertRef = createRef<HTMLParagraphElement>();
 
+    const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
     const [text, setText] = useState<string>(defaultInputText);
     const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -173,9 +174,9 @@ const QRCodePage: NextPage = () => {
     const handleSvgDownload = useCallback(async () => {
         try {
             if (!isAuthenticated) {
-                signInAlertRef.current?.classList.toggle("invisible");
+                setAlertSignIn(true);
                 setTimeout(() => {
-                    signInAlertRef.current?.classList.toggle("invisible");
+                    setAlertSignIn(false);
                 }, 2769);
                 return;
             }
@@ -220,7 +221,7 @@ const QRCodePage: NextPage = () => {
             console.warn(stack);
             console.error("could not download svg", message);
         }
-    }, [isAuthenticated, qrOpts, signInAlertRef, svgUriCache, text]);
+    }, [isAuthenticated, qrOpts, svgUriCache, text]);
 
     const handleSubmit = useCallback(
         async (e?: FormEvent<HTMLFormElement>) => {
@@ -373,7 +374,11 @@ const QRCodePage: NextPage = () => {
                 </section>
                 <section className="flex flex-col flex-[1] justify-center gap-8">
                     <div className="flex flex-col items-center justify-center sm:gap-8 gap-4 flex-[1]">
-                        <p ref={signInAlertRef} className="invisible text-lg text-yellow-300 animate-bounce">please sign in</p>
+                        <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
+                            <p className="text-lg text-yellow-300">
+                                please sign in
+                            </p>
+                        </LoadingBounce>
                         <canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-gradient-to-br from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]" />
                         <div className="flex justify-around items-center gap-4">
                             <a
