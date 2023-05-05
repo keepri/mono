@@ -94,7 +94,7 @@ const SmolPage: NextPage = () => {
                         href={smol}
                         rel="noreferrer"
                     >
-                        {chill ? chill : String(smol?.split("://")[1])}
+                        {chill.length ? chill : String(smol?.split("://")[1])}
                         <br />
                     </a>
                     <span className="text-[var(--clr-bg-500)] text-center font-bold mb-3">/|\ ^._.^ /|\</span>

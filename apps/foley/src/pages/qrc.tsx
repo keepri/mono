@@ -52,6 +52,7 @@ const QRCodePage: NextPage = () => {
 
     const canvasRef = createRef<HTMLCanvasElement>();
 
+    const [chill, setChill] = useState<string>("");
     const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
     const [text, setText] = useState<string>(defaultInputText);
     const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
@@ -203,6 +204,13 @@ const QRCodePage: NextPage = () => {
                     body: JSON.stringify({ data: text, options: qrOpts }),
                 }).then(async (res) => {
                     const qrCode = await res.json();
+
+                    if ("message" in qrCode) {
+                        setChill("take a chill pill");
+                        setLoading(false);
+                        return;
+                    }
+
                     linkTag.href = qrCode.uri;
                     linkTag.download = FILE_NAME;
                     linkTag.click();
@@ -279,6 +287,11 @@ const QRCodePage: NextPage = () => {
 
         handleSubmit();
     }, [handleSubmit, qrBackgroundColor, qrPatternColor, text]);
+
+    useEffect(() => {
+        if (!chill.length) return;
+        setTimeout(() => setChill(""), 7419);
+    }, [chill.length]);
 
     return (
         <>
@@ -374,9 +387,12 @@ const QRCodePage: NextPage = () => {
                 </section>
                 <section className="flex flex-col flex-[1] justify-center gap-8">
                     <div className="flex flex-col items-center justify-center sm:gap-8 gap-4 flex-[1]">
-                        <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
+                        <LoadingBounce
+                            enabled={alertSignIn || Boolean(chill.length)}
+                            className={alertSignIn || Boolean(chill.length) ? undefined : "invisible"}
+                        >
                             <p className="text-lg text-yellow-300">
-                                please sign in
+                                {alertSignIn ? "please sign in" : chill.length ? chill : "🦀"}
                             </p>
                         </LoadingBounce>
                         <canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-gradient-to-br from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]" />
