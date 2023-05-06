@@ -18,10 +18,9 @@ export default NextAuth({
         // }),
     ],
     callbacks: {
-        session: async ({ session, user }) => {
+        session: ({ session, user }) => {
             if (session.user) {
-                const sess = { ...session, user: { ...session.user, id: user.id } };
-                return sess;
+                session.user.id = user.id;
             }
 
             return session;

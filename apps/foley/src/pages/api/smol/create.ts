@@ -1,20 +1,24 @@
-import { prisma, Smol } from "@clfxc/db";
+import { prisma, type Smol } from "@clfxc/db";
 import { type AsyncReturnType } from "@clfxc/services/utils";
 import { URLS } from "@declarations/enums";
 import { UrlSchema } from "@declarations/schemas";
-import { createSmol } from "@utils/helpers";
+import { fetchCreateSmol, makeLetterMix, validateHeadersSession } from "@utils/helpers";
 import { protocol, siteHost } from "@utils/misc";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-    const urlParse = UrlSchema.safeParse(req.body["url"]);
+    const url = UrlSchema.safeParse(req.body?.url);
 
-    if (!urlParse.success) {
+    if (!url.success) {
         res.status(400).json({ message: "invalid body sent" });
         return;
     }
 
-    const url = urlParse.data;
+    const session = await validateHeadersSession(req.headers);
+    if (!session || session.expires.getTime() < Date.now()) {
+        return res.status(401).send("invalid session");
+    }
+
     let slug: string;
     let exists: boolean = false;
 
@@ -29,13 +33,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (typeof slug !== "string") {
         console.warn("something went wrong when generating new slug");
+        console.warn(`user: ${session.userId} session token: ${session.sessionToken}`);
         return;
     }
 
-    const smol: Pick<Smol, "url" | "status" | "slug"> = {
-        url,
+    const smol: Omit<Smol, "id"> = {
+        userId: session.userId,
         status: "active",
         slug,
+        url: url.data,
+        accessed: 0,
+        updatedAt: new Date(),
+        createdAt: new Date(),
     };
 
     await prisma.smol.create({ data: smol });
@@ -43,24 +52,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const smolLink = `${protocol + siteHost}${URLS.SMOL}/${slug}`;
     const short = `${siteHost}${URLS.SMOL}/${slug}`;
 
-    res.status(200).json({ smol: smolLink, short } satisfies AsyncReturnType<typeof createSmol>);
-    return;
+    console.log(`created shortened link for user: ${session.userId} with slug: ${slug}`);
+
+    return res.status(200).json({ smol: smolLink, short } satisfies AsyncReturnType<typeof fetchCreateSmol>);
 };
-
-function getRandom(upTo?: number) {
-    const random = Math.floor(Math.random() * (upTo ?? 10));
-    return random;
-}
-
-const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" as const;
-function makeLetterMix(len: number) {
-    let mix: string = "";
-    for (let i = 0; i < len; i++) {
-        const letter = letters[getRandom(letters.length - 1)];
-        mix += letter;
-    }
-    return mix;
-}
 
 // Next api config
 export const config = {

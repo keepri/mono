@@ -1,7 +1,7 @@
 import { URLS } from "@declarations/enums";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { type NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(69, "10 s") });
 
@@ -50,6 +50,9 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
             res.headers.set("X-RateLimit-Reset", reset.toString());
             return res;
         }
+
+        // TODO add session validation for predefined vec of routes
+        // atm session validation happens separately
     }
 
 

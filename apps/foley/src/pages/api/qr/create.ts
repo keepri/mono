@@ -3,6 +3,7 @@ import { toFile } from "@clfxc/services/qr";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 import { z } from "zod";
 import { generateErrorMessage } from "zod-error";
+import { validateHeadersSession } from "@utils/helpers";
 
 const fileName = "i_gib";
 const defaultMargin: number = 2;
@@ -21,7 +22,6 @@ const BodySchema = z.object({
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") return res.status(405).json({ message: "unsupported method" });
-
     const bodyParse = BodySchema.safeParse(req.body);
 
     if (!bodyParse.success) {
@@ -29,20 +29,29 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(401).json({ message });
     }
 
+    const session = await validateHeadersSession(req.headers);
+    if (!session) {
+        console.warn("could not validate session for headers:", req.headers);
+        return res.status(401).json({ message: "could not validate session" });
+    }
+
+    console.log(`user ${session.userId} has created a svg`);
+
     const { data, options } = bodyParse.data;
     const encoder = new TextEncoder();
     const dataEncoded = encoder.encode(data);
     const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
 
     if (bytes >= 2953) {
-        console.warn(bytes, "qr code data too big");
-        res.status(401).json({ message: "too big" });
-        return;
+        console.warn("data too big:", bytes, "bytes sent. user:", session.userId);
+        return res.status(401).json({ message: "too big" });
     }
 
     const filePath = `/tmp/${fileName}_${Date.now()}.svg`;
     await toFile(filePath, data, options);
     const url = readFileSync(filePath, { encoding: "base64" });
-    res.status(200).json({ message: "success", uri: "data:image/svg+xml;base64," + url });
-    return;
+
+    console.log(`created qr code for user: ${session.userId}`);
+
+    return res.status(200).json({ message: "success", uri: "data:image/svg+xml;base64," + url });
 };

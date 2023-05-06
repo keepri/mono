@@ -2,7 +2,7 @@ import { type QRCodeToDataURLOptions, toDataURL } from "@clfxc/services/qr";
 import { Button, Input, type InputOnChange } from "@clfxc/ui";
 import LoadingBounce from "@components/Loading/LoadingBounce";
 import { Storage } from "@declarations/enums";
-import { getTextBytes, makeCode } from "@utils/helpers";
+import { getTextBytes, isHexCode, makeCode } from "@utils/helpers";
 import { origin, underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
@@ -18,26 +18,6 @@ import {
 } from "react";
 
 const FILE_NAME = "gib_qr";
-
-function isHexCode(str: string): boolean {
-    if (str.charAt(0) !== "#" || !(str.length === 4 || str.length === 7 || str.length === 9)) {
-        return false;
-    }
-
-    for (let i = 1; i < str.length; i++) {
-        const charCode = str.charCodeAt(i);
-
-        if (
-            !(charCode >= 48 && charCode <= 57) && // 0-9
-            !(charCode >= 65 && charCode <= 70) && // A-F
-            !(charCode >= 97 && charCode <= 102) // a-f
-        ) {
-            return false;
-        }
-    }
-
-    return true;
-}
 
 const QRCodePage: NextPage = () => {
     const inputCache = typeof window !== "undefined" ? localStorage.getItem(Storage.qrInput) : undefined;
@@ -202,6 +182,7 @@ const QRCodePage: NextPage = () => {
                     headers,
                     method: "POST",
                     body: JSON.stringify({ data: text, options: qrOpts }),
+                    credentials: "same-origin",
                 }).then(async (res) => {
                     const qrCode = await res.json();
 

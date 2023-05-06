@@ -1,6 +1,6 @@
 import { Button, Input, Spinner } from "@clfxc/ui";
 import LoadingBounce from "@components/Loading/LoadingBounce";
-import { createSmol } from "@utils/helpers";
+import { fetchCreateSmol } from "@utils/helpers";
 import { underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
@@ -48,7 +48,7 @@ const SmolPage: NextPage = () => {
             }
 
             try {
-                const data = await createSmol(url);
+                const data = await fetchCreateSmol(url);
 
                 if ("message" in data) {
                     setChill("take a chill pill");
@@ -79,7 +79,7 @@ const SmolPage: NextPage = () => {
             <Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? "invisible" : ""}`} />
 
             <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
-                <p className="mb-4 text-lg text-yellow-300 animate-bounce">
+                <p className="mb-4 text-lg text-yellow-300">
                     please sign in
                 </p>
             </LoadingBounce>

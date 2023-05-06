@@ -5,6 +5,8 @@ import { URLS } from "@declarations/enums";
 import { type ValidateFileReturn } from "@declarations/types";
 import { z } from "zod";
 import { generateErrorMessage } from "zod-error";
+import { IncomingHttpHeaders } from "http";
+import { Session } from "@clfxc/db";
 
 export function validateFile(file: File | undefined, maxFileSize?: number): ValidateFileReturn {
     if (!file) return { ok: false };
@@ -116,7 +118,27 @@ export async function getSmolBySlug<SlugType extends string, OptionsType extends
     return { status: 200, smol: parsed.data };
 }
 
-export async function createSmol(url: string): Promise<{ message: string } | {
+export function isHexCode(str: string): boolean {
+    if (str.charAt(0) !== "#" || !(str.length === 4 || str.length === 7 || str.length === 9)) {
+        return false;
+    }
+
+    for (let i = 1; i < str.length; i++) {
+        const charCode = str.charCodeAt(i);
+
+        if (
+            !(charCode >= 48 && charCode <= 57) && // 0-9
+            !(charCode >= 65 && charCode <= 70) && // A-F
+            !(charCode >= 97 && charCode <= 102) // a-f
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+export async function fetchCreateSmol(url: string): Promise<{ message: string } | {
     short: string,
     smol: string,
 }> {
@@ -128,8 +150,41 @@ export async function createSmol(url: string): Promise<{ message: string } | {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "same-origin",
         })
     ).json();
 
     return data;
+}
+
+export async function getSessionByToken(sessionToken: string): Promise<Session | null> {
+    const prisma = await import("@clfxc/db").then((res) => res.prisma);
+    const session = await prisma.session.findFirst({ where: { sessionToken } });
+    if (!session) return null;
+    return session;
+}
+
+export function getRandom(upTo?: number) {
+    const random = Math.floor(Math.random() * (upTo ?? 10));
+    return random;
+}
+
+const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" as const;
+export function makeLetterMix(len: number) {
+    let mix: string = "";
+    for (let i = 0; i < len; i++) {
+        const letter = letters[getRandom(letters.length - 1)];
+        mix += letter;
+    }
+    return mix;
+}
+
+export async function validateHeadersSession(headers: IncomingHttpHeaders): Promise<Session | null> {
+    const getCookieParser = await import("next/dist/server/api-utils").then((res) => res.getCookieParser);
+    const cookies = getCookieParser(headers);
+    const sessionToken = cookies()["next-auth.session-token"];
+    if (!sessionToken) return null;
+    const session = await getSessionByToken(sessionToken);
+    if (!session || session.expires.getTime() < Date.now()) return null;
+    return session;
 }

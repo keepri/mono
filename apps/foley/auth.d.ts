@@ -4,9 +4,11 @@ import {
     type Account as DefaultAccount,
     type Profile as DefaultProfile,
 } from "next-auth/core/types";
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth/core/types" {
     interface Session {
+        jwt?: JWT;
         user?: {
             id?: string;
         } & DefaultSession["user"];
