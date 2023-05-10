@@ -1,4 +1,4 @@
-import { getSmolBySlug, validateHeadersSession } from "@utils/helpers";
+import { getSmolBySlug, validateSession } from "@utils/helpers";
 import type { NextApiRequest, NextApiResponse } from "next/types";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -7,8 +7,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).json({ message: "slug not valid" });
     }
 
-    const session = await validateHeadersSession(req.headers);
-    if (!session || session.expires.getTime() < Date.now()) {
+    const session = await validateSession(req.headers);
+    if (!session) {
         return res.status(401).json({ message: "could not validate session" });
     }
 

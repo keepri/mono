@@ -2,7 +2,7 @@ import { prisma, type Smol } from "@clfxc/db";
 import { type AsyncReturnType } from "@clfxc/services/utils";
 import { URLS } from "@declarations/enums";
 import { UrlSchema } from "@declarations/schemas";
-import { fetchCreateSmol, makeLetterMix, validateHeadersSession } from "@utils/helpers";
+import { fetchCreateSmol, makeLetterMix, validateSession } from "@utils/helpers";
 import { protocol, siteHost } from "@utils/misc";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 
@@ -14,8 +14,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return;
     }
 
-    const session = await validateHeadersSession(req.headers);
-    if (!session || session.expires.getTime() < Date.now()) {
+    const session = await validateSession(req.headers);
+    if (!session) {
         return res.status(401).send("invalid session");
     }
 

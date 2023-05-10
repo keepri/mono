@@ -179,7 +179,7 @@ export function makeLetterMix(len: number) {
     return mix;
 }
 
-export async function validateHeadersSession(headers: IncomingHttpHeaders): Promise<Session | null> {
+export async function validateSession(headers: IncomingHttpHeaders): Promise<Session | null> {
     const getCookieParser = await import("next/dist/server/api-utils").then((res) => res.getCookieParser);
     const cookies = getCookieParser(headers);
     const sessionToken = cookies()["next-auth.session-token"];

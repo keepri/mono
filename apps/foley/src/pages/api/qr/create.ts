@@ -3,7 +3,7 @@ import { toFile } from "@clfxc/services/qr";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 import { z } from "zod";
 import { generateErrorMessage } from "zod-error";
-import { validateHeadersSession } from "@utils/helpers";
+import { validateSession } from "@utils/helpers";
 
 const fileName = "i_gib";
 const defaultMargin: number = 2;
@@ -29,7 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(401).json({ message });
     }
 
-    const session = await validateHeadersSession(req.headers);
+    const session = await validateSession(req.headers);
     if (!session) {
         console.warn("could not validate session for headers:", req.headers);
         return res.status(401).json({ message: "could not validate session" });
