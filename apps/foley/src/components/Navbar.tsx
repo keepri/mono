@@ -14,14 +14,14 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
             className={`${className ? className : ""} sticky top-0 py-4 px-6 bg-[var(--clr-bg-500)]`}
             {...rest}
         >
-            <div className="container flex flex-wrap items-center max-sm:justify-around gap-4">
+            <div className="container flex flex-wrap items-center max-sm:justify-around max-sm:gap-6 gap-4">
                 <Logo />
                 <section className="flex flex-wrap justify-center gap-6 px-4">
                     <Link className={linkClasses} href={URLS.SMOL}>smol</Link>
                     <Link className={linkClasses} href={URLS.QR}>qr</Link>
                     <Link className={linkClasses} href={URLS.REPLACE}>replace</Link>
                 </section>
-                <Auth className="ml-auto" />
+                <Auth className="sm:ml-auto" />
             </div>
         </nav>
     );
