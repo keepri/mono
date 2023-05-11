@@ -39,7 +39,7 @@ export default function Auth(): JSX.Element {
     return (
         <>
             <span className={`flex flex-col ${isAuthenticated ? "gap-[.27rem]" : "gap-1"}`}>
-                <span className={!isAuthenticated && !loading ? "hidden" : "flex flex-wrap items-center justify-end gap-4"}>
+                <span className={!isAuthenticated && !loading ? "hidden" : "flex flex-wrap items-center justify-end gap-2"}>
                     <LoadingBounce enabled={loading} className="justify-end">
                         <p className="max-w-[35ch] text-white text-center font-medium whitespace-nowrap overflow-x-hidden text-ellipsis">
                             hi, {session.data?.user?.name ?? "u"}
