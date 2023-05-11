@@ -72,7 +72,7 @@ export async function getSmolBySlug<SlugType extends string, OptionsType extends
     let result: unknown | null = null;
 
     if (options?.client === true) {
-        const url = `${options.origin}/api/smol/${slug}`;
+        const url = `${options.origin}${URLS.API_SMOL}/${slug}`;
         const smolRes = await fetch(url);
         const smolJson = (await smolRes.json()) as PickedSmol | { message: string };
 
@@ -179,7 +179,7 @@ export function makeLetterMix(len: number) {
     return mix;
 }
 
-export async function validateSession(headers: IncomingHttpHeaders): Promise<Session | null> {
+export async function validateSessionApiRequest(headers: IncomingHttpHeaders): Promise<Session | null> {
     const getCookieParser = await import("next/dist/server/api-utils").then((res) => res.getCookieParser);
     const cookies = getCookieParser(headers);
     const sessionToken = cookies()["next-auth.session-token"];
