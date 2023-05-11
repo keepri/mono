@@ -1,41 +1,16 @@
 import { URLS } from "@declarations/enums";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { type NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { type NextFetchEvent, type NextRequest, NextResponse } from "next/server";
 
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(69, "10 s") });
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
-    const { pathname } = req.nextUrl;
-    const origin = req.nextUrl.origin;
-    const pathSplit = pathname.split("/");
-    pathSplit.splice(0, 1);
-    const pathSplitLen = pathSplit.length;
-    const slug = pathSplit.pop();
+    const onSmolRedirect = req.nextUrl.pathname.startsWith(`${URLS.SMOL}/`) && req.nextUrl.pathname.length > `${URLS.SMOL}/`.length;
+    const onApi = req.nextUrl.pathname.startsWith("/api/");
 
-    const onSmolRedirect = pathname.startsWith(URLS.SMOL) && Boolean(slug?.length) && pathSplitLen === 2;
-    const onApi = pathname.startsWith("/api/");
-
-    // early escape
-    if (!onSmolRedirect && !onApi) {
-        return NextResponse.next();
-    }
-
-    // smol pages
-    if (onSmolRedirect) {
-        if (typeof slug !== "string") {
-            return NextResponse.json({ message: "invalid slug" });
-        }
-
-        const getSmolBySlug = (await import("@utils/helpers")).getSmolBySlug;
-        const smolRes = await getSmolBySlug(slug, { client: true, origin });
-
-        if ("message" in smolRes) {
-            return NextResponse.json({ message: smolRes.message });
-        }
-
-        return NextResponse.redirect(smolRes.smol.url);
-    }
+    // early escape?
+    if (!onSmolRedirect && !onApi) return NextResponse.next();
 
     // all api endpoints
     if (onApi) {
@@ -44,7 +19,7 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
         ev.waitUntil(pending);
 
         if (!success) {
-            const res = NextResponse.json({ message: "chill" });
+            const res = NextResponse.json({ yo: "chill" });
             res.headers.set("X-RateLimit-Limit", limit.toString());
             res.headers.set("X-RateLimit-Remaining", remaining.toString());
             res.headers.set("X-RateLimit-Reset", reset.toString());
@@ -53,8 +28,27 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 
         // TODO add session validation for predefined vec of routes
         // atm session validation happens separately
+
+        return NextResponse.next();
     }
 
+    // smol pages
+    if (onSmolRedirect) {
+        const slugSmol = req.nextUrl.pathname.split("/").at(-1);
 
-    return NextResponse.next();
+        if (slugSmol) {
+            const getSmolBySlug = (await import("@utils/helpers")).getSmolBySlug;
+            const smolRes = await getSmolBySlug(slugSmol, { client: true, origin: req.nextUrl.origin });
+
+            if ("message" in smolRes) {
+                return NextResponse.json({ oops: smolRes.message });
+            }
+
+            return NextResponse.redirect(smolRes.smol.url);
+        }
+
+        return NextResponse.rewrite(URLS.SMOL);
+    }
+
+    return NextResponse.error();
 }
