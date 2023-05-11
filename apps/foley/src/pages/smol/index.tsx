@@ -68,7 +68,7 @@ const SmolPage: NextPage = () => {
     );
 
     return (
-        <section className="flex flex-col items-center justify-center gap-8 leading-tight min-h-screen p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
+        <section className="flex flex-col items-center justify-center gap-8 leading-tight min-h-[85vh] p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
             <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
                 <p className="text-lg text-yellow-300">
                     please sign in

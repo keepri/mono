@@ -276,7 +276,7 @@ const QRCodePage: NextPage = () => {
 
     return (
         <>
-            <main className="flex flex-wrap sm:gap-4 gap-8 p-4 min-h-screen bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
+            <main className="flex flex-wrap sm:gap-4 gap-8 p-4 min-h-[85vh] bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
                 <section className="flex flex-col flex-[2.5] items-center sm:justify-center xl:gap-24 gap-8">
                     <form className="flex flex-col items-center justify-center gap-8 px-2 w-full">
                         <div className="flex max-sm:flex-wrap items-end justify-center mb-4 max-sm:gap-2 text-center text-white leading-none">

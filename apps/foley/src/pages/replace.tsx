@@ -81,7 +81,7 @@ const ReplaceTextPage: NextPage = () => {
     }, [handleSubmit]);
 
     return (
-        <div className="grid sm:grid-cols-[minmax(0,_20rem),_1fr] grid-flow-row h-screen overflow-y-hidden">
+        <div className="grid sm:grid-cols-[minmax(0,_20rem),_1fr] grid-flow-row min-h-[85vh] overflow-y-hidden">
             <aside className="relative flex flex-col flex-1 gap-2.5 p-2 overflow-y-scroll bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
                 <div className="sticky top-0 bg-[var(--clr-bg-500)] py-[.15em]">
                     <Button className="button w-full my-1 border-white text-white" onClick={handleAddReplacePair}>
@@ -135,7 +135,7 @@ const ReplaceTextPage: NextPage = () => {
                     onChange={handleInputChange}
                 />
                 <Textarea
-                    className="flex-1 border border-white text-white bg-[var(--clr-bg-500)]"
+                    className="flex-[2] border border-white text-white bg-[var(--clr-bg-500)]"
                     placeholder="Output"
                     value={output}
                     onChange={handleOutputChange}

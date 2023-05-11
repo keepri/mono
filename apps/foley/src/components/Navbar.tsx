@@ -11,7 +11,7 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
 
     return (
         <nav
-            className={`${className ? className : ""} sticky top-0 py-4 px-6 bg-[var(--clr-bg-500)]`}
+            className={`${className ? className : ""} sticky top-0 flex items-center py-4 px-6 min-h-[15vh] bg-[var(--clr-bg-500)]`}
             {...rest}
         >
             <div className="container flex flex-wrap items-center max-sm:justify-around max-sm:gap-6 gap-4">
