@@ -4,8 +4,8 @@ export function GitHub({ className, width, height, ...rest }: SVGProps<SVGSVGEle
     return (
         <svg
             className={`${className ? className : ""} group-hover:fill-[var(--clr-orange)] fill-white cursor-pointer`}
-            width={width ?? "35px"}
-            height={height ?? "35px"}
+            width={width ?? "30px"}
+            height={height ?? "30px"}
             viewBox="0 0 24 24"
             fill="white"
             xmlns="http://www.w3.org/2000/svg"
