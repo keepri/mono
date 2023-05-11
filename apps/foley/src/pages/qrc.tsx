@@ -284,7 +284,7 @@ const QRCodePage: NextPage = () => {
                                 style={{ fontSize: "clamp(6rem, 19vw, 14rem)" }}
                                 className={`${underdog.variable} font-underdog`}
                             >
-                                qr.
+                                qr
                             </h1>
                             <p className="max-sm:mt-4">code generator</p>
                         </div>
