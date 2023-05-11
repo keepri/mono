@@ -1,5 +1,3 @@
-import { Link } from "@clfxc/ui/components/Link";
-import { URLS } from "@declarations/enums";
 import { londrinaSketch } from "@utils/misc";
 import { type NextPage } from "next/types";
 
@@ -16,17 +14,6 @@ const IndexPage: NextPage = () => {
                     KIPRI
                     <span className="text-5xl leading-none"> . dev</span>
                 </a>
-                <section className={`flex flex-wrap justify-center gap-4`}>
-                    <Link style={{ color: "white" }} className={`button border-white`} href={URLS.REPLACE}>
-                        replace
-                    </Link>
-                    <Link style={{ color: "white" }} className={`button border-white`} href={URLS.SMOL}>
-                        smol
-                    </Link>
-                    <Link style={{ color: "white" }} className={`button border-white`} href={URLS.QR}>
-                        qr
-                    </Link>
-                </section>
             </section>
         </>
     );
