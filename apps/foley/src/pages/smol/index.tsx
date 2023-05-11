@@ -68,21 +68,24 @@ const SmolPage: NextPage = () => {
     );
 
     return (
-        <section className="flex flex-col items-center justify-center leading-tight min-h-screen p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
-            <h1
-                style={{ fontSize: "clamp(4rem, 14vw, 12rem)" }}
-                className={`${underdog.variable} font-underdog text-center text-white leading-none`}
-            >
-                make smol
-            </h1>
-
-            <Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? "invisible" : ""}`} />
-
+        <section className="flex flex-col items-center justify-center gap-8 leading-tight min-h-screen p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
             <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
-                <p className="mb-4 text-lg text-yellow-300">
+                <p className="text-lg text-yellow-300">
                     please sign in
                 </p>
             </LoadingBounce>
+
+            <div className="text-center text-white leading-none">
+                <h1
+                    style={{ fontSize: "clamp(5rem, 19vw, 14rem)" }}
+                    className={`${underdog.variable} font-underdog`}
+                >
+                    smol
+                </h1>
+                <p>shorten link</p>
+            </div>
+
+            <Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? "hidden" : ""}`} />
 
             {Boolean(smol.length) && !loading && (
                 <>

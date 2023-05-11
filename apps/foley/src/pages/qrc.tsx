@@ -276,15 +276,19 @@ const QRCodePage: NextPage = () => {
 
     return (
         <>
-            <main className="flex flex-wrap sm:gap-0 gap-8 p-4 min-h-screen bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
+            <main className="flex flex-wrap sm:gap-4 gap-8 p-4 min-h-screen bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
                 <section className="flex flex-col flex-[2.5] items-center sm:justify-center xl:gap-24 gap-8">
                     <form className="flex flex-col items-center justify-center gap-8 px-2 w-full">
-                        <h1
-                            style={{ fontSize: "clamp(7rem, 14vw, 12rem)" }}
-                            className={`${underdog.variable} font-underdog text-center text-white sm:leading-none md:mb-10`}
-                        >
-                            qr
-                        </h1>
+                        <div className="flex max-sm:flex-wrap items-end justify-center mb-4 max-sm:gap-2 text-center text-white leading-none">
+                            <h1
+                                style={{ fontSize: "clamp(6rem, 19vw, 14rem)" }}
+                                className={`${underdog.variable} font-underdog`}
+                            >
+                                qr
+                            </h1>
+                            <p className="max-sm:mt-4">code generator</p>
+                        </div>
+
                         <Input
                             name="qr-input"
                             placeholder="gib text, link or good vibes"
@@ -292,6 +296,7 @@ const QRCodePage: NextPage = () => {
                             className={`max-w-[25rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4`}
                             onChange={handleChangeInput}
                         />
+
                         <div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
                             {
                                 //     <Input
@@ -303,6 +308,7 @@ const QRCodePage: NextPage = () => {
                             }
                         </div>
                     </form>
+
                     <div className="flex flex-wrap justify-center gap-4">
                         <span>
                             <Input
@@ -323,6 +329,7 @@ const QRCodePage: NextPage = () => {
                                 onChange={handleToggleTransparent}
                             />
                         </span>
+
                         <span>
                             <Input
                                 label="background color"
@@ -342,6 +349,7 @@ const QRCodePage: NextPage = () => {
                                 onChange={handleToggleTransparent}
                             />
                         </span>
+
                         <Input
                             type="number"
                             label="margin"
