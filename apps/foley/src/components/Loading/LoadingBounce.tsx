@@ -10,7 +10,7 @@ export default function LoadingBounce({ children, enabled = true, className, ...
     const font = londrinaSketch.variable + " font-londrina-sketch";
 
     return (
-        <span className={`flex gap-1 ${className ? className : ""}`} {...rest}>
+        <span className={`flex items-center justify-center gap-1 ${className ? className : ""}`} {...rest}>
             <span
                 ref={(dotOne) => setTimeout(() => enabled && dotOne?.classList.add("animate-bounce"), 342.69)}
                 className={`${!enabled ? "hidden" : ""} ${font} m-0 p-0 text-xl text-white leading-none`}
