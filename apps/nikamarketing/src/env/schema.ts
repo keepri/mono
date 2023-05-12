@@ -25,7 +25,6 @@ export const serverScheme = z
         AUTH_TRUST_HOST: z.string().optional(),
         DATABASE_URL: z.string(),
     })
-    // TODO: remove .partial() if using the service
     // .merge(githubScheme)
     // .merge(discordScheme)
     .merge(upstashScheme.partial());

@@ -11,7 +11,7 @@ function defineNextConfig(config) {
 }
 
 export default defineNextConfig({
-    transpilePackages: ["@clfxc/ui", "@clfxc/services", "@clfxc/db"],
+    transpilePackages: ["@clfxc/ui", "@clfxc/qr", "@clfxc/utils", "@clfxc/db"],
     distDir: join(dirname("."), ".next"),
     reactStrictMode: true,
     env: serverEnv,

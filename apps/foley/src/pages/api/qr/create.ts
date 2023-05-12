@@ -1,9 +1,9 @@
+import { toFile } from "@clfxc/qr";
+import { validateSessionApiRequest } from "@utils/helpers";
 import { readFileSync } from "fs";
-import { toFile } from "@clfxc/services/qr";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 import { z } from "zod";
 import { generateErrorMessage } from "zod-error";
-import { validateSessionApiRequest } from "@utils/helpers";
 
 const fileName = "i_gib";
 const defaultMargin: number = 2;
@@ -17,7 +17,7 @@ const BodySchema = z.object({
             light: z.string().startsWith("#").default("#ffffff"),
             dark: z.string().startsWith("#").default("#000000"),
         }),
-    })
+    }),
 });
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

@@ -1,9 +1,9 @@
 import { prisma, type Smol } from "@clfxc/db";
-import { type AsyncReturnType } from "@clfxc/services/utils";
-import { URLS } from "@declarations/enums";
-import { UrlSchema } from "@declarations/schemas";
-import { fetchCreateSmol, makeLetterMix, validateSessionApiRequest } from "@utils/helpers";
+import { makeLetterMix, type AsyncReturnType } from "@clfxc/utils";
+import { URLS } from "@utils/enums";
+import { fetchCreateSmol, validateSessionApiRequest } from "@utils/helpers";
 import { protocol, siteHost } from "@utils/misc";
+import { UrlSchema } from "@utils/schemas";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

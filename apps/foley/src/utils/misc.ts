@@ -1,6 +1,6 @@
-import { Underdog, Nixie_One, Londrina_Sketch, Inconsolata } from "next/font/google";
-import { Langs } from "@declarations/enums";
-import { CookieSerializeOptions } from "@declarations/types";
+import { Langs } from "@utils/enums";
+import { CookieOptions } from "@utils/types";
+import { Inconsolata, Londrina_Sketch, Nixie_One, Underdog } from "next/font/google";
 
 export const inconsolata = Inconsolata({
     weight: ["300", "400", "500", "700"],
@@ -43,7 +43,7 @@ export const host = isProduction ? siteHost : "localhost";
 export const origin = protocol + (isProduction ? host : host + port);
 
 // COOKIES
-export const defaultCookieOptions: CookieSerializeOptions = {
+export const defaultCookieOptions: CookieOptions = {
     secure: isProduction,
     httpOnly: true,
     sameSite: isProduction ? "strict" : "lax",

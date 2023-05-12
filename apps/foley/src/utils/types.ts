@@ -1,5 +1,4 @@
-import { AccountType, Currency, FileType, ImageType, PaymentProvider, StateStatus } from "@declarations/enums";
-import { ZodError } from "zod";
+import { AccountType, Currency, PaymentProvider, StateStatus } from "@utils/enums";
 
 export type User = {
     uid: string;
@@ -30,25 +29,13 @@ export type Question = {
 };
 
 // COOKIES
-export type CookieSerializeOptions = {
+export type CookieOptions = {
     /**
      * Specifies the value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.3|Domain Set-Cookie attribute}. By default, no
      * domain is set, and most clients will consider the cookie to apply to only
      * the current domain.
      */
     domain?: string | undefined;
-
-    /**
-     * Specifies a function that will be used to encode a cookie's value. Since
-     * value of a cookie has a limited character set (and must be a simple
-     * string), this function can be used to encode a value into a string suited
-     * for a cookie's value.
-     *
-     * The default function is the global `encodeURIComponent`, which will
-     * encode a JavaScript string into UTF-8 byte sequences and then URL-encode
-     * any that fall outside of the cookie range.
-     */
-    encode?(value: string): string;
 
     /**
      * Specifies the `Date` object to be the value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.1|`Expires` `Set-Cookie` attribute}. By default,
@@ -61,6 +48,7 @@ export type CookieSerializeOptions = {
      * point to the same date and time.
      */
     expires?: Date | undefined;
+
     /**
      * Specifies the boolean value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.6|`HttpOnly` `Set-Cookie` attribute}.
      * When truthy, the `HttpOnly` attribute is set, otherwise it is not. By
@@ -70,6 +58,7 @@ export type CookieSerializeOptions = {
      * not allow client-side JavaScript to see the cookie in `document.cookie`.
      */
     httpOnly?: boolean | undefined;
+
     /**
      * Specifies the number (in seconds) to be the value for the `Max-Age`
      * `Set-Cookie` attribute. The given number will be converted to an integer
@@ -81,11 +70,13 @@ export type CookieSerializeOptions = {
      * point to the same date and time.
      */
     maxAge?: number | undefined;
+
     /**
      * Specifies the value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.4|`Path` `Set-Cookie` attribute}.
      * By default, the path is considered the "default path".
      */
     path?: string | undefined;
+
     /**
      * Specifies the `string` to be the value for the [`Priority` `Set-Cookie` attribute][rfc-west-cookie-priority-00-4.1].
      *
@@ -100,6 +91,7 @@ export type CookieSerializeOptions = {
      * This also means many clients may ignore this attribute until they understand it.
      */
     priority?: "low" | "medium" | "high" | undefined;
+
     /**
      * Specifies the boolean or string to be the value for the {@link https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-03#section-4.1.2.7|`SameSite` `Set-Cookie` attribute}.
      *
@@ -118,6 +110,7 @@ export type CookieSerializeOptions = {
      * *note* This is an attribute that has not yet been fully standardized, and may change in the future. This also means many clients may ignore this attribute until they understand it.
      */
     sameSite?: true | false | "lax" | "strict" | "none" | undefined;
+
     /**
      * Specifies the boolean value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.5|`Secure` `Set-Cookie` attribute}. When truthy, the
      * `Secure` attribute is set, otherwise it is not. By default, the `Secure` attribute is not set.
@@ -128,7 +121,3 @@ export type CookieSerializeOptions = {
      */
     secure?: boolean | undefined;
 };
-
-export type ValidateFileReturn =
-    | { file: File; ok: true; error?: undefined }
-    | { file?: undefined; ok: false; error?: ZodError<ImageType | FileType> | "file too big" };

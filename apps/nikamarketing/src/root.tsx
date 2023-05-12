@@ -17,6 +17,7 @@ export default function Root(): JSXElement {
                 <Link rel="icon" href="/favicon.ico" />
             </Head>
             <Body>
+                {/** @ts-expect-error should be fixed with an @tanstack/solid-query package update */}
                 <trpc.Provider queryClient={queryClient}>
                     <Suspense>
                         <ErrorBoundary>

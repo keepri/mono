@@ -1,7 +1,6 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type Adapter } from "@auth/core/adapters";
-import { type SolidAuthConfig } from "@auth/solid-start";
-import { getSession } from "@auth/solid-start";
+import { getSession, type SolidAuthConfig } from "@auth/solid-start";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { createServerData$ } from "solid-start/server";
 import { serverEnv } from "~/env/server";
 import { prisma } from "~/server/db/client";
@@ -11,10 +10,7 @@ export const authOpts: SolidAuthConfig = {
         signIn() {
             const isAllowedToSignIn = !void 0;
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (!isAllowedToSignIn) {
-                return false;
-            }
-
+            if (!isAllowedToSignIn) return false;
             return true;
         },
         session({ session, user }) {

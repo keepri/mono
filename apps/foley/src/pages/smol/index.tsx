@@ -4,7 +4,7 @@ import { fetchCreateSmol } from "@utils/helpers";
 import { underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
-import { type ChangeEvent, type FormEvent, useCallback, useState, startTransition } from "react";
+import { startTransition, useCallback, useState, type ChangeEvent, type FormEvent } from "react";
 import { generateErrorMessage } from "zod-error";
 
 const SmolPage: NextPage = () => {
@@ -36,9 +36,8 @@ const SmolPage: NextPage = () => {
             }
 
             setLoading(true);
-            const urlSchema = (await import("@declarations/schemas")).UrlSchema;
+            const urlSchema = (await import("@utils/schemas")).UrlSchema;
             const parsed = urlSchema.safeParse(url);
-
 
             if (!parsed.success) {
                 const message = generateErrorMessage(parsed.error.issues);
@@ -70,16 +69,11 @@ const SmolPage: NextPage = () => {
     return (
         <section className="flex flex-col items-center justify-center gap-8 leading-tight min-h-[85vh] p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
             <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
-                <p className="text-lg text-yellow-300">
-                    please sign in
-                </p>
+                <p className="text-lg text-yellow-300">please sign in</p>
             </LoadingBounce>
 
             <div className="text-center text-white leading-none">
-                <h1
-                    style={{ fontSize: "clamp(5rem, 19vw, 14rem)" }}
-                    className={`${underdog.variable} font-underdog`}
-                >
+                <h1 style={{ fontSize: "clamp(5rem, 19vw, 14rem)" }} className={`${underdog.variable} font-underdog`}>
                     smol
                 </h1>
                 <p>shorten link</p>
@@ -114,11 +108,7 @@ const SmolPage: NextPage = () => {
                     value={url}
                     onChange={handleChangeUrl}
                 />
-                <Button
-                    type="submit"
-                    className={`button border-white text-white`}
-                    disabled={loading}
-                >
+                <Button type="submit" className={`button border-white text-white`} disabled={loading}>
                     boop
                 </Button>
             </form>

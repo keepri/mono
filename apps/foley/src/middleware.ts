@@ -1,12 +1,13 @@
-import { URLS } from "@declarations/enums";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { type NextFetchEvent, type NextRequest, NextResponse } from "next/server";
+import { URLS } from "@utils/enums";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(69, "10 s") });
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
-    const onSmolRedirect = req.nextUrl.pathname.startsWith(`${URLS.SMOL}/`) && req.nextUrl.pathname.length > `${URLS.SMOL}/`.length;
+    const onSmolRedirect =
+        req.nextUrl.pathname.startsWith(`${URLS.SMOL}/`) && req.nextUrl.pathname.length > `${URLS.SMOL}/`.length;
     const onApi = req.nextUrl.pathname.startsWith("/api/");
 
     // early escape?

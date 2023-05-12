@@ -1,18 +1,24 @@
-import { ErrorStatusSchema, SmolSchema, StatusSmol, SuccessStatusSchema } from "@clfxc/db/schemas";
-import { createQRCode, type QRCode } from "@clfxc/services/qr";
-import { AcceptedFileTypeSchema } from "@declarations/schemas";
-import { URLS } from "@declarations/enums";
-import { type ValidateFileReturn } from "@declarations/types";
-import { z } from "zod";
-import { generateErrorMessage } from "zod-error";
-import { IncomingHttpHeaders } from "http";
 import { Session } from "@clfxc/db";
+import { ErrorStatusSchema, SmolSchema, StatusSmol, SuccessStatusSchema } from "@clfxc/db/schemas";
+import { toMB } from "@clfxc/utils";
+import { FileType, ImageType, URLS } from "@utils/enums";
+import { AcceptedFileTypeSchema } from "@utils/schemas";
+import { IncomingHttpHeaders } from "http";
+import { ZodError, z } from "zod";
+import { generateErrorMessage } from "zod-error";
 
-export function validateFile(file: File | undefined, maxFileSize?: number): ValidateFileReturn {
+export function validateFile(
+    file: File | undefined,
+    maxFileSize?: number
+):
+    | { file: File; ok: true; error?: undefined }
+    | { file?: undefined; ok: false; error?: ZodError<ImageType | FileType> | "file too big" } {
     if (!file) return { ok: false };
+
     const fileType = AcceptedFileTypeSchema.safeParse(file.type);
+
     if (!fileType.success) {
-        console.warn(`invalid file type`);
+        console.warn("invalid file type");
         return { ok: false, error: fileType.error };
     }
 
@@ -25,39 +31,6 @@ export function validateFile(file: File | undefined, maxFileSize?: number): Vali
     }
 
     return { file, ok: true };
-}
-
-export function toMB(size: number): number {
-    if (typeof size !== "number") return -1;
-    return parseFloat((size / 1e6).toFixed(6));
-}
-export function toKB(size: number): number {
-    if (typeof size !== "number") return -1;
-    return parseFloat((size / 1e3).toFixed(6));
-}
-
-export function readFileAsDataUrl(file: Blob, callback: (e: ProgressEvent<FileReader>) => void): void {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = callback;
-}
-
-export function getTextBytes(data: string) {
-    const encoder = new TextEncoder();
-    const dataEncoded = encoder.encode(data);
-    const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
-    return bytes;
-}
-
-export async function makeCode(data: string): Promise<QRCode> {
-    const { ok, code: newCode, error } = await createQRCode(data);
-
-    if (!ok) {
-        console.error("failed making qr code");
-        throw error;
-    }
-
-    return newCode;
 }
 
 const PickedSchema = SmolSchema.pick({ id: true, status: true, url: true });
@@ -118,30 +91,13 @@ export async function getSmolBySlug<SlugType extends string, OptionsType extends
     return { status: 200, smol: parsed.data };
 }
 
-export function isHexCode(str: string): boolean {
-    if (str.charAt(0) !== "#" || !(str.length === 4 || str.length === 7 || str.length === 9)) {
-        return false;
-    }
-
-    for (let i = 1; i < str.length; i++) {
-        const charCode = str.charCodeAt(i);
-
-        if (
-            !(charCode >= 48 && charCode <= 57) && // 0-9
-            !(charCode >= 65 && charCode <= 70) && // A-F
-            !(charCode >= 97 && charCode <= 102) // a-f
-        ) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-export async function fetchCreateSmol(url: string): Promise<{ message: string } | {
-    short: string,
-    smol: string,
-}> {
+export async function fetchCreateSmol(url: string): Promise<
+    | { message: string }
+    | {
+          short: string;
+          smol: string;
+      }
+> {
     const fetchUrl = `${origin}/api${URLS.SMOL}/create` as const;
     const data = await (
         await fetch(fetchUrl, {
@@ -162,21 +118,6 @@ export async function getSessionByToken(sessionToken: string): Promise<Session |
     const session = await prisma.session.findFirst({ where: { sessionToken } });
     if (!session) return null;
     return session;
-}
-
-export function getRandom(upTo?: number) {
-    const random = Math.floor(Math.random() * (upTo ?? 10));
-    return random;
-}
-
-const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" as const;
-export function makeLetterMix(len: number) {
-    let mix: string = "";
-    for (let i = 0; i < len; i++) {
-        const letter = letters[getRandom(letters.length - 1)];
-        mix += letter;
-    }
-    return mix;
 }
 
 export async function validateSessionApiRequest(headers: IncomingHttpHeaders): Promise<Session | null> {

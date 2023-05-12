@@ -1,16 +1,14 @@
 module.exports = {
-    "env": {
-        "browser": true
+    env: {
+        browser: true,
     },
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "project": "./tsconfig.json"
+    parser: "@typescript-eslint/parser",
+    parserOptions: {
+        project: "./tsconfig.json",
+        tsconfigRootDir: __dirname,
     },
-    "plugins": [
-        "@typescript-eslint",
-        "solid"
-    ],
-    "extends": [
+    plugins: ["@typescript-eslint", "solid"],
+    extends: [
         "airbnb-base",
         "airbnb-typescript/base",
         "eslint:recommended",
@@ -19,15 +17,15 @@ module.exports = {
         "plugin:solid/typescript",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "plugin:@typescript-eslint/strict"
+        "plugin:@typescript-eslint/strict",
     ],
-    "rules": {
+    rules: {
         "import/prefer-default-export": "off",
         "import/extensions": [
             "warn",
             {
-                "js": "never"
-            }
+                js: "never",
+            },
         ],
         "no-underscore-dangle": "off",
         "no-console": "off",
@@ -35,16 +33,13 @@ module.exports = {
         "prettier/prettier": [
             "error",
             {
-                "endOfLine": "auto"
-            }
+                endOfLine: "auto",
+            },
         ],
         "react-hooks/exhaustive-deps": "warn",
         "react-hooks/rules-of-hooks": "off",
         "@typescript-eslint/unbound-method": "off",
-        "@typescript-eslint/consistent-type-definitions": [
-            "error",
-            "type"
-        ],
+        "@typescript-eslint/consistent-type-definitions": ["error", "type"],
         "@typescript-eslint/consistent-type-imports": "warn",
         "@typescript-eslint/no-unsafe-assignment": "off",
         "@typescript-eslint/no-explicit-any": "off",
@@ -53,48 +48,40 @@ module.exports = {
         "@typescript-eslint/no-empty-interface": [
             "warn",
             {
-                "allowSingleExtends": true
-            }
+                allowSingleExtends: true,
+            },
         ],
-        "quotes": [
+        quotes: [
             "warn",
             "double",
             {
-                "avoidEscape": true,
-                "allowTemplateLiterals": true
-            }
+                avoidEscape: true,
+                allowTemplateLiterals: true,
+            },
         ],
-        "semi": [
-            "error",
-            "always"
-        ],
+        semi: ["error", "always"],
         "max-len": [
             "warn",
             {
-                "code": 121,
-                "ignoreComments": true,
-                "ignoreStrings": true,
-                "ignoreTemplateLiterals": true,
-                "ignoreRegExpLiterals": true
-            }
+                code: 121,
+                ignoreComments: true,
+                ignoreStrings: true,
+                ignoreTemplateLiterals: true,
+                ignoreRegExpLiterals: true,
+            },
         ],
-        "indent": [
+        indent: [
             "warn",
             4,
             {
-                "SwitchCase": 1,
-                "VariableDeclarator": 2,
-                "ignoredNodes": [
-                    "ConditionalExpression"
-                ]
-            }
+                SwitchCase: 1,
+                VariableDeclarator: 2,
+                ignoredNodes: ["ConditionalExpression"],
+            },
         ],
         "no-void": "off",
-        "no-empty-pattern": [
-            "warn"
-        ],
-        "no-mixed-spaces-and-tabs": "off"
+        "no-empty-pattern": ["warn"],
+        "no-mixed-spaces-and-tabs": "off",
     },
-    "ignorePatterns": ["**/*.cjs", "**/*.mjs"]
-}
-
+    ignorePatterns: ["**/*.cjs", "**/*.mjs"],
+};

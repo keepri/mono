@@ -1,20 +1,20 @@
-import { type QRCodeToDataURLOptions, toDataURL } from "@clfxc/services/qr";
+import { makeCode, toDataURL, type QRCodeToDataURLOptions } from "@clfxc/qr";
 import { Button, Input, type InputOnChange } from "@clfxc/ui";
+import { getTextBytes, isHexCode } from "@clfxc/utils";
 import LoadingBounce from "@components/Loading/LoadingBounce";
-import { Storage } from "@declarations/enums";
-import { getTextBytes, isHexCode, makeCode } from "@utils/helpers";
+import { Storage } from "@utils/enums";
 import { origin, underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
 import {
     createRef,
+    startTransition,
     useCallback,
     useEffect,
-    useState,
-    startTransition,
     useMemo,
-    type FormEvent,
+    useState,
     type ChangeEventHandler,
+    type FormEvent,
 } from "react";
 
 const FILE_NAME = "gib_qr";
@@ -39,19 +39,17 @@ const QRCodePage: NextPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
     const [qrPatternColor, setQrPatternColor] = useState<string>(
-        typeof window !== "undefined" ?
-            localStorage.getItem(Storage.qrPatternColor) || DEFAULT_PATTERN_COLOR :
-            DEFAULT_PATTERN_COLOR
+        typeof window !== "undefined"
+            ? localStorage.getItem(Storage.qrPatternColor) || DEFAULT_PATTERN_COLOR
+            : DEFAULT_PATTERN_COLOR
     );
     const [qrBackgroundColor, setQrBackgroundColor] = useState<string>(
-        typeof window !== "undefined" ?
-            localStorage.getItem(Storage.qrBackgroundColor) || DEFAULT_BACKGROUND_COLOR :
-            DEFAULT_BACKGROUND_COLOR
+        typeof window !== "undefined"
+            ? localStorage.getItem(Storage.qrBackgroundColor) || DEFAULT_BACKGROUND_COLOR
+            : DEFAULT_BACKGROUND_COLOR
     );
     const [qrMargin, setQrMargin] = useState<number>(
-        typeof window !== "undefined" ?
-            +(localStorage.getItem(Storage.qrMargin) || DEFAULT_MARGIN) :
-            DEFAULT_MARGIN
+        typeof window !== "undefined" ? +(localStorage.getItem(Storage.qrMargin) || DEFAULT_MARGIN) : DEFAULT_MARGIN
     );
 
     const qrOpts: QRCodeToDataURLOptions = useMemo(() => {
@@ -183,26 +181,28 @@ const QRCodePage: NextPage = () => {
                     method: "POST",
                     body: JSON.stringify({ data: text, options: qrOpts }),
                     credentials: "same-origin",
-                }).then(async (res) => {
-                    const qrCode = await res.json();
+                })
+                    .then(async (res) => {
+                        const qrCode = await res.json();
 
-                    if ("message" in qrCode) {
-                        setChill("take a chill pill");
+                        if ("message" in qrCode) {
+                            setChill("take a chill pill");
+                            setLoading(false);
+                            return;
+                        }
+
+                        linkTag.href = qrCode.uri;
+                        linkTag.download = FILE_NAME;
+                        linkTag.click();
+
+                        setSvgUriCache(qrCode.uri);
                         setLoading(false);
-                        return;
-                    }
-
-                    linkTag.href = qrCode.uri;
-                    linkTag.download = FILE_NAME;
-                    linkTag.click();
-
-                    setSvgUriCache(qrCode.uri);
-                    setLoading(false);
-                }).catch(({ message, stack }) => {
-                    setLoading(false);
-                    console.warn(stack);
-                    console.error(message);
-                });
+                    })
+                    .catch(({ message, stack }) => {
+                        setLoading(false);
+                        console.warn(stack);
+                        console.error(message);
+                    });
             });
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch ({ message, stack }: any) {
@@ -213,7 +213,7 @@ const QRCodePage: NextPage = () => {
     }, [isAuthenticated, qrOpts, svgUriCache, text]);
 
     const handleSubmit = useCallback(
-        async (e?: FormEvent<HTMLFormElement>) => {
+        (e?: FormEvent<HTMLFormElement>) => {
             try {
                 e && e.preventDefault();
                 if (!canvasRef.current) return;
@@ -234,7 +234,7 @@ const QRCodePage: NextPage = () => {
                 const bytes = getTextBytes(text);
                 if (bytes > 2953) return;
 
-                const code = await makeCode(text);
+                const code = makeCode(text);
 
                 toDataURL(
                     canvasRef.current!,
@@ -321,7 +321,7 @@ const QRCodePage: NextPage = () => {
                                 onChange={handleChangeInput}
                             />
                             <Input
-                                type='checkbox'
+                                type="checkbox"
                                 label="transparent"
                                 labelclass="mt-2 text-white font-light select-none cursor-pointer"
                                 className="cursor-pointer"
@@ -341,7 +341,7 @@ const QRCodePage: NextPage = () => {
                                 onChange={handleChangeInput}
                             />
                             <Input
-                                type='checkbox'
+                                type="checkbox"
                                 label="transparent"
                                 labelclass="mt-2 text-white font-light select-none cursor-pointer"
                                 className="cursor-pointer"
@@ -384,12 +384,19 @@ const QRCodePage: NextPage = () => {
                                 {alertSignIn ? "please sign in" : chill.length ? chill : "🦀"}
                             </p>
                         </LoadingBounce>
-                        <canvas ref={canvasRef} width={200} height={200} className="rounded max-w-[250px] max-h-[250px] bg-gradient-to-br from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]" />
+                        <canvas
+                            ref={canvasRef}
+                            width={200}
+                            height={200}
+                            className="rounded max-w-[250px] max-h-[250px] bg-gradient-to-br from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]"
+                        />
                         <div className="flex justify-around items-center gap-4">
                             <a
                                 href={pngUrl ?? "#"}
                                 download={FILE_NAME}
-                                className={`button border-white text-white visited:text-white ${!pngUrl ? "invisible" : ""}`}
+                                className={`button border-white text-white visited:text-white ${
+                                    !pngUrl ? "invisible" : ""
+                                }`}
                             >
                                 png
                             </a>
@@ -401,9 +408,7 @@ const QRCodePage: NextPage = () => {
                                 {loading ? "on it..." : "svg"}
                             </Button>
                         </div>
-                        <p className={`text-3xl ${!pngUrl ? "invisible" : ""}`}>
-                            🚀
-                        </p>
+                        <p className={`text-3xl ${!pngUrl ? "invisible" : ""}`}>🚀</p>
                     </div>
                 </section>
             </main>
