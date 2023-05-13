@@ -27,7 +27,7 @@ const Home: VoidComponent = (): JSXElement => {
     return (
         <main class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#222] to-[#000]">
             <div class="container flex flex-col items-center justify-center gap-12 px-4 py-16 max-w-[45ch]">
-                <h1 class="font-hatton-semibold text-5xl font-extrabold tracking-tight text-center text-white sm:text-[5rem]">
+                <h1 class="font-hatton-semibold text-9xl font-extrabold tracking-wide text-center text-white">
                     {data}.
                 </h1>
                 {
