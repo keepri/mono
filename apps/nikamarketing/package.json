@@ -21,6 +21,8 @@
         "@clfxc/utils": "*",
         "@next-auth/prisma-adapter": "^1.0.5",
         "@prisma/client": "^4.13.0",
+        "@prpc/solid": "^0.2.33",
+        "@prpc/vite": "^0.3.21",
         "@solidjs/meta": "^0.28.2",
         "@solidjs/router": "^0.8.2",
         "@tanstack/solid-query": "^5.0.0-alpha.20",
