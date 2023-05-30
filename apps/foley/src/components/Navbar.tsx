@@ -23,8 +23,8 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
                     <Link
                         active={router.route === URLS.SMOL}
                         href={URLS.SMOL}
-                        className={linkClasses}
                         activeClassName={linkActiveClasses}
+                        className={linkClasses}
                     >
                         smol
                     </Link>
@@ -32,16 +32,16 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
 
                         active={router.route === URLS.QR}
                         href={URLS.QR}
-                        className={linkClasses}
                         activeClassName={linkActiveClasses}
+                        className={linkClasses}
                     >
                         qr
                     </Link>
                     <Link
                         active={router.route === URLS.REPLACE}
                         href={URLS.REPLACE}
-                        className={linkClasses}
                         activeClassName={linkActiveClasses}
+                        className={linkClasses}
                     >
                         replace
                     </Link>
