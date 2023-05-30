@@ -113,13 +113,9 @@ export async function getSessionByToken$(sessionToken: string): Promise<Session 
 export async function validateSessionApiRequest(headers: IncomingHttpHeaders): Promise<Session | null> {
     const getCookieParser = await import("next/dist/server/api-utils").then((res) => res.getCookieParser);
     const cookies = getCookieParser(headers);
-    const cook = cookies();
-    console.log("cookies????", cook);
     const sessionToken = cookies()["next-auth.session-token"] || cookies()["__Secure-next-auth.session-token"];
-    console.log("session tken???", sessionToken);
     if (!sessionToken) return null;
     const session = await getSessionByToken$(sessionToken);
-    console.log("sesison????", session);
     if (!session) return null;
     return session;
 }
