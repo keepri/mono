@@ -18,14 +18,14 @@ import {
 } from "react";
 
 const FILE_NAME = "gib_qr";
+const MAX_MARGIN: number = 7;
+const DEFAULT_MARGIN: number = 2;
+const DEFAULT_PATTERN_COLOR = "#000000";
+const DEFAULT_BACKGROUND_COLOR = "#ffffff";
 
 const QRCodePage: NextPage = () => {
     const inputCache = typeof window !== "undefined" ? localStorage.getItem(Storage.qrInput) : undefined;
     const defaultInputText: string = inputCache ? JSON.parse(inputCache) : "";
-    const MAX_MARGIN: number = 7;
-    const DEFAULT_MARGIN: number = 2;
-    const DEFAULT_PATTERN_COLOR = "#000000";
-    const DEFAULT_BACKGROUND_COLOR = "#ffffff";
 
     const session = useSession();
     const isAuthenticated = session.status === "authenticated";
@@ -70,26 +70,26 @@ const QRCodePage: NextPage = () => {
         const name = e.target.name;
         const isPattern = name === "pattern";
         const color = isPattern ? qrPatternColor : qrBackgroundColor;
-        const updateFunc = isPattern ? setQrPatternColor : setQrBackgroundColor;
+        const setColor = isPattern ? setQrPatternColor : setQrBackgroundColor;
         const checked = e.target.checked;
 
         if (!isHexCode(color)) return;
 
         if (color.length === 4) {
             if (!checked) return;
-            updateFunc(`#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`);
+            setColor(`#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`);
             return;
         }
 
         if (color.length === 7) {
             if (!checked) return;
-            updateFunc(color + "00");
+            setColor(color + "00");
             return;
         }
 
         if (color.length === 9) {
             if (checked) return;
-            updateFunc(color.slice(0, 7));
+            setColor(color.slice(0, 7));
             return;
         }
     };
@@ -183,19 +183,21 @@ const QRCodePage: NextPage = () => {
                     credentials: "same-origin",
                 })
                     .then(async (res) => {
-                        const qrCode = await res.json();
+                        const result = await res.text();
 
-                        if ("message" in qrCode) {
+                        if (res.status !== 200) {
                             setChill("take a chill pill");
                             setLoading(false);
+                            console.error("failed with status:", res.status);
+                            console.error("error message:", result);
                             return;
                         }
 
-                        linkTag.href = qrCode.uri;
+                        linkTag.href = result;
                         linkTag.download = FILE_NAME;
                         linkTag.click();
 
-                        setSvgUriCache(qrCode.uri);
+                        setSvgUriCache(result);
                         setLoading(false);
                     })
                     .catch(({ message, stack }) => {
@@ -394,9 +396,7 @@ const QRCodePage: NextPage = () => {
                             <a
                                 href={pngUrl ?? "#"}
                                 download={FILE_NAME}
-                                className={`button border-white text-white visited:text-white ${
-                                    !pngUrl ? "invisible" : ""
-                                }`}
+                                className={`button border-white text-white visited:text-white ${!pngUrl ? "invisible" : ""}`}
                             >
                                 png
                             </a>

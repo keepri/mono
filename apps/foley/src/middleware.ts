@@ -13,6 +13,25 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
     // early escape?
     if (!onSmolRedirect && !onApi) return NextResponse.next();
 
+    // smol redirect urls
+    if (onSmolRedirect) {
+        const slug = req.nextUrl.pathname.split("/").at(-1);
+
+        if (!slug) return NextResponse.rewrite(URLS.SMOL);
+
+        try {
+            const fetchSmolBySlug = (await import("@utils/helpers")).fetchSmolBySlug;
+            const smol = await fetchSmolBySlug(slug);
+
+            return NextResponse.redirect(smol.url);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch ({ stack, message }: any) {
+            console.error(stack);
+            console.error("smol redirect", message);
+            return NextResponse.rewrite(URLS.SMOL);
+        }
+    }
+
     // all api endpoints
     if (onApi) {
         const ip = req.ip ?? "127.0.0.1";
@@ -31,24 +50,6 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
         // atm session validation happens separately
 
         return NextResponse.next();
-    }
-
-    // smol pages
-    if (onSmolRedirect) {
-        const slugSmol = req.nextUrl.pathname.split("/").at(-1);
-
-        if (slugSmol) {
-            const getSmolBySlug = (await import("@utils/helpers")).getSmolBySlug;
-            const smolRes = await getSmolBySlug(slugSmol, { client: true, origin: req.nextUrl.origin });
-
-            if ("message" in smolRes) {
-                return NextResponse.json({ oops: smolRes.message });
-            }
-
-            return NextResponse.redirect(smolRes.smol.url);
-        }
-
-        return NextResponse.rewrite(URLS.SMOL);
     }
 
     return NextResponse.error();

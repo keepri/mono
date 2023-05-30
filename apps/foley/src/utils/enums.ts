@@ -13,6 +13,7 @@ export enum URLS {
     CLOSET = "/closet",
 
     // API
+    API_AUTH = "/api/auth",
     API_SMOL = "/api/smol",
     API_SMOL_CREATE = "/api/smol/create",
     API_QR_CREATE = "/api/qr/create",

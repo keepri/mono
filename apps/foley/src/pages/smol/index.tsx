@@ -15,7 +15,8 @@ const SmolPage: NextPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [url, setUrl] = useState<string>("");
     const [smol, setSmol] = useState<string>("");
-    const [chill, setChill] = useState<string>("");
+    const chill = "";
+    // const [chill, setChill] = useState<string>("");
 
     const handleChangeUrl = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setUrl(e.target.value);
@@ -36,6 +37,7 @@ const SmolPage: NextPage = () => {
             }
 
             setLoading(true);
+
             const urlSchema = (await import("@utils/schemas")).UrlSchema;
             const parsed = urlSchema.safeParse(url);
 
@@ -49,18 +51,13 @@ const SmolPage: NextPage = () => {
             try {
                 const data = await fetchCreateSmol(url);
 
-                if ("message" in data) {
-                    setChill("take a chill pill");
-                    setLoading(false);
-                    return;
-                }
-
-                setSmol(data?.smol ?? "#");
+                setSmol(data);
                 setLoading(false);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch ({ message }: any) {
+            } catch ({ stack, message }: any) {
                 setLoading(false);
-                console.log("something went wrong", message);
+                console.error(stack);
+                console.error("create smol", message);
             }
         },
         [isAuthenticated, url]

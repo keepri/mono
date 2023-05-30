@@ -15,6 +15,3 @@ export const SmolSchema = z.object({
     updatedAt: z.date(),
 });
 
-export const ErrorStatusSchema = z.union([z.literal(400), z.literal(401), z.literal(404), z.literal(500)]);
-export const SuccessStatusSchema = z.union([z.literal(200), z.literal(201)]);
-

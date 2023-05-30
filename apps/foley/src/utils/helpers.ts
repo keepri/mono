@@ -1,11 +1,12 @@
-import { Session } from "@clfxc/db";
-import { ErrorStatusSchema, SmolSchema, StatusSmol, SuccessStatusSchema } from "@clfxc/db/schemas";
+import { Session, Smol } from "@clfxc/db";
+import { SmolSchema, StatusSmol } from "@clfxc/db/schemas";
 import { toMB } from "@clfxc/utils";
 import { FileType, ImageType, URLS } from "@utils/enums";
 import { AcceptedFileTypeSchema } from "@utils/schemas";
 import { IncomingHttpHeaders } from "http";
 import { ZodError, z } from "zod";
-import { generateErrorMessage } from "zod-error";
+import { origin } from "./misc";
+import { BodySchema as CreateSmolBodySchema } from "pages/api/smol/create";
 
 export function validateFile(
     file: File | undefined,
@@ -33,87 +34,76 @@ export function validateFile(
     return { file, ok: true };
 }
 
-const PickedSchema = SmolSchema.pick({ id: true, status: true, url: true });
-type PickedSmol = z.infer<typeof PickedSchema>;
-type ErrorStatus = z.infer<typeof ErrorStatusSchema>;
-type SuccessStatus = z.infer<typeof SuccessStatusSchema>;
-type GetSmolUrlOptions = { client: true; origin: string } | { client?: false };
-export async function getSmolBySlug<SlugType extends string, OptionsType extends GetSmolUrlOptions>(
-    slug: SlugType,
-    options?: OptionsType
-): Promise<{ status: SuccessStatus; smol: PickedSmol } | { status: ErrorStatus; message: string }> {
-    let result: unknown | null = null;
+export async function incrementSmolAccessed$(id: Smol["id"]): Promise<void> {
+    const prisma = (await import("@clfxc/db")).prisma;
+    const update = await prisma.smol.update({
+        where: { id },
+        select: { accessed: true },
+        data: { accessed: { increment: 1 } },
+    });
 
-    if (options?.client === true) {
-        const url = `${options.origin}${URLS.API_SMOL}/${slug}`;
-        const smolRes = await fetch(url);
-        const smolJson = (await smolRes.json()) as PickedSmol | { message: string };
-
-        if ("message" in smolJson && !smolRes.ok) {
-            const status = smolRes.status as ErrorStatus;
-            return { status, message: smolJson.message };
-        }
-
-        result = smolJson;
-    } else {
-        const prisma = (await import("@clfxc/db")).prisma;
-        const smolRes$ = await prisma.smol.findFirst({
-            where: { slug: { equals: slug } },
-            select: { status: true, url: true, id: true, accessed: true },
-        });
-
-        if (!smolRes$) {
-            return { status: 404, message: "not found Sadge" };
-        }
-
-        result = smolRes$;
-
-        const update = await prisma.smol.update({
-            where: { id: smolRes$.id },
-            select: { accessed: true },
-            data: { accessed: ++smolRes$.accessed },
-        });
-
-        console.log(`smol ${smolRes$.id} was accessed ${update.accessed} times`);
-    }
-
-    const parsed = PickedSchema.safeParse(result);
-    if (!parsed.success) {
-        console.error(generateErrorMessage(parsed.error.issues));
-        return { status: 500, message: "something went wrong when parsing smol" };
-    }
-
-    if (parsed.data.status !== StatusSmol.active) {
-        console.warn("inactive smol url hit");
-        return { status: 401, message: "smol not active anymore" };
-    }
-
-    return { status: 200, smol: parsed.data };
+    console.log(`smol ${id} was accessed ${update.accessed} times`);
 }
 
-export async function fetchCreateSmol(url: string): Promise<
-    | { message: string }
-    | {
-          short: string;
-          smol: string;
-      }
-> {
-    const fetchUrl = `${origin}/api${URLS.SMOL}/create` as const;
-    const data = await (
-        await fetch(fetchUrl, {
-            method: "POST",
-            body: JSON.stringify({ url }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "same-origin",
-        })
-    ).json();
+const PickedSmolSchema = SmolSchema.pick({ status: true, url: true, id: true, accessed: true });
+export type PickedSmol = z.infer<typeof PickedSmolSchema>;
+export async function fetchSmolBySlug(slug: string): Promise<PickedSmol> {
+    const res = await fetch(`${origin}${URLS.API_SMOL}/${slug}`);
 
-    return data;
+    if (res.status !== 200) {
+        throw new Error(await res.text());
+    }
+
+    const smol = await res.json() as PickedSmol;
+
+    if (smol.status !== StatusSmol.active) {
+        throw new Error("not active");
+    }
+
+    return smol;
 }
 
-export async function getSessionByToken(sessionToken: string): Promise<Session | null> {
+export async function getSmolBySlug$(slug: string): Promise<PickedSmol> {
+    const prisma = (await import("@clfxc/db")).prisma;
+    const smol = await prisma.smol.findFirst({
+        where: { slug: { equals: slug } },
+        select: { status: true, url: true, id: true, accessed: true },
+    });
+
+    if (!smol) {
+        throw new Error("not found Sadge");
+    }
+
+    await incrementSmolAccessed$(smol.id);
+
+    if (smol.status !== StatusSmol.active) {
+        throw new Error("smol not active");
+    }
+
+    return smol as PickedSmol;
+}
+
+export async function fetchCreateSmol(url: string): Promise<Smol["url"]> {
+    const res = await fetch(`${origin}${URLS.API_SMOL_CREATE}`, {
+        method: "POST",
+        body: JSON.stringify({
+            url,
+        } satisfies z.infer<typeof CreateSmolBodySchema>),
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "same-origin",
+    });
+    const result = await res.text();
+
+    if (res.status !== 200) {
+        throw new Error(result);
+    }
+
+    return result;
+}
+
+export async function getSessionByToken$(sessionToken: string): Promise<Session | null> {
     const prisma = await import("@clfxc/db").then((res) => res.prisma);
     const session = await prisma.session.findFirst({ where: { sessionToken } });
     if (!session) return null;
@@ -125,7 +115,7 @@ export async function validateSessionApiRequest(headers: IncomingHttpHeaders): P
     const cookies = getCookieParser(headers);
     const sessionToken = cookies()["next-auth.session-token"];
     if (!sessionToken) return null;
-    const session = await getSessionByToken(sessionToken);
+    const session = await getSessionByToken$(sessionToken);
     if (!session || session.expires.getTime() < Date.now()) return null;
     return session;
 }

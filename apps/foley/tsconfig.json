@@ -4,15 +4,38 @@
     "compilerOptions": {
         "baseUrl": "src",
         "paths": {
-            "@styles/*": ["styles/*"],
-            "@components/*": ["components/*"],
-            "@utils/*": ["utils/*"],
-            "@images/*": ["../public/images/*"],
-            "@env/*": ["env/*"]
+            "@styles/*": [
+                "styles/*"
+            ],
+            "@components/*": [
+                "components/*"
+            ],
+            "@pages/*": [
+                "pages/*"
+            ],
+            "@utils/*": [
+                "utils/*"
+            ],
+            "@images/*": [
+                "../public/images/*"
+            ],
+            "@env/*": [
+                "env/*"
+            ]
         },
         "isolatedModules": true,
         "allowSyntheticDefaultImports": true
     },
-    "include": ["src", "next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
-    "exclude": ["node_modules", ".next"]
+    "include": [
+        "src",
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.cjs",
+        "**/*.mjs"
+    ],
+    "exclude": [
+        "node_modules",
+        ".next"
+    ]
 }

@@ -26,13 +26,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (!bodyParse.success) {
         const message = generateErrorMessage(bodyParse.error.issues);
-        return res.status(401).json({ message });
+        return res.status(401).send(message);
     }
 
     const session = await validateSessionApiRequest(req.headers);
     if (!session) {
         console.warn("could not validate session for headers:", req.headers);
-        return res.status(401).json({ message: "could not validate session" });
+        return res.status(401).send("could not validate session");
     }
 
     console.log(`user ${session.userId} has created a svg`);
@@ -44,7 +44,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (bytes >= 2953) {
         console.warn("data too big:", bytes, "bytes sent. user:", session.userId);
-        return res.status(401).json({ message: "too big" });
+        return res.status(401).send("too big");
     }
 
     const filePath = `/tmp/${fileName}_${Date.now()}.svg`;
@@ -53,5 +53,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     console.log(`created qr code for user: ${session.userId}`);
 
-    return res.status(200).json({ message: "success", uri: "data:image/svg+xml;base64," + url });
+    return res.status(200).send("data:image/svg+xml;base64," + url);
 };
