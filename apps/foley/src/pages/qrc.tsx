@@ -32,7 +32,8 @@ const QRCodePage: NextPage = () => {
 
     const canvasRef = createRef<HTMLCanvasElement>();
 
-    const [chill, setChill] = useState<string>("");
+    const chill = "";
+    // const [chill, setChill] = useState<string>("");
     const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
     const [text, setText] = useState<string>(defaultInputText);
     const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
@@ -186,7 +187,7 @@ const QRCodePage: NextPage = () => {
                         const result = await res.text();
 
                         if (res.status !== 200) {
-                            setChill("take a chill pill");
+                            // setChill("take a chill pill");
                             setLoading(false);
                             console.error("failed with status:", res.status);
                             console.error("error message:", result);
@@ -271,10 +272,10 @@ const QRCodePage: NextPage = () => {
         handleSubmit();
     }, [handleSubmit, qrBackgroundColor, qrPatternColor, text]);
 
-    useEffect(() => {
-        if (!chill.length) return;
-        setTimeout(() => setChill(""), 7419);
-    }, [chill.length]);
+    // useEffect(() => {
+    //     if (!chill.length) return;
+    //     setTimeout(() => setChill(""), 7419);
+    // }, [chill.length]);
 
     return (
         <>
