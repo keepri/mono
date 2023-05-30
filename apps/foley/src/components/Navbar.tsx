@@ -3,11 +3,14 @@ import { URLS } from "@utils/enums";
 import { londrinaSketch } from "@utils/misc";
 import { type HTMLAttributes } from "react";
 import Auth from "./Auth";
+import { useRouter } from "next/router";
 
 type Props = HTMLAttributes<HTMLElement>;
 
 export default function Navbar({ className, ...rest }: Props): JSX.Element {
+    const router = useRouter();
     const linkClasses = "hover:!text-[var(--clr-orange)] !text-white hover:underline hover:underline-offset-2 px-2";
+    const linkActiveClasses = "!text-[var(--clr-orange)] underline underline-offset-2";
 
     return (
         <nav
@@ -17,13 +20,29 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
             <div className="container flex flex-wrap items-center max-sm:justify-around max-sm:gap-6 gap-4">
                 <Logo />
                 <section className="flex flex-wrap justify-center gap-6 px-4">
-                    <Link className={linkClasses} href={URLS.SMOL}>
+                    <Link
+                        active={router.route === URLS.SMOL}
+                        href={URLS.SMOL}
+                        className={linkClasses}
+                        activeClassName={linkActiveClasses}
+                    >
                         smol
                     </Link>
-                    <Link className={linkClasses} href={URLS.QR}>
+                    <Link
+
+                        active={router.route === URLS.QR}
+                        href={URLS.QR}
+                        className={linkClasses}
+                        activeClassName={linkActiveClasses}
+                    >
                         qr
                     </Link>
-                    <Link className={linkClasses} href={URLS.REPLACE}>
+                    <Link
+                        active={router.route === URLS.REPLACE}
+                        href={URLS.REPLACE}
+                        className={linkClasses}
+                        activeClassName={linkActiveClasses}
+                    >
                         replace
                     </Link>
                 </section>
