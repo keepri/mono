@@ -115,7 +115,7 @@ export async function validateSessionApiRequest(headers: IncomingHttpHeaders): P
     const cookies = getCookieParser(headers);
     const cook = cookies();
     console.log("cookies????", cook);
-    const sessionToken = cookies()["next-auth.session-token"];
+    const sessionToken = cookies()["next-auth.session-token"] || cookies()["__Secure-next-auth.session-token"];
     console.log("session tken???", sessionToken);
     if (!sessionToken) return null;
     const session = await getSessionByToken$(sessionToken);

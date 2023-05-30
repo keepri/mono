@@ -63,18 +63,14 @@ export default function Auth(props: HTMLAttributes<HTMLSpanElement>): JSX.Elemen
                 </span>
                 <span className="group flex items-center justify-end gap-2">
                     <div
-                        className={`${
-                            isAuthenticated || loading ? "hidden" : ""
-                        } flex gap-2 items-center justify-evenly group-hover:scale-100 scale-0 group-hover:opacity-100 opacity-0 transition-transform`}
+                        className={`${isAuthenticated || loading ? "hidden" : ""} flex gap-2 items-center justify-evenly group-hover:scale-100 scale-0 group-hover:opacity-100 opacity-0 transition-transform`}
                     >
                         <GitHub onClick={() => onSignIn(AuthProvider.GITHUB)} />
                     </div>
                     <button
                         disabled={loading || loadingSession}
                         onClick={() => (isAuthenticated ? onSignOut() : onSignIn(DEFAULT_AUTH_PROVIDER))}
-                        className={`${
-                            isAuthenticated || loading ? "text-xs" : "font-medium"
-                        } text-lg group-hover:text-[var(--clr-orange)] text-white transition-colors duration-100`}
+                        className={`${isAuthenticated || loading ? "text-xs" : "font-medium"} text-lg group-hover:text-[var(--clr-orange)] text-white transition-colors duration-100`}
                     >
                         {loading ? "on it" : isAuthenticated ? "sign out" : "sign in"}
                     </button>
