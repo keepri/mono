@@ -8,8 +8,7 @@ import { startTransition, useCallback, useState, type ChangeEvent, type FormEven
 import { generateErrorMessage } from "zod-error";
 
 const SmolPage: NextPage = () => {
-    const session = useSession();
-    const isAuthenticated = session.status === "authenticated";
+    const isAuthenticated = useSession().status === "authenticated";
 
     const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -18,9 +17,9 @@ const SmolPage: NextPage = () => {
     const chill = "";
     // const [chill, setChill] = useState<string>("");
 
-    const handleChangeUrl = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const handleChangeUrl = (e: ChangeEvent<HTMLInputElement>) => {
         setUrl(e.target.value);
-    }, []);
+    };
 
     const handleMakeSmol = useCallback(
         async (e: FormEvent<HTMLFormElement>) => {
@@ -28,12 +27,9 @@ const SmolPage: NextPage = () => {
 
             if (!isAuthenticated) {
                 setAlertSignIn(true);
-                startTransition(() => {
-                    setTimeout(() => {
-                        setAlertSignIn(false);
-                    }, 2769);
+                return startTransition(() => {
+                    setTimeout(() => setAlertSignIn(false), 2769);
                 });
-                return;
             }
 
             setLoading(true);
@@ -49,7 +45,7 @@ const SmolPage: NextPage = () => {
             }
 
             try {
-                const data = await fetchCreateSmol(url);
+                const data = await fetchCreateSmol(parsed.data);
 
                 setSmol(data);
                 setLoading(false);
