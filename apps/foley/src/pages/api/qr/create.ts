@@ -30,6 +30,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const session = await validateSessionApiRequest(req.headers);
+
     if (!session) {
         console.warn("could not validate session for headers:", req.headers);
         return res.status(401).send("could not validate session");
