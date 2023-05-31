@@ -22,6 +22,7 @@ const BodySchema = z.object({
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") return res.status(405).json({ message: "unsupported method" });
+
     const bodyParse = BodySchema.safeParse(req.body);
 
     if (!bodyParse.success) {

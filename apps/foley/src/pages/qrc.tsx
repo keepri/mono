@@ -32,8 +32,7 @@ const QRCodePage: NextPage = () => {
 
     const canvasRef = createRef<HTMLCanvasElement>();
 
-    const chill = "";
-    // const [chill, setChill] = useState<string>("");
+    const [errMessage, setErrMessage] = useState<string>("");
     const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
     const [text, setText] = useState<string>(defaultInputText);
     const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
@@ -187,7 +186,7 @@ const QRCodePage: NextPage = () => {
                         const result = await res.text();
 
                         if (res.status !== 200) {
-                            // setChill("take a chill pill");
+                            setErrMessage("nope");
                             setLoading(false);
                             console.error("failed with status:", res.status);
                             console.error("error message:", result);
@@ -272,10 +271,10 @@ const QRCodePage: NextPage = () => {
         handleSubmit();
     }, [handleSubmit, qrBackgroundColor, qrPatternColor, text]);
 
-    // useEffect(() => {
-    //     if (!chill.length) return;
-    //     setTimeout(() => setChill(""), 7419);
-    // }, [chill.length]);
+    useEffect(() => {
+        if (!errMessage.length) return;
+        setTimeout(() => setErrMessage(""), 7419);
+    }, [errMessage]);
 
     return (
         <>
@@ -380,11 +379,11 @@ const QRCodePage: NextPage = () => {
                 <section className="flex flex-col flex-[1] justify-center gap-8">
                     <div className="flex flex-col items-center justify-center sm:gap-8 gap-4 flex-[1]">
                         <LoadingBounce
-                            enabled={alertSignIn || Boolean(chill.length)}
-                            className={alertSignIn || Boolean(chill.length) ? undefined : "invisible"}
+                            enabled={alertSignIn || Boolean(errMessage.length)}
+                            className={alertSignIn || Boolean(errMessage.length) ? undefined : "invisible"}
                         >
                             <p className="text-lg text-yellow-300">
-                                {alertSignIn ? "please sign in" : chill.length ? chill : "🦀"}
+                                {alertSignIn ? "please sign in" : errMessage.length ? errMessage : "🦀"}
                             </p>
                         </LoadingBounce>
                         <canvas

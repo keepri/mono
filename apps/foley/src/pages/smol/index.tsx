@@ -4,18 +4,17 @@ import { fetchCreateSmol } from "@utils/helpers";
 import { underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
-import { startTransition, useCallback, useState, type ChangeEvent, type FormEvent } from "react";
+import { startTransition, useCallback, useState, type ChangeEvent, type FormEvent, useEffect } from "react";
 import { generateErrorMessage } from "zod-error";
 
 const SmolPage: NextPage = () => {
     const isAuthenticated = useSession().status === "authenticated";
 
+    const [errMessage, setErrMessage] = useState<string>("nope");
     const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [url, setUrl] = useState<string>("");
     const [smol, setSmol] = useState<string>("");
-    const chill = "";
-    // const [chill, setChill] = useState<string>("");
 
     const handleChangeUrl = (e: ChangeEvent<HTMLInputElement>) => {
         setUrl(e.target.value);
@@ -51,6 +50,7 @@ const SmolPage: NextPage = () => {
                 setLoading(false);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch ({ stack, message }: any) {
+                setErrMessage("nope");
                 setLoading(false);
                 console.error(stack);
                 console.error("create smol", message);
@@ -58,6 +58,11 @@ const SmolPage: NextPage = () => {
         },
         [isAuthenticated, url]
     );
+
+    useEffect(() => {
+        if (!errMessage.length) return;
+        setTimeout(() => setErrMessage(""), 7419);
+    }, [errMessage]);
 
     return (
         <section className="flex flex-col items-center justify-center gap-8 leading-tight min-h-[85vh] p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
@@ -74,30 +79,30 @@ const SmolPage: NextPage = () => {
 
             <Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? "hidden" : ""}`} />
 
-            {Boolean(smol.length) && !loading && (
-                <>
+            {Boolean(smol.length || errMessage.length) && !loading && (
+                <div className="flex flex-col justify-center">
                     <span className="text-center text-3xl">🚀</span>
                     <div className="flex flex-col items-center justify-center">
                         <a
                             style={{ textDecorationColor: "#9d679c", color: "white" }}
                             className="underline underline-offset-4 text-center font-light text-lg"
                             target="_blank"
-                            href={smol}
+                            href={smol.length ? smol : "#"}
                             rel="noreferrer"
                         >
-                            {chill.length ? chill : String(smol?.split("://")[1])}
+                            {errMessage.length ? errMessage : String(smol?.split("://")[1])}
                             <br />
                         </a>
                         <div className="text-[var(--clr-bg-500)] text-center font-bold mb-3">
                             /|\ ^._.^ /|\
                         </div>
                     </div>
-                </>
+                </div>
             )}
 
             <form
                 onSubmit={handleMakeSmol}
-                className={`grid auto-rows-auto gap-8 place-items-center w-full mt-8 ${loading ? "invisible" : ""}`}
+                className={`grid auto-rows-auto gap-8 place-items-center w-full ${loading ? "invisible" : ""}`}
             >
                 <Input
                     placeholder="gib text, link or good vibes"
