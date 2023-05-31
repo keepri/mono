@@ -39,7 +39,7 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
         ev.waitUntil(pending);
 
         if (!success) {
-            const res = NextResponse.json({ yo: "chill" });
+            const res = NextResponse.error();
             res.headers.set("X-RateLimit-Limit", limit.toString());
             res.headers.set("X-RateLimit-Remaining", remaining.toString());
             res.headers.set("X-RateLimit-Reset", reset.toString());
