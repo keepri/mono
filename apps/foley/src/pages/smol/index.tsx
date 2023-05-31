@@ -10,7 +10,7 @@ import { generateErrorMessage } from "zod-error";
 const SmolPage: NextPage = () => {
     const isAuthenticated = useSession().status === "authenticated";
 
-    const [errMessage, setErrMessage] = useState<string>("nope");
+    const [errMessage, setErrMessage] = useState<string>("");
     const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [url, setUrl] = useState<string>("");
