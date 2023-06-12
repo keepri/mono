@@ -2,13 +2,15 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { URLS } from "@utils/enums";
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { getSessionByToken$ } from "@utils/helpers";
 
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(69, "10 s") });
+const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([URLS.API_SMOL_CREATE, URLS.API_QR_CREATE]);
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
-    const onSmolRedirect =
-        req.nextUrl.pathname.startsWith(`${URLS.SMOL}/`) && req.nextUrl.pathname.length > `${URLS.SMOL}/`.length;
-    const onApi = req.nextUrl.pathname.startsWith("/api/");
+    const pathname = req.nextUrl.pathname as URLS;
+    const onSmolRedirect = pathname.startsWith(`${URLS.SMOL}/`) && pathname.length > `${URLS.SMOL}/`.length;
+    const onApi = pathname.startsWith("/api/");
 
     // early escape?
     if (!onSmolRedirect && !onApi) return NextResponse.next();
@@ -48,6 +50,24 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 
         // TODO add session validation for predefined vec of routes
         // atm session validation happens separately
+
+        if (!API_PROTECTED_ROUTES.has(pathname)) {
+            return NextResponse.next();
+        }
+
+        const tokenCookie = req.cookies.get("__Secure-next-auth.session-token") || req.cookies.get("next-auth.session-token");
+
+        if (!tokenCookie) {
+            return NextResponse.error();
+        }
+
+        const session = await getSessionByToken$(tokenCookie.value);
+
+        if (!session) {
+            return NextResponse.error();
+        }
+
+        console.log("session validated");
 
         return NextResponse.next();
     }
