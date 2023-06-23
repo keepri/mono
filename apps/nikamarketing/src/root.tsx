@@ -13,7 +13,7 @@ export default function Root(): JSXElement {
                 <Title>NIKA Marketing Agency</Title>
                 <Meta charset="utf-8" />
                 <Meta name="viewport" content="width=device-width, initial-scale=1" />
-                <Meta name="theme-color" content="#026d56" />
+                <Meta name="theme-color" content="#F8C8DC" />
                 <Meta name="description" content="Template" />
                 <Link rel="icon" href="/favicon.ico" />
             </Head>

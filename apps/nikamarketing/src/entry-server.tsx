@@ -12,14 +12,14 @@ export enum Routes {
     API_TRPC = "/api/trpc",
 }
 
-// make as const
-const PROTECTED_ROUTES: string[] = [];
+const PROTECTED_ROUTES: Set<Routes> = new Set<Routes>([]);
 
 export default createHandler(
     (input) => {
         return async (event) => {
-            if (PROTECTED_ROUTES.includes(new URL(event.request.url).pathname)) {
+            if (PROTECTED_ROUTES.has(new URL(event.request.url).pathname as Routes)) {
                 const session = useSession();
+
                 if (!session.latest?.user) {
                     return redirect(Routes.SIGN_IN);
                 }

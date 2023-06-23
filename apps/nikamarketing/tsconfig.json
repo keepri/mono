@@ -7,10 +7,14 @@
         "moduleResolution": "node",
         "jsxImportSource": "solid-js",
         "jsx": "preserve",
-        "types": ["solid-start/env"],
+        "types": [
+            "solid-start/env"
+        ],
         "baseUrl": "./",
         "paths": {
-            "~/*": ["./src/*"]
+            "~/*": [
+                "./src/*"
+            ]
         },
         "strict": true,
         "noUnusedLocals": true,
@@ -24,6 +28,17 @@
         "strictFunctionTypes": true,
         "strictPropertyInitialization": true
     },
-    "include": ["src", "auth.d.ts", "**/*.ts", "**/*.tsx", "vite.config.ts"],
-    "exclude": ["node_modules", ".solid", ".turbo", ".vercel"]
+    "include": [
+        "src",
+        "auth.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "vite.config.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        ".solid",
+        ".turbo",
+        ".vercel"
+    ]
 }

@@ -38,6 +38,7 @@ const withRateLimit = t.middleware(async ({ ctx, next }) => {
     ctx.res.headers["X-RateLimit-Limit"] = limit.toString();
     ctx.res.headers["X-RateLimit-Remaining"] = remaining.toString();
     ctx.res.headers["X-RateLimit-Reset"] = reset.toString();
+
     if (!success) {
         throw new TRPCError({
             code: "TOO_MANY_REQUESTS",
@@ -49,6 +50,7 @@ const withRateLimit = t.middleware(async ({ ctx, next }) => {
 });
 
 export const procedureWithLimiter = procedure.use(withRateLimit);
+
 export const protectedProcedureWithLimiter = procedure.use(
     t.middleware(async ({ ctx, next }) => {
         if (!ctx.session?.user) {
