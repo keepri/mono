@@ -1,7 +1,7 @@
 import { makeCode, toDataURL, type QRCodeToDataURLOptions } from "@clfxc/qr";
 import { Button, Input, type InputOnChange } from "@clfxc/ui";
 import { getTextBytes, isHexCode } from "@clfxc/utils";
-import LoadingBounce from "@components/Loading/LoadingBounce";
+import Bounce from "@components/Animations/Bounce";
 import { Storage } from "@utils/enums";
 import { origin, underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
@@ -378,14 +378,14 @@ const QRCodePage: NextPage = () => {
                 </section>
                 <section className="flex flex-col flex-[1] justify-center gap-8">
                     <div className="flex flex-col items-center justify-center sm:gap-8 gap-4 flex-[1]">
-                        <LoadingBounce
+                        <Bounce
                             enabled={alertSignIn || Boolean(errMessage.length)}
                             className={alertSignIn || Boolean(errMessage.length) ? undefined : "invisible"}
                         >
                             <p className="text-lg text-yellow-300">
                                 {alertSignIn ? "please sign in" : errMessage.length ? errMessage : "🦀"}
                             </p>
-                        </LoadingBounce>
+                        </Bounce>
                         <canvas
                             ref={canvasRef}
                             width={200}

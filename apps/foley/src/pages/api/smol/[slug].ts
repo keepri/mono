@@ -13,14 +13,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(400).send("invalid slug");
         }
 
-        const smol = await getSmolBySlug$(slug);
-
-        return res.status(200).json(smol);
+        return res.status(200).json(await getSmolBySlug$(slug));
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch ({ stack, message }: any) {
         console.error(stack);
         console.error("getting smol by slug", message);
-        const notFound = (message as string).startsWith("not found");
-        return res.status(notFound ? 404 : 500).send(message);
+        return res.status((message as string).startsWith("not found") ? 404 : 500).send(message);
     }
 };

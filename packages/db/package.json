@@ -8,6 +8,7 @@
         "clean": "rm -rf .turbo node_modules",
         "dev": "prisma studio --port 5556",
         "db:push": "prisma db push",
+        "db:push-data-loss": "prisma db push --accept-data-loss",
         "db:generate": "prisma generate",
         "db:connect": "pscale connect clfxc main --port 3309"
     },

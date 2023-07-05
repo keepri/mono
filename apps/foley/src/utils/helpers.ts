@@ -1,5 +1,5 @@
 import { Session, Smol } from "@clfxc/db";
-import { SmolSchema, StatusSmol } from "@clfxc/db/schemas";
+import { SmolSchema } from "@clfxc/db/schemas";
 import { toMB } from "@clfxc/utils";
 import { FileType, ImageType, URLS } from "@utils/enums";
 import { AcceptedFileTypeSchema } from "@utils/schemas";
@@ -38,11 +38,11 @@ export async function incrementSmolAccessed$(id: Smol["id"]): Promise<void> {
     const prisma = (await import("@clfxc/db")).prisma;
     const update = await prisma.smol.update({
         where: { id },
-        select: { accessed: true },
+        select: { accessed: true, slug: true },
         data: { accessed: { increment: 1 } },
     });
 
-    console.log(`smol ${id} was accessed ${update.accessed} times`);
+    console.log(`smol ${update.slug} was accessed ${update.accessed} times`);
 }
 
 const PickedSmolSchema = SmolSchema.pick({ status: true, url: true, id: true, accessed: true });
@@ -56,7 +56,7 @@ export async function fetchSmolBySlug(slug: string): Promise<PickedSmol> {
 
     const smol = await res.json() as PickedSmol;
 
-    if (smol.status !== StatusSmol.active) {
+    if (smol.status !== "active") {
         throw new Error("not active");
     }
 
@@ -76,7 +76,7 @@ export async function getSmolBySlug$(slug: string): Promise<PickedSmol> {
 
     await incrementSmolAccessed$(smol.id);
 
-    if (smol.status !== StatusSmol.active) {
+    if (smol.status !== "active") {
         throw new Error("smol not active");
     }
 
@@ -106,7 +106,9 @@ export async function fetchCreateSmol(url: string): Promise<Smol["url"]> {
 export async function getSessionByToken$(sessionToken: string): Promise<Session | null> {
     const prisma = await import("@clfxc/db").then((res) => res.prisma);
     const session = await prisma.session.findFirst({ where: { sessionToken } });
+
     if (!session) return null;
+
     return session;
 }
 
@@ -114,8 +116,16 @@ export async function validateSessionApiRequest(headers: IncomingHttpHeaders): P
     const getCookieParser = await import("next/dist/server/api-utils").then((res) => res.getCookieParser);
     const cookies = getCookieParser(headers)();
     const sessionToken = cookies["__Secure-next-auth.session-token"] || cookies["next-auth.session-token"];
-    if (!sessionToken) return null;
+
+    if (!sessionToken) {
+        return null;
+    }
+
     const session = await getSessionByToken$(sessionToken);
-    if (!session) return null;
+
+    if (!session) {
+        return null;
+    }
+
     return session;
 }

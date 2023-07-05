@@ -45,6 +45,17 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
                     >
                         replace
                     </Link>
+                    {
+                        // <Link
+                        //     active={router.route === URLS.BLOG}
+                        //     href={URLS.BLOG}
+                        //     activeClassName={linkActiveClasses}
+                        //     className={linkClasses}
+                        // >
+                        //     blog
+                        // </Link>
+
+                    }
                 </section>
                 <Auth className="sm:ml-auto" />
             </div>

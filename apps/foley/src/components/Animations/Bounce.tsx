@@ -6,7 +6,7 @@ type Props = HTMLAttributes<HTMLSpanElement> &
         enabled?: boolean;
     };
 
-export default function LoadingBounce({ children, enabled = true, className, ...rest }: Props): JSX.Element {
+export default function Bounce({ children, enabled = true, className, ...rest }: Props): JSX.Element {
     const font = londrinaSketch.variable + " font-londrina-sketch";
 
     return (

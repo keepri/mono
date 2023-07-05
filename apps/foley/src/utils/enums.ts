@@ -8,14 +8,15 @@ export enum URLS {
     // WEBSITE
     HOME = "/",
     REPLACE = "/replace",
-    SMOL = "/smol",
-    QR = "/qrc",
+    SMOL = "/s",
+    QR = "/qr",
     CLOSET = "/closet",
+    BLOG = "/blog",
 
     // API
     API_AUTH = "/api/auth",
     API_SMOL = "/api/smol",
-    API_SMOL_CREATE = "/api/smol/create",
+    API_SMOL_CREATE = `${URLS.API_SMOL}/create`,
     API_QR_CREATE = "/api/qr/create",
 }
 

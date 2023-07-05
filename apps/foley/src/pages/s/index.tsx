@@ -1,5 +1,5 @@
 import { Button, Input, Spinner } from "@clfxc/ui";
-import LoadingBounce from "@components/Loading/LoadingBounce";
+import Bounce from "@components/Animations/Bounce";
 import { fetchCreateSmol } from "@utils/helpers";
 import { underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
@@ -68,9 +68,9 @@ const SmolPage: NextPage = () => {
         <section className="flex flex-col items-center justify-center gap-8 leading-tight min-h-[85vh] p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
 
             <div className="text-center text-white leading-none max-sm:mt-20 mt-[-10%]">
-                <LoadingBounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
+                <Bounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
                     <p className="text-lg text-yellow-300">please sign in</p>
-                </LoadingBounce>
+                </Bounce>
                 <h1 style={{ fontSize: "clamp(6rem, 22vw, 15rem)" }} className={`${underdog.variable} font-underdog leading-none`}>
                     smol
                 </h1>

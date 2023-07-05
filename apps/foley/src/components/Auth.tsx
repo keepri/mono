@@ -1,5 +1,5 @@
 import { GitHub } from "@clfxc/ui";
-import LoadingBounce from "@components/Loading/LoadingBounce";
+import Bounce from "@components/Animations/Bounce";
 import { AuthProvider } from "@utils/enums";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -44,11 +44,11 @@ export default function Auth(props: HTMLAttributes<HTMLSpanElement>): JSX.Elemen
                         !isAuthenticated && !loading ? "hidden" : "flex flex-wrap items-center justify-end gap-2"
                     }
                 >
-                    <LoadingBounce enabled={loading} className="justify-end">
+                    <Bounce enabled={loading} className="justify-end">
                         <p className="max-w-[35ch] text-white text-center font-medium whitespace-nowrap overflow-x-hidden text-ellipsis">
                             hi, {session.data?.user?.name ?? "u"}
                         </p>
-                    </LoadingBounce>
+                    </Bounce>
                     {session.data?.user?.image ? (
                         <Image
                             src={session.data.user.image}

@@ -55,7 +55,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             accessed: 0,
             updatedAt: new Date(),
             createdAt: new Date(),
-        }
+        } satisfies Omit<Smol, "id">
     });
 
     console.log(`created shortened link for user: ${session.userId} with slug: ${slug}`);
