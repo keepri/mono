@@ -8,7 +8,7 @@ const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fix
 const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([URLS.API_SMOL_CREATE, URLS.API_QR_CREATE]);
 
 export const config = {
-    matcher: ["/api/:path*", `${URLS.SMOL}/:path`],
+    matcher: ["/api/:path*", "/s/:path"],
 };
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
