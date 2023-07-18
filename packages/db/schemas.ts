@@ -1,37 +1,5 @@
 import { z } from "zod";
 
-export const SmolSchema = z.object({
-    id: z.string().cuid(),
-    userId: z.string(),
-    status: z.enum(["active", "inactive"]),
-    slug: z.string().length(4),
-    url: z.string().url(),
-    accessed: z.number().nonnegative(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-});
-
-export const SessionSchema = z.object({
-    id: z.string().cuid(),
-    sessionToken: z.string(),
-    userId: z.string(),
-    expires: z.date(),
-});
-
-export const PostSchema = z.object({
-    id: z.string().cuid(),
-    slug: z.string(),
-    title: z.string(),
-    description: z.string(),
-    excerpt: z.string(),
-    author: z.string(),
-    category: z.string(),
-    accessed: z.number().nonnegative(),
-    ownerId: z.string().optional(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-});
-
 export const AccountSchema = z.object({
     id: z.string().cuid(),
     userId: z.string().optional(),
@@ -51,14 +19,51 @@ export const AccountSchema = z.object({
 
 export const UserSchema = z.object({
     id: z.string().cuid(),
-    name: z.string(),
-    email: z.string().email(),
+    name: z.string().optional(),
+    email: z.string().email().min(5).max(255).optional(),
     emailVerified: z.date().optional(),
+    role: z.enum(["user", "admin"]),
     image: z.string().optional(),
-    accounts: z.array(AccountSchema),
-    sessions: z.array(SessionSchema),
-    smols: z.array(SmolSchema),
-    posts: z.array(PostSchema),
 });
 
+export const SessionSchema = z.object({
+    id: z.string().cuid(),
+    sessionToken: z.string(),
+    userId: UserSchema.shape.id,
+    expires: z.date(),
+});
 
+export const SmolSchema = z.object({
+    id: z.string().cuid(),
+    userId: UserSchema.shape.id,
+    status: z.enum(["active", "inactive"]),
+    slug: z.string().length(4),
+    url: z.string().min(1).url({ message: "url invalid" }),
+    accessed: z.number().nonnegative(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+});
+
+export const PostSchema = z.object({
+    id: z.string().cuid(),
+    slug: z.string(),
+    title: z.string(),
+    description: z.string(),
+    excerpt: z.string(),
+    author: z.string(),
+    category: z.string(),
+    accessed: z.number().nonnegative(),
+    ownerId: UserSchema.shape.id.optional(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+});
+
+export const ContactSchema = z.object({
+    id: z.string().cuid(),
+    userId: UserSchema.shape.id.optional(),
+    name: z.string().min(1).max(255).optional(),
+    email: z.string().email().min(5).max(255),
+    message: z.string().min(1).max(1000),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+});

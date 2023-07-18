@@ -11,6 +11,7 @@ declare module "next-auth/core/types" {
         jwt?: JWT;
         user?: {
             id?: string;
+            role?: "user" | "admin";
         } & DefaultSession["user"];
     }
 
@@ -18,14 +19,16 @@ declare module "next-auth/core/types" {
      * The shape of the user object returned in the OAuth providers' `profile` callback,
      * or the second parameter of the `session` callback, when using a database.
      */
-    interface User extends DefaultUser {}
+    interface User extends DefaultUser {
+        role: "user" | "admin";
+    }
 
     /**
      * Usually contains information about the provider being used
      * and also extends `TokenSet`, which is different tokens returned by OAuth Providers.
      */
-    interface Account extends DefaultAccount {}
+    interface Account extends DefaultAccount { }
 
     /** The OAuth profile returned from your provider */
-    interface Profile extends DefaultProfile {}
+    interface Profile extends DefaultProfile { }
 }

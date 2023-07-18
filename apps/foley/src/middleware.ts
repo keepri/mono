@@ -5,10 +5,10 @@ import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server
 import { getSessionByToken$ } from "@utils/helpers";
 
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(69, "10 s") });
-const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([URLS.API_SMOL_CREATE, URLS.API_QR_CREATE]);
+const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([URLS.API_SMOL_CREATE, URLS.API_QR_CREATE, URLS.API_EMAIL_SEND]);
 
 export const config = {
-    matcher: ["/api/:path*", "/s/:path"],
+    matcher: ["/api/:path*", "/s/:path*"],
 };
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
@@ -40,8 +40,10 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 
             const sessionToken = req.cookies.get("__Secure-next-auth.session-token") || req.cookies.get("next-auth.session-token");
 
+            // TODO add expired check?
             if (!sessionToken || !(await getSessionByToken$(sessionToken.value))) {
                 console.error("middleware could not find session token on path", req.nextUrl.pathname);
+
                 return NextResponse.error();
             }
 
@@ -49,11 +51,13 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
         }
 
         console.log("middleware failed on path", req.nextUrl.pathname);
+
         return NextResponse.error();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch ({ stack, message }: any) {
         console.error(stack);
         console.error("middleware failed", message);
+
         return NextResponse.rewrite(URLS.HOME);
     }
 }
@@ -68,7 +72,7 @@ async function handleSmolRedirect(req: NextRequest): Promise<NextResponse> {
     const fetchSmolBySlug = (await import("@utils/helpers")).fetchSmolBySlug;
     const smol = await fetchSmolBySlug(slug);
 
-    return NextResponse.redirect(smol.url);
+    return NextResponse.rewrite(smol.url);
 }
 
 async function validateRateLimit(req: NextRequest, ev: NextFetchEvent): Promise<Response | void> {

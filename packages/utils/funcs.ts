@@ -1,10 +1,12 @@
 export function toMB(size: number): number {
     if (typeof size !== "number") return -1;
+
     return parseFloat((size / 1e6).toFixed(6));
 }
 
 export function toKB(size: number): number {
     if (typeof size !== "number") return -1;
+
     return parseFloat((size / 1e3).toFixed(6));
 }
 
@@ -15,9 +17,9 @@ export function readFileAsDataUrl(file: Blob, callback: (e: ProgressEvent<FileRe
 }
 
 export function getTextBytes(data: string): number {
-    const encoder = new TextEncoder();
-    const dataEncoded = encoder.encode(data);
+    const dataEncoded = new TextEncoder().encode(data);
     const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
+
     return bytes;
 }
 

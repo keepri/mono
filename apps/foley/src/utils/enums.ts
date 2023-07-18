@@ -16,8 +16,12 @@ export enum URLS {
     // API
     API_AUTH = "/api/auth",
     API_SMOL = "/api/smol",
+    API_QR = "/api/qr",
+    API_EMAIL = "/api/email",
+    API_CONTACT = "/api/contact",
     API_SMOL_CREATE = `${URLS.API_SMOL}/create`,
-    API_QR_CREATE = "/api/qr/create",
+    API_QR_CREATE = `${URLS.API_QR}/create`,
+    API_EMAIL_SEND = `${URLS.API_EMAIL}/send`,
 }
 
 export enum Langs {
@@ -33,8 +37,6 @@ export enum Currency {
 
 export enum AuthProvider {
     GITHUB = "github",
-    DISCORD = "discord",
-    TWITTER = "twitter",
 }
 
 export enum PaymentProvider {
@@ -49,11 +51,12 @@ export enum AccountType {
     premium = "premium",
 }
 
-export enum Storage {
-    qrInput = "kdv-qr-input",
+export enum StorageKey {
+    // qrInput = "kdv-qr-input",
     qrMargin = "kdv-qr-margin",
     qrPatternColor = "kdv-qr-dark",
     qrBackgroundColor = "kdv-qr-light",
+    theme = "kdv-theme",
 }
 
 export enum ImageType {

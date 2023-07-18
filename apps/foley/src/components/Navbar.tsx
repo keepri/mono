@@ -1,33 +1,21 @@
-import { Link } from "@clfxc/ui/components/Link";
+import { Link } from "ui/components/Link";
 import { URLS } from "@utils/enums";
-import { londrinaSketch } from "@utils/misc";
-import { type HTMLAttributes } from "react";
 import Auth from "./Auth";
 import { useRouter } from "next/router";
+import { fontInconsolata, fontLondrinaSketch } from "@utils/font";
+import { Section } from "./Section";
 
-type Props = HTMLAttributes<HTMLElement>;
-
-export default function Navbar({ className, ...rest }: Props): JSX.Element {
+export default function Navbar(): JSX.Element {
     const router = useRouter();
-    const linkClasses = "hover:!text-[var(--clr-orange)] !text-white hover:underline hover:underline-offset-2 px-2";
-    const linkActiveClasses = "!text-[var(--clr-orange)] underline underline-offset-2";
+    const linkClasses = `px-2 dark:text-white hover:!text-[var(--clr-orange)] hover:underline ${fontInconsolata}`;
+    const linkActiveClasses = "!text-[var(--clr-orange)] underline";
 
     return (
-        <nav
-            className={`${className ? className : ""} sticky top-0 flex items-center py-2 px-4 min-h-[15vh] bg-[var(--clr-bg-500)]`}
-            {...rest}
-        >
-            <div className="container flex flex-wrap items-center max-sm:justify-around max-sm:gap-6 gap-4">
+        <nav className={`${fontInconsolata} sticky top-0 flex items-center py-2 bg-ivory dark:bg-black z-10`}>
+            <Section className="flex flex-wrap items-center max-sm:justify-around gap-6">
                 <Logo />
-                <section className="flex flex-wrap justify-center gap-6 px-4">
-                    <Link
-                        active={router.route === URLS.SMOL}
-                        href={URLS.SMOL}
-                        activeClassName={linkActiveClasses}
-                        className={linkClasses}
-                    >
-                        smol
-                    </Link>
+
+                <section className="flex flex-wrap justify-center gap-4 px-4">
                     <Link
 
                         active={router.route === URLS.QR}
@@ -37,14 +25,27 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
                     >
                         qr
                     </Link>
+
                     <Link
-                        active={router.route === URLS.REPLACE}
-                        href={URLS.REPLACE}
+                        active={router.route === URLS.SMOL}
+                        href={URLS.SMOL}
                         activeClassName={linkActiveClasses}
                         className={linkClasses}
                     >
-                        replace
+                        smol
                     </Link>
+
+                    {
+                        // <Link
+                        //     active={router.route === URLS.REPLACE}
+                        //     href={URLS.REPLACE}
+                        //     activeClassName={linkActiveClasses}
+                        //     className={linkClasses}
+                        // >
+                        //     replace
+                        // </Link>
+                    }
+
                     {
                         // <Link
                         //     active={router.route === URLS.BLOG}
@@ -57,18 +58,17 @@ export default function Navbar({ className, ...rest }: Props): JSX.Element {
 
                     }
                 </section>
+
                 <Auth className="sm:ml-auto" />
-            </div>
+            </Section>
         </nav>
     );
 }
 
 function Logo(): JSX.Element {
     return (
-        <Link href="/">
-            <h1
-                className={`hover:text-[var(--clr-orange)] text-white text-6xl leading-none ${londrinaSketch.variable} font-londrina-sketch`}
-            >
+        <Link href={URLS.HOME}>
+            <h1 className={`text-6xl leading-none dark:text-white hover:!text-[var(--clr-orange)] ${fontLondrinaSketch}`}>
                 K
             </h1>
         </Link>

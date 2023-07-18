@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+    output   = ".client"
+}
+
+datasource db {
+    provider          = "mysql"
+    url               = env("DATABASE_URL")
+    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+    relationMode      = "prisma"
+}
+
+// NextAuth.js Models
+// @see https://next-auth.js.org/schemas/models
+model Account {
+    id                       String  @id @default(cuid())
+    userId                   String?
+    type                     String
+    provider                 String
+    providerAccountId        String
+    refresh_token            String? @db.Text
+    refresh_token_expires_in String? @db.Text
+    access_token             String? @db.Text
+    expires_in               String?
+    expires_at               Int?
+    token_type               String?
+    scope                    String?
+    id_token                 String? @db.Text
+    session_state            String?
+    user                     User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    @@unique([provider, providerAccountId])
+    @@index([userId, type, provider])
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    role          String    @default("user") @db.TinyText
+    image         String?   @db.MediumText
+    accounts      Account[]
+    sessions      Session[]
+    smols         Smol[]
+    posts         Post[]
+    contact       Contact[]
+
+    @@index(name)
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, expires])
+}
+
+model Smol {
+    id        String   @id @default(cuid())
+    userId    String
+    status    String   @default("active") @db.VarChar(10)
+    slug      String   @db.VarChar(4)
+    url       String   @db.MediumText
+    accessed  Int      @default(0) @db.UnsignedInt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+
+    @@index(userId)
+    @@index(slug(length: 4))
+}
+
+model Post {
+    id          String   @id @default(cuid())
+    slug        String   @unique @db.VarChar(350)
+    title       String   @db.TinyText
+    description String   @db.TinyText
+    excerpt     String   @db.TinyText
+    author      String   @db.TinyText
+    category    String   @db.TinyText
+    accessed    Int      @default(0) @db.UnsignedInt
+    ownerId     String?
+    owner       User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @default(now()) @updatedAt
+
+    @@index(createdAt)
+    @@index(ownerId)
+}
+
+model Contact {
+    id        String   @id @default(cuid())
+    name      String?  @db.TinyText
+    email     String   @db.TinyText
+    message   String   @db.VarChar(1000)
+    userId    String?
+    user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+
+    @@index(createdAt)
+    @@index(name(length: 17))
+    @@index(userId)
+}

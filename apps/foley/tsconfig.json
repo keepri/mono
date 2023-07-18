@@ -19,6 +19,9 @@
             "@images/*": [
                 "../public/images/*"
             ],
+            "@svg/*": [
+                "../public/svg/*"
+            ],
             "@env/*": [
                 "env/*"
             ]

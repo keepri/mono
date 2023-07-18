@@ -1,11 +1,13 @@
-import { Button, Input, Spinner } from "@clfxc/ui";
+import { Button, Input, Spinner } from "ui";
 import Bounce from "@components/Animations/Bounce";
+import { fontInconsolata, fontLondrinaSketch } from "@utils/font";
 import { fetchCreateSmol } from "@utils/helpers";
-import { underdog } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
-import { startTransition, useCallback, useState, type ChangeEvent, type FormEvent, useEffect } from "react";
+import { useCallback, useState, type FormEvent, useEffect } from "react";
 import { generateErrorMessage } from "zod-error";
+import { Section } from "@components/Section";
+import { SmolSchema } from "db/schemas";
 
 const SmolPage: NextPage = () => {
     const isAuthenticated = useSession().status === "authenticated";
@@ -16,105 +18,107 @@ const SmolPage: NextPage = () => {
     const [url, setUrl] = useState<string>("");
     const [smol, setSmol] = useState<string>("");
 
-    const handleChangeUrl = (e: ChangeEvent<HTMLInputElement>) => {
-        setUrl(e.target.value);
-    };
+    const handleMakeSmol = useCallback(async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    const handleMakeSmol = useCallback(
-        async (e: FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
+        if (!isAuthenticated) {
+            setAlertSignIn(true);
+            setTimeout(() => setAlertSignIn(false), 2769);
 
-            if (!isAuthenticated) {
-                setAlertSignIn(true);
-                return startTransition(() => {
-                    setTimeout(() => setAlertSignIn(false), 2769);
-                });
-            }
+            return;
+        }
 
-            setLoading(true);
+        setLoading(true);
 
-            const urlSchema = (await import("@utils/schemas")).UrlSchema;
-            const parsed = urlSchema.safeParse(url);
+        const parsed = SmolSchema.shape.url.safeParse(url);
 
-            if (!parsed.success) {
-                const message = generateErrorMessage(parsed.error.issues);
-                console.warn("invalid url", message);
-                setLoading(false);
-                return;
-            }
+        if (!parsed.success) {
+            console.warn("invalid url", generateErrorMessage(parsed.error.issues));
+            setErrMessage("please provide a valid url");
+            setLoading(false);
 
-            try {
-                const data = await fetchCreateSmol(parsed.data);
+            return;
+        }
 
-                setSmol(data);
-                setLoading(false);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch ({ stack, message }: any) {
-                setErrMessage("nope");
-                setLoading(false);
-                console.error(stack);
-                console.error("create smol", message);
-            }
-        },
-        [isAuthenticated, url]
-    );
+        try {
+            setSmol(await fetchCreateSmol(parsed.data));
+            setLoading(false);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch ({ stack, message }: any) {
+            console.error(stack);
+            console.error("create smol", message);
+            setErrMessage("nope");
+            setLoading(false);
+        }
+    }, [isAuthenticated, url]);
 
     useEffect(() => {
-        if (!errMessage.length) return;
-        setTimeout(() => setErrMessage(""), 7419);
+        if (!errMessage.length) {
+            return;
+        }
+
+        const timeout = setTimeout(() => setErrMessage(""), 7419);
+
+        return () => clearTimeout(timeout);
     }, [errMessage]);
 
     return (
-        <section className="flex flex-col items-center justify-center gap-8 leading-tight min-h-[85vh] p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
+        <div className="grid place-items-center py-12 min-h-[70vh] bg-ivory dark:bg-black leading-tight">
+            <Section className="flex flex-col items-center justify-center gap-8">
+                <div className="text-center leading-none">
+                    <Bounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
+                        <p className={`text-lg dark:text-white ${fontInconsolata}`}>please sign in</p>
+                    </Bounce>
 
-            <div className="text-center text-white leading-none max-sm:mt-20 mt-[-10%]">
-                <Bounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
-                    <p className="text-lg text-yellow-300">please sign in</p>
-                </Bounce>
-                <h1 style={{ fontSize: "clamp(6rem, 22vw, 15rem)" }} className={`${underdog.variable} font-underdog leading-none`}>
-                    smol
-                </h1>
-                <p className="max-sm:mt-2">shorten link</p>
-            </div>
+                    <h1 className={`max-xxs:text-7xl max-xs:text-9xl text-[200px] dark:text-white ${fontLondrinaSketch}`}>
+                        smol
+                    </h1>
 
-            <Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? "hidden" : ""}`} />
+                    <p className="max-sm:mt-2 dark:text-white">shorten link</p>
+                </div>
 
-            {Boolean(smol.length || errMessage.length) && !loading && (
-                <div className="flex flex-col justify-center">
-                    <span className="text-center text-3xl">🚀</span>
-                    <div className="flex flex-col items-center justify-center">
-                        <a
-                            style={{ textDecorationColor: "#9d679c", color: "white" }}
-                            className="underline underline-offset-4 text-center font-light text-lg"
-                            target="_blank"
-                            href={smol.length ? smol : "#"}
-                            rel="noreferrer"
-                        >
-                            {errMessage.length ? errMessage : String(smol?.split("://")[1])}
-                            <br />
-                        </a>
-                        <div className="text-[var(--clr-bg-500)] text-center font-bold mb-3">
-                            /|\ ^._.^ /|\
+                <Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? "hidden" : ""}`} />
+
+                {Boolean(smol.length || errMessage.length) && !loading && (
+                    <div className="flex flex-col justify-center gap-4">
+                        {Boolean(smol.length) && <span className="text-center text-3xl">🚀</span>}
+
+                        <div className="flex flex-col items-center justify-center">
+                            <a
+                                style={{ textDecorationColor: "#9d679c" }}
+                                className="underline underline-offset-8 text-center dark:text-white text-lg"
+                                target={smol.length ? "_blank" : undefined}
+                                href={smol.length ? smol : "#"}
+                                rel="noreferrer"
+                            >
+                                {errMessage.length ? errMessage : String(smol?.split("://")[1])}
+                                <br />
+                            </a>
+
+                            <div className="text-center dark:text-white font-bold">
+                                /|\ ^._.^ /|\
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            <form
-                onSubmit={handleMakeSmol}
-                className={`grid auto-rows-auto gap-8 place-items-center w-full ${loading ? "invisible" : ""}`}
-            >
-                <Input
-                    placeholder="gib text, link or good vibes"
-                    className={`w-full max-w-[30rem] bg-[var(--clr-bg-500)] text-white border-4 focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4`}
-                    value={url}
-                    onChange={handleChangeUrl}
-                />
-                <Button type="submit" className="button border-white text-white" disabled={loading}>
-                    boop
-                </Button>
-            </form>
-        </section>
+                <form
+                    onSubmit={handleMakeSmol}
+                    className={`grid auto-rows-auto gap-8 place-items-center dark:text-white w-full ${loading ? "invisible" : ""}`}
+                >
+                    <Input
+                        placeholder="gib text, link or good vibes"
+                        className="w-full max-w-[30rem] dark:bg-black border-4 border-gray-300 placeholder-gray-400 focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                    />
+
+                    <Button type="submit" className={`button border-gray-400 bg-white dark:bg-black ${fontInconsolata}`} disabled={loading}>
+                        boop
+                    </Button>
+                </form>
+            </Section>
+        </div>
     );
 };
 

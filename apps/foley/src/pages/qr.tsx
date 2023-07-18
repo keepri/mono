@@ -1,9 +1,12 @@
-import { makeCode, toDataURL, type QRCodeToDataURLOptions } from "@clfxc/qr";
-import { Button, Input, type InputOnChange } from "@clfxc/ui";
-import { getTextBytes, isHexCode } from "@clfxc/utils";
+import { makeCode, toDataURL, type QRCodeToDataURLOptions, type QRCodeSegment } from "qr";
+import { Button, Input, type InputOnChange } from "ui";
+import { getTextBytes, isHexCode } from "utils";
 import Bounce from "@components/Animations/Bounce";
-import { Storage } from "@utils/enums";
-import { origin, underdog } from "@utils/misc";
+import { Section } from "@components/Section";
+import { StorageKey, URLS } from "@utils/enums";
+import { fontInconsolata, fontLondrinaSketch } from "@utils/font";
+import { BrowserStorage } from "@utils/helpers";
+import { origin } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
 import {
@@ -17,16 +20,13 @@ import {
     type FormEvent,
 } from "react";
 
-const FILE_NAME = "gib_qr";
+const FILE_NAME = "gib_qr" as const;
 const MAX_MARGIN: number = 7;
 const DEFAULT_MARGIN: number = 2;
-const DEFAULT_PATTERN_COLOR = "#000000";
-const DEFAULT_BACKGROUND_COLOR = "#ffffff";
+const DEFAULT_QR_COLOR = "#000000" as const;
+const DEFAULT_BG_COLOR = "#FFFFFF" as const;
 
-const QRCodePage: NextPage = () => {
-    const inputCache = typeof window !== "undefined" ? localStorage.getItem(Storage.qrInput) : undefined;
-    const defaultInputText: string = inputCache ? JSON.parse(inputCache) : "";
-
+const QRPage: NextPage = () => {
     const session = useSession();
     const isAuthenticated = session.status === "authenticated";
 
@@ -34,102 +34,136 @@ const QRCodePage: NextPage = () => {
 
     const [errMessage, setErrMessage] = useState<string>("");
     const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
-    const [text, setText] = useState<string>(defaultInputText);
+    const [text, setText] = useState<string>("");
     const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
-    const [qrPatternColor, setQrPatternColor] = useState<string>(
-        typeof window !== "undefined"
-            ? localStorage.getItem(Storage.qrPatternColor) || DEFAULT_PATTERN_COLOR
-            : DEFAULT_PATTERN_COLOR
+    const [qrColor, setQrColor] = useState<string>(typeof window !== "undefined" ?
+        BrowserStorage.get(StorageKey.qrPatternColor) || DEFAULT_QR_COLOR :
+        DEFAULT_QR_COLOR
     );
-    const [qrBackgroundColor, setQrBackgroundColor] = useState<string>(
-        typeof window !== "undefined"
-            ? localStorage.getItem(Storage.qrBackgroundColor) || DEFAULT_BACKGROUND_COLOR
-            : DEFAULT_BACKGROUND_COLOR
+    const [qrBgColor, setQrBgColor] = useState<string>(typeof window !== "undefined" ?
+        BrowserStorage.get(StorageKey.qrBackgroundColor) || DEFAULT_BG_COLOR :
+        DEFAULT_BG_COLOR
     );
-    const [qrMargin, setQrMargin] = useState<number>(
-        typeof window !== "undefined" ? +(localStorage.getItem(Storage.qrMargin) || DEFAULT_MARGIN) : DEFAULT_MARGIN
+    const [qrMargin, setQrMargin] = useState<number>(typeof window !== "undefined" ?
+        +(BrowserStorage.get(StorageKey.qrMargin) || DEFAULT_MARGIN) :
+        DEFAULT_MARGIN
     );
 
-    const qrOpts: QRCodeToDataURLOptions = useMemo(() => {
+    const qrOpts = useMemo((): QRCodeToDataURLOptions => {
         return {
             margin: qrMargin,
             width: 270,
             color: {
-                dark: qrPatternColor,
-                light: qrBackgroundColor,
+                dark: qrColor,
+                light: qrBgColor,
             },
             rendererOpts: {
                 quality: 1,
             },
         };
-    }, [qrMargin, qrPatternColor, qrBackgroundColor]);
+    }, [qrMargin, qrColor, qrBgColor]);
 
-    const handleToggleTransparent: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const name = e.target.name;
-        const isPattern = name === "pattern";
-        const color = isPattern ? qrPatternColor : qrBackgroundColor;
-        const setColor = isPattern ? setQrPatternColor : setQrBackgroundColor;
-        const checked = e.target.checked;
+    const handleToggleTransparent: ChangeEventHandler<HTMLInputElement> = useCallback((e): void => {
+        const color = e.target.name === "pattern" ? qrColor : qrBgColor;
+        const setColor = e.target.name === "pattern" ? setQrColor : setQrBgColor;
 
-        if (!isHexCode(color)) return;
+        if (!isHexCode(color)) {
+            return;
+        }
 
         if (color.length === 4) {
-            if (!checked) return;
+            if (!e.target.checked) {
+                return;
+            }
+
             setColor(`#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`);
+
             return;
         }
 
         if (color.length === 7) {
-            if (!checked) return;
+            if (!e.target.checked) {
+                return;
+            }
+
             setColor(color + "00");
+
             return;
         }
 
         if (color.length === 9) {
-            if (checked) return;
+            if (e.target.checked) {
+                return;
+            }
+
             setColor(color.slice(0, 7));
+
             return;
         }
-    };
+    }, [qrBgColor, qrColor]);
 
-    const handleChangeInput: InputOnChange = useCallback((e) => {
-        const name = e.target.name;
-        const value = e.target.value.trim();
+    const handleChangeInput: InputOnChange = useCallback((e): void => {
+        const newText = e.target.value;
 
         // we clear the cache anytime the user tries to generate a new qr code
         setSvgUriCache(null);
 
-        if (name === "qr-input") {
-            const text = e.target.value;
-            localStorage.setItem(Storage.qrInput, JSON.stringify(text));
-            setText(text);
-        }
+        if (e.target.name === "qr-input") {
+            if (!newText.length) {
+                setPngUrl(null);
+            }
 
-        if (name === "qr-margin") {
-            const margin = value.at(0) === "-" ? 0 : Number(value.charAt(value.length - 1));
-            const isValid = isNaN(margin) === false && margin <= MAX_MARGIN && margin >= 0;
+            setText(newText);
 
-            if (!isValid) return;
-
-            localStorage.setItem(Storage.qrMargin, JSON.stringify(margin));
-            setQrMargin(margin);
-        }
-
-        // colors block ---
-        if ((!value.startsWith("#") && value !== "") || value.length > 9) {
             return;
         }
-        if (name === "qr-color-bg") {
-            localStorage.setItem(Storage.qrBackgroundColor, value);
-            setQrBackgroundColor(value);
+
+        if (e.target.name === "qr-margin") {
+            const margin = newText.at(0) === "-" ? 0 : Number(newText.charAt(newText.length - 1));
+            const isValid = isNaN(margin) === false && margin <= MAX_MARGIN && margin >= 0;
+
+            if (!isValid) {
+                return;
+            }
+
+            BrowserStorage.set(StorageKey.qrMargin, JSON.stringify(margin));
+
+            setQrMargin(margin);
+
+            return;
         }
-        if (name === "qr-color") {
-            localStorage.setItem(Storage.qrPatternColor, value);
-            setQrPatternColor(value);
+
+        // --- colors block ---
+        if ((!newText.startsWith("#") && newText !== "") || newText.length > 9) {
+            return;
         }
-        // colors block ---
+
+        if (e.target.name === "qr-color-bg") {
+            if (!newText.length) {
+                BrowserStorage.remove(StorageKey.qrBackgroundColor);
+            } else {
+                BrowserStorage.set(StorageKey.qrBackgroundColor, newText);
+            }
+
+            setQrBgColor(newText.length ? newText : DEFAULT_BG_COLOR);
+
+            return;
+        }
+
+        if (e.target.name === "qr-color") {
+            if (!newText.length) {
+                BrowserStorage.remove(StorageKey.qrPatternColor);
+            } else {
+                BrowserStorage.set(StorageKey.qrPatternColor, newText);
+            }
+
+            setQrColor(newText.length ? newText : DEFAULT_QR_COLOR);
+
+            return;
+        }
+        // --- colors block ---
     }, []);
 
     // const handleChangeFile: InputOnChange = useCallback((e) => {
@@ -150,183 +184,225 @@ const QRCodePage: NextPage = () => {
     //     setSelectedFile(file);
     // }, []);
 
-    const handleSvgDownload = useCallback(async () => {
-        try {
-            if (!isAuthenticated) {
-                setAlertSignIn(true);
-                setTimeout(() => {
-                    setAlertSignIn(false);
-                }, 2769);
+    const handleSvgDownload = useCallback(async (): Promise<void> => {
+        if (!isAuthenticated) {
+            setAlertSignIn(true);
+            setTimeout(() => setAlertSignIn(false), 2769);
+
+            return;
+        }
+
+        setLoading(true);
+
+        startTransition(() => {
+            const linkTag = document.createElement("a");
+
+            if (svgUriCache) {
+                linkTag.href = svgUriCache;
+                linkTag.download = FILE_NAME;
+                linkTag.click();
+
                 return;
             }
 
-            setLoading(true);
+            const headers = new Headers();
+            headers.set("Content-Type", "application/json");
 
-            startTransition(() => {
-                const linkTag = document.createElement("a");
+            fetch(origin + URLS.API_QR_CREATE, {
+                headers,
+                method: "POST",
+                body: JSON.stringify({ data: text, options: qrOpts }),
+                credentials: "same-origin",
+            }).then(async (res) => {
+                const result = await res.text();
 
-                if (svgUriCache) {
-                    linkTag.href = svgUriCache;
-                    linkTag.download = FILE_NAME;
-                    linkTag.click();
-                    setLoading(false);
+                if (res.status !== 200) {
+                    console.error("failed with status:", res.status);
+                    console.error("error message:", result);
+                    setErrMessage("nope");
 
                     return;
                 }
 
-                const headers = new Headers();
-                headers.set("Content-Type", "application/json");
-                fetch(origin + "/api/qr/create", {
-                    headers,
-                    method: "POST",
-                    body: JSON.stringify({ data: text, options: qrOpts }),
-                    credentials: "same-origin",
-                })
-                    .then(async (res) => {
-                        const result = await res.text();
+                setSvgUriCache(result);
 
-                        if (res.status !== 200) {
-                            setErrMessage("nope");
-                            setLoading(false);
-                            console.error("failed with status:", res.status);
-                            console.error("error message:", result);
-                            return;
-                        }
-
-                        linkTag.href = result;
-                        linkTag.download = FILE_NAME;
-                        linkTag.click();
-
-                        setSvgUriCache(result);
-                        setLoading(false);
-                    })
-                    .catch(({ message, stack }) => {
-                        setLoading(false);
-                        console.warn(stack);
-                        console.error(message);
-                    });
+                linkTag.href = result;
+                linkTag.download = FILE_NAME;
+                linkTag.click();
+            }).catch((error) => {
+                console.warn(error.stack);
+                console.error("could not download svg", error.message);
+            }).finally(() => {
+                setLoading(false);
             });
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch ({ message, stack }: any) {
-            setLoading(false);
-            console.warn(stack);
-            console.error("could not download svg", message);
-        }
+        });
     }, [isAuthenticated, qrOpts, svgUriCache, text]);
 
-    const handleSubmit = useCallback(
-        (e?: FormEvent<HTMLFormElement>) => {
-            try {
-                e && e.preventDefault();
-                if (!canvasRef.current) return;
+    const handleSubmit = useCallback((e?: FormEvent<HTMLFormElement>): void => {
+        try {
+            e && e.preventDefault();
 
-                // if (selectedFile) {
-                // handle file uploaded creation
-                // readFileAsDataUrl(selectedFile, async (e) => {
-                //     const data = e.target?.result as string;
-                //     if (!data) return;
-                //     makeCode(data);
-                // });
-
-                // return;
-                // }
-
-                if (!Boolean(text.length)) return;
-
-                const bytes = getTextBytes(text);
-                if (bytes > 2953) return;
-
-                const code = makeCode(text);
-
-                toDataURL(
-                    canvasRef.current!,
-                    code.segments.map((segment) => ({ ...segment, mode: segment.mode.id })),
-                    qrOpts,
-                    (err, url) => {
-                        if (err) {
-                            const { message, stack } = err;
-                            console.error("could not create code image", { message, stack });
-                            return;
-                        }
-
-                        setPngUrl(url);
-                    }
-                );
-            } catch (error) {
-                console.error("submit failed", error);
+            if (!canvasRef.current) {
+                return;
             }
-        },
-        [canvasRef, qrOpts, text]
-    );
 
-    useEffect(() => {
-        const backgroudColorLen = qrBackgroundColor.length;
-        const isBackgroundLen = backgroudColorLen === 4 || backgroudColorLen === 7 || backgroudColorLen === 9;
+            // if (selectedFile) {
+            //     // handle file uploaded creation
+            //     readFileAsDataUrl(selectedFile, async (e) => {
+            //         const data = e.target?.result as string;
+            //         if (!data) return;
+            //         makeCode(data);
+            //     });
+            //
+            //     return;
+            // }
 
-        const patternColorLen = qrPatternColor.length;
-        const isPatternLen = patternColorLen === 4 || patternColorLen === 7 || patternColorLen === 9;
+            if (!Boolean(text.length)) {
+                return;
+            }
 
-        if (!text.length || !isBackgroundLen || !isPatternLen) return;
+            const bytes = getTextBytes(text);
+
+            if (bytes > 2953) {
+                return;
+            }
+
+            const code = makeCode(text);
+
+            toDataURL(
+                canvasRef.current!,
+                code.segments.map((segment) => ({ ...segment, mode: segment.mode.id } as unknown as QRCodeSegment)),
+                qrOpts,
+                (error, url) => {
+                    if (error) {
+                        console.error(error.stack);
+                        console.error("could not create code image", error.message);
+
+                        return;
+                    }
+
+                    setPngUrl(url);
+
+                    return;
+                }
+            );
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch ({ stack, message }: any) {
+            console.error("submit failed", message);
+        }
+    }, [canvasRef, qrOpts, text]);
+
+    useEffect((): void => {
+        const isBackgroundLen = qrBgColor.length === 4 || qrBgColor.length === 7 || qrBgColor.length === 9;
+        const isPatternLen = qrColor.length === 4 || qrColor.length === 7 || qrColor.length === 9;
+
+        if (!text.length || !isBackgroundLen || !isPatternLen) {
+            return;
+        }
 
         handleSubmit();
-    }, [handleSubmit, qrBackgroundColor, qrPatternColor, text]);
+    }, [handleSubmit, qrBgColor, qrColor, text]);
 
     useEffect(() => {
-        if (!errMessage.length) return;
-        setTimeout(() => setErrMessage(""), 7419);
+        if (!errMessage.length) {
+            return;
+        }
+
+        const timeout = setTimeout(() => setErrMessage(""), 7419);
+
+        return () => clearTimeout(timeout);
     }, [errMessage]);
 
     return (
         <>
-            <main className="flex flex-wrap sm:gap-4 gap-8 p-4 min-h-[85vh] bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
-                <section className="flex flex-col flex-[2.5] items-center sm:justify-center xl:gap-24 gap-8">
-                    <form className="flex flex-col items-center justify-center gap-8 px-2 w-full">
-                        <div className="flex max-sm:flex-wrap items-end justify-center mb-4 max-sm:gap-2 text-center text-white leading-none">
-                            <h1
-                                style={{ fontSize: "clamp(6rem, 19vw, 14rem)" }}
-                                className={`${underdog.variable} font-underdog`}
+            <div className="flex sm:items-center items-start justify-center py-12 bg-ivory dark:bg-black dark:text-white">
+                <Section className="flex flex-col items-center justify-center gap-12">
+                    <form className="flex flex-col items-center justify-center gap-8 w-full">
+                        <div className="flex flex-col items-center justify-center gap-4 flex-[1]">
+                            <div
+                                className={`flex flex-col justify-center items-center max-xxs:gap-4 text-center leading-none ${pngUrl ? "hidden" : ""}`}
                             >
-                                qr
-                            </h1>
-                            <p className="max-sm:mt-4">code generator</p>
+                                <h1 className={`max-xxs:text-8xl text-[200px] tracking-wide ${fontLondrinaSketch}`}>qr</h1>
+
+                                <p className="xxs:mt-[-.75rem] xxs:ml-16 xxs:max-w-[4ch] xxs:text-left leading-none">code generator</p>
+                            </div>
+
+                            <canvas
+                                ref={canvasRef}
+                                width={150}
+                                height={150}
+                                className={`rounded max-w-[176px] max-h-[176px] w-[176px] h-[176px] border border-gray-300 placeholder-gray-400 ${!pngUrl ? "hidden" : ""}`}
+                            />
+
+                            <div className="flex justify-around items-center gap-4">
+                                <a
+                                    role="button"
+                                    href={pngUrl ?? "#"}
+                                    download={FILE_NAME}
+                                    className={`button dark:border-white border-black ${fontInconsolata} ${!pngUrl ? "invisible" : ""}`}
+                                >
+                                    png
+                                </a>
+
+                                <Button
+                                    disabled={loading}
+                                    className={`button ${fontInconsolata} ${!pngUrl ? "invisible" : ""}`}
+                                    onClick={handleSvgDownload}
+                                >
+                                    {loading ? "on it..." : "svg"}
+                                </Button>
+                            </div>
+
+                            <p className={`text-xl ${!pngUrl || alertSignIn || Boolean(errMessage.length) ? "hidden" : ""}`}>
+                                🚀
+                            </p>
+
+                            <Bounce
+                                enabled={alertSignIn || Boolean(errMessage.length)}
+                                className={alertSignIn || Boolean(errMessage.length) ? undefined : "hidden"}
+                            >
+                                <p className="text-lg text-yellow">
+                                    {alertSignIn ? "please sign in" : errMessage.length ? errMessage : "🦀"}
+                                </p>
+                            </Bounce>
                         </div>
 
                         <Input
                             name="qr-input"
                             placeholder="gib text, link or good vibes"
                             value={text}
-                            className={`max-w-[25rem] w-full bg-[var(--clr-bg-500)] text-white border-4 outline-[var(--clr-orange)] focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4`}
+                            className={`max-w-[25rem] w-full border-4 border-gray-300 placeholder-gray-400 dark:bg-black outline-[var(--clr-orange)] focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4`}
                             onChange={handleChangeInput}
                         />
-
-                        <div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
-                            {
-                                //     <Input
-                                //     type="file"
-                                //     // TODO: TEMP: not done
-                                //     labelclass="hidden text-white font-nixie-one hover:bg-[var(--clr-bg-500)] hover:border-[var(--clr-orange)] active:bg-[var(--clr-orange)] active:border-[var(--clr-bg-500)] active:text-white active:scale-110"
-                                //     onChange={handleChangeFile}
-                                // />
-                            }
-                        </div>
+                        {
+                            // <div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
+                            //     <Input
+                            //     type="file"
+                            //     // TODO: TEMP: not done
+                            //     labelclass="hidden hover:bg-[var(--clr-bg-500)] hover:border-[var(--clr-orange)] active:bg-[var(--clr-orange)] active:border-[var(--clr-bg-500)] active:scale-110"
+                            //     onChange={handleChangeFile}
+                            // />
+                            // </div>
+                        }
                     </form>
 
-                    <div className="flex flex-wrap justify-center gap-4">
+                    <div className="flex max-xs:flex-col xs:justify-center sm:gap-10 gap-6 max-sm:w-full max-xs:max-w-[17rem]">
                         <span>
                             <Input
                                 label="pattern color"
-                                labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
-                                className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
-                                value={qrPatternColor}
+                                labelclass="whitespace-nowrap"
+                                className="block w-full sm:max-w-[9rem] border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2"
+                                value={qrColor}
                                 placeholder="hex code"
                                 name="qr-color"
                                 onChange={handleChangeInput}
                             />
+
                             <Input
                                 type="checkbox"
                                 label="transparent"
-                                labelclass="mt-2 text-white font-light select-none cursor-pointer"
-                                className="cursor-pointer"
+                                labelclass="mt-2 select-none cursor-pointer"
+                                className="cursor-pointer border"
                                 name="pattern"
                                 onChange={handleToggleTransparent}
                             />
@@ -335,18 +411,19 @@ const QRCodePage: NextPage = () => {
                         <span>
                             <Input
                                 label="background color"
-                                labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
-                                className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
-                                value={qrBackgroundColor}
+                                labelclass="sm:max-w-[9rem] whitespace-nowrap"
+                                className="block w-full border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2"
+                                value={qrBgColor}
                                 placeholder="hex code"
                                 name="qr-color-bg"
                                 onChange={handleChangeInput}
                             />
+
                             <Input
                                 type="checkbox"
                                 label="transparent"
-                                labelclass="mt-2 text-white font-light select-none cursor-pointer"
-                                className="cursor-pointer"
+                                labelclass="mt-2 select-none cursor-pointer"
+                                className="cursor-pointer border"
                                 name="background"
                                 onChange={handleToggleTransparent}
                             />
@@ -355,8 +432,8 @@ const QRCodePage: NextPage = () => {
                         <Input
                             type="number"
                             label="margin"
-                            labelclass={`w-full max-w-[10rem] text-white font-light whitespace-nowrap`}
-                            className={`w-full max-w-[10rem] text-[var(--clr-bg-500)] block`}
+                            labelclass="sm:max-w-[9rem] whitespace-nowrap"
+                            className="block w-full sm:max-w-[10rem] border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2"
                             value={qrMargin}
                             placeholder="background color"
                             name="qr-margin"
@@ -365,7 +442,7 @@ const QRCodePage: NextPage = () => {
                     </div>
 
                     {/* <p
-					className={`flex flex-wrap items-center justify-center gap-4 text-white text-center max-w-[40ch] text-xs sm:max-w-[unset] ${
+					className={`flex flex-wrap items-center justify-center gap-4 text-center max-w-[40ch] text-xs sm:max-w-[unset] ${
 						!selectedFile ? 'invisible' : ''
 					}`}
 				>
@@ -375,45 +452,10 @@ const QRCodePage: NextPage = () => {
 						{fileSize.toFixed(2)}kB {fileSize > 1000 ? '🚀' : ''}
 					</span>
 				</p> */}
-                </section>
-                <section className="flex flex-col flex-[1] justify-center gap-8">
-                    <div className="flex flex-col items-center justify-center sm:gap-8 gap-4 flex-[1]">
-                        <Bounce
-                            enabled={alertSignIn || Boolean(errMessage.length)}
-                            className={alertSignIn || Boolean(errMessage.length) ? undefined : "invisible"}
-                        >
-                            <p className="text-lg text-yellow-300">
-                                {alertSignIn ? "please sign in" : errMessage.length ? errMessage : "🦀"}
-                            </p>
-                        </Bounce>
-                        <canvas
-                            ref={canvasRef}
-                            width={200}
-                            height={200}
-                            className="rounded max-w-[250px] max-h-[250px] bg-gradient-to-br from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]"
-                        />
-                        <div className="flex justify-around items-center gap-4">
-                            <a
-                                href={pngUrl ?? "#"}
-                                download={FILE_NAME}
-                                className={`button border-white text-white visited:text-white ${!pngUrl ? "invisible" : ""}`}
-                            >
-                                png
-                            </a>
-                            <Button
-                                disabled={loading}
-                                className={`button border-white text-white ${!pngUrl ? "invisible" : ""}`}
-                                onClick={handleSvgDownload}
-                            >
-                                {loading ? "on it..." : "svg"}
-                            </Button>
-                        </div>
-                        <p className={`text-3xl ${!pngUrl ? "invisible" : ""}`}>🚀</p>
-                    </div>
-                </section>
-            </main>
+                </Section>
+            </div>
         </>
     );
 };
 
-export default QRCodePage;
+export default QRPage;

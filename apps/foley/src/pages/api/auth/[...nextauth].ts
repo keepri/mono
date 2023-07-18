@@ -1,8 +1,7 @@
-import { prisma, PrismaAdapter } from "@clfxc/db";
+import { prisma, PrismaAdapter } from "db";
 import { serverEnv } from "@env/server.mjs";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
-// import Twitter from "next-auth/providers/twitter";
 
 export default NextAuth({
     adapter: PrismaAdapter(prisma),
@@ -10,17 +9,18 @@ export default NextAuth({
         GitHub({
             clientId: serverEnv.GITHUB_ID,
             clientSecret: serverEnv.GITHUB_SECRET,
+            profile: function githubProfile(profile) {
+                profile.role = profile.id === 10146439 ? "admin" : "user";
+
+                return profile;
+            },
         }),
-        // Twitter({
-        //     clientId: serverEnv.TWITTER_ID,
-        //     clientSecret: serverEnv.TWITTER_SECRET,
-        //     version: "2.0",
-        // }),
     ],
     callbacks: {
-        session: ({ session, user }) => {
+        session: function sessionCallback({ session, user }) {
             if (session.user) {
                 session.user.id = user.id;
+                session.user.role = user.role;
             }
 
             return session;

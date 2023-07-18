@@ -1,7 +1,7 @@
-import { Session, Smol } from "@clfxc/db";
-import { SmolSchema } from "@clfxc/db/schemas";
-import { toMB } from "@clfxc/utils";
-import { FileType, ImageType, URLS } from "@utils/enums";
+import { Session, Smol } from "db";
+import { SmolSchema } from "db/schemas";
+import { toMB } from "utils";
+import { FileType, ImageType, StorageKey, URLS } from "@utils/enums";
 import { AcceptedFileTypeSchema } from "@utils/schemas";
 import { IncomingHttpHeaders } from "http";
 import { ZodError, z } from "zod";
@@ -35,7 +35,7 @@ export function validateFile(
 }
 
 export async function incrementSmolAccessed$(id: Smol["id"]): Promise<void> {
-    const prisma = (await import("@clfxc/db")).prisma;
+    const prisma = (await import("db")).prisma;
     const update = await prisma.smol.update({
         where: { id },
         select: { accessed: true, slug: true },
@@ -47,8 +47,9 @@ export async function incrementSmolAccessed$(id: Smol["id"]): Promise<void> {
 
 const PickedSmolSchema = SmolSchema.pick({ status: true, url: true, id: true, accessed: true });
 export type PickedSmol = z.infer<typeof PickedSmolSchema>;
+
 export async function fetchSmolBySlug(slug: string): Promise<PickedSmol> {
-    const res = await fetch(`${origin}${URLS.API_SMOL}/${slug}`);
+    const res = await fetch(origin + URLS.API_SMOL + "/" + slug);
 
     if (res.status !== 200) {
         throw new Error(await res.text());
@@ -64,7 +65,7 @@ export async function fetchSmolBySlug(slug: string): Promise<PickedSmol> {
 }
 
 export async function getSmolBySlug$(slug: string): Promise<PickedSmol> {
-    const prisma = (await import("@clfxc/db")).prisma;
+    const prisma = (await import("db")).prisma;
     const smol = await prisma.smol.findFirst({
         where: { slug: { equals: slug } },
         select: { status: true, url: true, id: true, accessed: true },
@@ -84,14 +85,15 @@ export async function getSmolBySlug$(slug: string): Promise<PickedSmol> {
 }
 
 export async function fetchCreateSmol(url: string): Promise<Smol["url"]> {
-    const res = await fetch(`${origin}${URLS.API_SMOL_CREATE}`, {
+    const headers = new Headers();
+    headers.set("Content-Type", "application/json");
+
+    const res = await fetch(origin + URLS.API_SMOL_CREATE, {
         method: "POST",
         body: JSON.stringify({
             url,
         } satisfies z.infer<typeof CreateSmolBodySchema>),
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers,
         credentials: "same-origin",
     });
     const result = await res.text();
@@ -104,7 +106,7 @@ export async function fetchCreateSmol(url: string): Promise<Smol["url"]> {
 }
 
 export async function getSessionByToken$(sessionToken: string): Promise<Session | null> {
-    const prisma = await import("@clfxc/db").then((res) => res.prisma);
+    const prisma = await import("db").then((res) => res.prisma);
     const session = await prisma.session.findFirst({ where: { sessionToken } });
 
     if (!session) return null;
@@ -128,4 +130,36 @@ export async function validateSessionApiRequest(headers: IncomingHttpHeaders): P
     }
 
     return session;
+}
+
+export class BrowserStorage {
+    private static isSupported: boolean = typeof Storage === "function";
+
+    static get(key: StorageKey): string | null {
+        if (!BrowserStorage.isSupported) {
+            return null;
+        }
+
+        return localStorage.getItem(key);
+    }
+
+    static set(key: StorageKey, value: string): void {
+        if (!BrowserStorage.isSupported) {
+            return void 0;
+        }
+
+        localStorage.setItem(key, value);
+        window.dispatchEvent(new CustomEvent("storagechange"));
+        return;
+    }
+
+    static remove(key: StorageKey): void {
+        if (!BrowserStorage.isSupported) {
+            return void 0;
+        }
+
+        localStorage.removeItem(key);
+        window.dispatchEvent(new CustomEvent("storagechange"));
+        return;
+    }
 }

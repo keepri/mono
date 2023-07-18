@@ -3,7 +3,7 @@
 
 generator client {
     provider = "prisma-client-js"
-    // output          = ".generated/client"
+    output   = ".client"
 }
 
 datasource db {
@@ -41,11 +41,13 @@ model User {
     name          String?
     email         String?   @unique
     emailVerified DateTime?
+    role          String    @default("user") @db.TinyText
     image         String?   @db.MediumText
     accounts      Account[]
     sessions      Session[]
     smols         Smol[]
     posts         Post[]
+    contact       Contact[]
 
     @@index(name)
 }
@@ -99,4 +101,19 @@ model Post {
 
     @@index(createdAt)
     @@index(ownerId)
+}
+
+model Contact {
+    id        String   @id @default(cuid())
+    name      String?  @db.TinyText
+    email     String   @db.TinyText
+    message   String   @db.VarChar(1000)
+    userId    String?
+    user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+
+    @@index(createdAt)
+    @@index(name(length: 17))
+    @@index(userId)
 }

@@ -3,7 +3,7 @@ import { FC, SVGProps } from "react";
 export type SpinnerVarient = "puff" | "rings";
 
 interface Props extends Omit<SVGProps<SVGSVGElement>, "id" | "height" | "width"> {
-	variant: SpinnerVarient;
+    variant: SpinnerVarient;
 }
 
 export const Spinner: FC<Props> = ({ variant, strokeWidth = 2, ...rest }) => {

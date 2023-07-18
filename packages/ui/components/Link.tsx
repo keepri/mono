@@ -20,7 +20,7 @@ export const Link: FC<PropsWithChildren<Props>> = ({
     ...rest
 }) => {
     return (
-        <NLink className={`${button ? "button-base" : ""} ${active ? activeClassName : ""} ${className ? className : ""}`} {...rest}>
+        <NLink className={`${button ? "button-base" : ""} ${active ? activeClassName : ""} ${className ?? ""}`} {...rest}>
             {children}
         </NLink>
     );

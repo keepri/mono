@@ -23,7 +23,7 @@ const BlogEntry: NextPage<Props> = (props) => {
     }
 
     return (
-        <ReactMarkdown className="min-h-[85vh] p-4 bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
+        <ReactMarkdown className="min-h-[85vh] bg-gradient-to-b from-[var(--clr-bg-500)] to-[var(--clr-bg-300)]">
             {props.markdown}
         </ReactMarkdown>
     );

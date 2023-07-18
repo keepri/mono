@@ -1,5 +1,6 @@
 import { dirname, join } from "path";
 import { serverEnv } from "./src/env/server.mjs";
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 
 /**
  * @template {import('next').NextConfig} T
@@ -11,7 +12,7 @@ function defineNextConfig(config) {
 }
 
 export default defineNextConfig({
-    transpilePackages: ["@clfxc/ui", "@clfxc/qr", "@clfxc/utils", "@clfxc/db"],
+    transpilePackages: ["ui", "qr", "utils", "db"],
     distDir: join(dirname("."), ".next"),
     reactStrictMode: true,
     env: serverEnv,
@@ -25,7 +26,11 @@ export default defineNextConfig({
     sassOptions: {
         includePaths: [join(dirname("."), "src", "styles")],
     },
-    webpack(config) {
+    webpack(config, { isServer }) {
+        if (isServer) {
+            config.plugins = [...config.plugins, new PrismaPlugin()];
+        }
+
         config.resolve = {
             ...config.resolve,
             fallback: {

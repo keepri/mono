@@ -10,9 +10,9 @@
                 "prisma/schema.prisma"
             ],
             "outputs": [
-                "prisma/generated/**"
+                "prisma/client/**"
             ],
-            "cache": false
+            "cache": true
         },
         "db:push": {
             "inputs": [
@@ -35,6 +35,7 @@
             ],
             "outputs": [
                 ".next/**",
+                "!.next/cache/**",
                 ".solid/**",
                 ".vercel/output/**"
             ],
