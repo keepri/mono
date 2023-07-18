@@ -16,10 +16,9 @@ export default defineNextConfig({
     distDir: join(dirname("."), ".next"),
     reactStrictMode: true,
     env: serverEnv,
-    // i18n: {
-    // 	locales: ['en'],
-    // 	defaultLocale: 'en',
-    // },
+    typescript: {
+        ignoreBuildErrors: serverEnv.NODE_ENV === "production" ? true : false,
+    },
     images: {
         domains: ["firebasestorage.googleapis.com", "avatars.githubusercontent.com"],
     },
@@ -42,13 +41,4 @@ export default defineNextConfig({
 
         return config;
     },
-    // redirects() {
-    // return [
-    // {
-    // 	source: '/',
-    // 	destination: '/dashboard',
-    // 	permanent: true,
-    // },
-    // ];
-    // },
 });

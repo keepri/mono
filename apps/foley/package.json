@@ -27,6 +27,7 @@
         "react-markdown": "^8.0.7",
         "react-wrap-balancer": "^1.0.0",
         "sass": "^1.55.0",
+        "sharp": "^0.32.3",
         "ui": "*",
         "uploadthing": "^5.0.0",
         "utils": "*",

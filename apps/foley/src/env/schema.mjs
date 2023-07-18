@@ -30,6 +30,7 @@ const nextAuthScheme = z.object({
 export const serverScheme = z
     .object({
         HOST: z.string(),
+        NODE_ENV: z.enum(["development", "production", "preview"]),
         DATABASE_URL: z.string().min(1),
         SHADOW_DATABASE_URL: z.string().min(1),
         // RESEND_API_KEY: z.string().min(1),
