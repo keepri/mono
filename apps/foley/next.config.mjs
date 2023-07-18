@@ -17,7 +17,7 @@ export default defineNextConfig({
     reactStrictMode: true,
     env: serverEnv,
     typescript: {
-        ignoreBuildErrors: serverEnv.NODE_ENV === "production" ? true : false,
+        ignoreBuildErrors: process.env.NODE_ENV === "production" ? true : false,
     },
     images: {
         domains: ["firebasestorage.googleapis.com", "avatars.githubusercontent.com"],

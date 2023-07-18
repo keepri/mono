@@ -17,20 +17,9 @@ const nextAuthScheme = z.object({
     NEXTAUTH_SECRET: z.string(),
 });
 
-// const discordScheme = z.object({
-//     DISCORD_ID: z.string(),
-//     DISCORD_SECRET: z.string(),
-// });
-//
-// const twitterScheme = z.object({
-//     TWITTER_ID: z.string(),
-//     TWITTER_SECRET: z.string(),
-// });
-
 export const serverScheme = z
     .object({
         HOST: z.string(),
-        NODE_ENV: z.enum(["development", "production", "preview"]),
         DATABASE_URL: z.string().min(1),
         SHADOW_DATABASE_URL: z.string().min(1),
         // RESEND_API_KEY: z.string().min(1),
