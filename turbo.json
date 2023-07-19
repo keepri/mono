@@ -10,7 +10,7 @@
                 "prisma/schema.prisma"
             ],
             "outputs": [
-                "prisma/client/**"
+                "prisma/.client/**"
             ],
             "cache": true
         },
