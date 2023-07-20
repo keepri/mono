@@ -52,10 +52,10 @@ export enum AccountType {
 }
 
 export enum StorageKey {
-    // qrInput = "kdv-qr-input",
+    qrInput = "kdv-qr-input",
     qrMargin = "kdv-qr-margin",
-    qrPatternColor = "kdv-qr-dark",
-    qrBackgroundColor = "kdv-qr-light",
+    qrPatternColor = "kdv-qr-pattern",
+    qrBackgroundColor = "kdv-qr-background",
     theme = "kdv-theme",
 }
 

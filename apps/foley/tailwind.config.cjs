@@ -25,6 +25,20 @@ module.exports = {
             colors: {
                 ivory: "#FFFFF9",
             },
+            keyframes: {
+                "wiggle-rotate": {
+                    "0%, 100%": { transform: "rotate(-1deg)" },
+                    "50%": { transform: "rotate(1deg)" },
+                },
+                "wiggle-translate": {
+                    "0%, 100%": { transform: "translate(-3px)" },
+                    "50%": { transform: "translate(3px)" },
+                }
+            },
+            animation: {
+                "wiggle-rotate": "wiggle-rotate 250ms ease-in-out infinite",
+                "wiggle-translate": "wiggle-translate 250ms ease-in-out infinite",
+            },
             fontFamily: {
                 underdog: ["var(--font-underdog)"],
                 inconsolata: ["var(--font-inconsolata)"],

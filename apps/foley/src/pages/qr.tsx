@@ -1,5 +1,5 @@
 import { makeCode, toDataURL, type QRCodeToDataURLOptions, type QRCodeSegment } from "qr";
-import { Button, Input, type InputOnChange } from "ui";
+import { Button, Input } from "ui";
 import { getTextBytes, isHexCode } from "utils";
 import Bounce from "@components/Animations/Bounce";
 import { Section } from "@components/Section";
@@ -10,14 +10,14 @@ import { origin } from "@utils/misc";
 import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
 import {
+    type FormEvent,
+    type ChangeEvent,
     createRef,
     startTransition,
     useCallback,
     useEffect,
     useMemo,
     useState,
-    type ChangeEventHandler,
-    type FormEvent,
 } from "react";
 
 const FILE_NAME = "gib_qr" as const;
@@ -31,158 +31,120 @@ const QRPage: NextPage = () => {
     const isAuthenticated = session.status === "authenticated";
 
     const canvasRef = createRef<HTMLCanvasElement>();
+    const patternInputRef = createRef<HTMLInputElement>();
+    const backgroundInputRef = createRef<HTMLInputElement>();
+    const errorElementRef = createRef<HTMLSpanElement>();
 
+    const [loading, setLoading] = useState<boolean>(false);
     const [errMessage, setErrMessage] = useState<string>("");
     const [alertSignIn, setAlertSignIn] = useState<boolean>(false);
-    const [text, setText] = useState<string>("");
-    const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
     const [pngUrl, setPngUrl] = useState<string | null>(null);
-    const [qrColor, setQrColor] = useState<string>(typeof window !== "undefined" ?
-        BrowserStorage.get(StorageKey.qrPatternColor) || DEFAULT_QR_COLOR :
-        DEFAULT_QR_COLOR
-    );
-    const [qrBgColor, setQrBgColor] = useState<string>(typeof window !== "undefined" ?
-        BrowserStorage.get(StorageKey.qrBackgroundColor) || DEFAULT_BG_COLOR :
-        DEFAULT_BG_COLOR
-    );
-    const [qrMargin, setQrMargin] = useState<number>(typeof window !== "undefined" ?
-        +(BrowserStorage.get(StorageKey.qrMargin) || DEFAULT_MARGIN) :
-        DEFAULT_MARGIN
-    );
+    const [svgUriCache, setSvgUriCache] = useState<string | null>(null);
+    const [text, setText] = useState<string>("");
+    const [qrColor, setQrColor] = useState<string>(DEFAULT_QR_COLOR);
+    const [qrBgColor, setQrBgColor] = useState<string>(DEFAULT_BG_COLOR);
+    const [qrMargin, setQrMargin] = useState<number>(DEFAULT_MARGIN);
+    const [patternTransparent, setPatternTransparent] = useState<boolean>(false);
+    const [backgroundTransparent, setBackgroundTransparent] = useState<boolean>(false);
 
+    const isPatternColor = useMemo((): boolean => isHexCode(qrColor), [qrColor]);
+    const isBackgroundColor = useMemo((): boolean => isHexCode(qrBgColor), [qrBgColor]);
     const qrOpts = useMemo((): QRCodeToDataURLOptions => {
         return {
             margin: qrMargin,
             width: 270,
             color: {
-                dark: qrColor,
-                light: qrBgColor,
+                dark: isPatternColor ? qrColor : DEFAULT_QR_COLOR,
+                light: isBackgroundColor ? qrBgColor : DEFAULT_BG_COLOR,
             },
             rendererOpts: {
                 quality: 1,
             },
         };
-    }, [qrMargin, qrColor, qrBgColor]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [qrMargin, isPatternColor, isBackgroundColor]);
 
-    const handleToggleTransparent: ChangeEventHandler<HTMLInputElement> = useCallback((e): void => {
-        const color = e.target.name === "pattern" ? qrColor : qrBgColor;
-        const setColor = e.target.name === "pattern" ? setQrColor : setQrBgColor;
+    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
+        svgUriCache && setSvgUriCache(null);
 
-        if (!isHexCode(color)) {
-            return;
-        }
+        if (e.target.name === "text") {
+            if (!e.target.value.length) {
+                setPngUrl(null);
+            }
 
-        if (color.length === 4) {
-            if (!e.target.checked) {
+            e.target.value.length ?
+                BrowserStorage.set(StorageKey.qrInput, e.target.value) :
+                BrowserStorage.remove(StorageKey.qrInput);
+
+            setText(e.target.value);
+        } else if (e.target.name === "pattern" || e.target.name === "background") {
+            if ((!e.target.value.startsWith("#") && e.target.value !== "") || e.target.value.length > 9) {
                 return;
             }
 
-            setColor(`#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`);
+            const key = e.target.name === "pattern" ? StorageKey.qrPatternColor : StorageKey.qrBackgroundColor;
+
+            e.target.value.length ? BrowserStorage.set(key, e.target.value) : BrowserStorage.remove(key);
+            e.target.name === "pattern" ? setQrColor(e.target.value) : setQrBgColor(e.target.value);
+        } else {
+            const margin = e.target.value.at(0) === "-" ? 2 : Number(e.target.value.charAt(e.target.value.length - 1));
+
+            if (isNaN(margin) === true || margin > MAX_MARGIN || margin < 0) {
+                return;
+            }
+
+            BrowserStorage.set(StorageKey.qrMargin, String(margin));
+            setQrMargin(margin);
+        }
+    }, [svgUriCache]);
+
+    const handleTransparent = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
+        const isPattern = e.target.name === "pattern";
+        const color = isPattern ? qrColor : qrBgColor;
+
+        if (!isHexCode(color)) {
+            if (isPattern && !patternInputRef.current?.classList.contains("motion-safe:animate-wiggle-translate")) {
+                patternInputRef.current?.classList.add("motion-safe:animate-wiggle-translate");
+                setTimeout(() => patternInputRef.current?.classList.remove("motion-safe:animate-wiggle-translate"), 769);
+            } else if (!isPattern && !backgroundInputRef.current?.classList.contains("motion-safe:animate-wiggle-translate")) {
+                backgroundInputRef.current?.classList.add("motion-safe:animate-wiggle-translate");
+                setTimeout(() => backgroundInputRef.current?.classList.remove("motion-safe:animate-wiggle-translate"), 769);
+            }
+
+            return;
+        }
+
+        const key = isPattern ? StorageKey.qrPatternColor : StorageKey.qrBackgroundColor;
+        const setColor = isPattern ? setQrColor : setQrBgColor;
+        const setTransparent = isPattern ? setPatternTransparent : setBackgroundTransparent;
+
+        setTransparent(e.target.checked);
+
+        if (color.length === 4) {
+            const newColor = `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`;
+
+            setColor(newColor);
+            BrowserStorage.set(key, newColor);
 
             return;
         }
 
         if (color.length === 7) {
-            if (!e.target.checked) {
-                return;
-            }
-
             setColor(color + "00");
+            BrowserStorage.set(key, color + "00");
 
             return;
         }
 
-        if (color.length === 9) {
-            if (e.target.checked) {
-                return;
-            }
+        if (color.length === 9 && !e.target.checked) {
+            const newColor = color.slice(0, 7);
 
-            setColor(color.slice(0, 7));
-
-            return;
-        }
-    }, [qrBgColor, qrColor]);
-
-    const handleChangeInput: InputOnChange = useCallback((e): void => {
-        const newText = e.target.value;
-
-        // we clear the cache anytime the user tries to generate a new qr code
-        setSvgUriCache(null);
-
-        if (e.target.name === "qr-input") {
-            if (!newText.length) {
-                setPngUrl(null);
-            }
-
-            setText(newText);
+            setColor(newColor);
+            BrowserStorage.set(key, newColor);
 
             return;
         }
-
-        if (e.target.name === "qr-margin") {
-            const margin = newText.at(0) === "-" ? 0 : Number(newText.charAt(newText.length - 1));
-            const isValid = isNaN(margin) === false && margin <= MAX_MARGIN && margin >= 0;
-
-            if (!isValid) {
-                return;
-            }
-
-            BrowserStorage.set(StorageKey.qrMargin, JSON.stringify(margin));
-
-            setQrMargin(margin);
-
-            return;
-        }
-
-        // --- colors block ---
-        if ((!newText.startsWith("#") && newText !== "") || newText.length > 9) {
-            return;
-        }
-
-        if (e.target.name === "qr-color-bg") {
-            if (!newText.length) {
-                BrowserStorage.remove(StorageKey.qrBackgroundColor);
-            } else {
-                BrowserStorage.set(StorageKey.qrBackgroundColor, newText);
-            }
-
-            setQrBgColor(newText.length ? newText : DEFAULT_BG_COLOR);
-
-            return;
-        }
-
-        if (e.target.name === "qr-color") {
-            if (!newText.length) {
-                BrowserStorage.remove(StorageKey.qrPatternColor);
-            } else {
-                BrowserStorage.set(StorageKey.qrPatternColor, newText);
-            }
-
-            setQrColor(newText.length ? newText : DEFAULT_QR_COLOR);
-
-            return;
-        }
-        // --- colors block ---
-    }, []);
-
-    // const handleChangeFile: InputOnChange = useCallback((e) => {
-    //     const maxFileSize = 3;
-    //     const { ok, file, error } = validateFile(e.target.files?.[0], maxFileSize);
-    //
-    //     if (!ok) {
-    //         console.error("invalid file", error);
-    //
-    //         if (error === "file too big") {
-    //             // TODO: handle file too big error
-    //             return;
-    //         }
-    //         // TODO: add error here
-    //         return;
-    //     }
-    //
-    //     setSelectedFile(file);
-    // }, []);
+    }, [qrColor, qrBgColor, patternInputRef, backgroundInputRef]);
 
     const handleSvgDownload = useCallback(async (): Promise<void> => {
         if (!isAuthenticated) {
@@ -224,11 +186,11 @@ const QRPage: NextPage = () => {
                     return;
                 }
 
-                setSvgUriCache(result);
-
                 linkTag.href = result;
                 linkTag.download = FILE_NAME;
                 linkTag.click();
+
+                setSvgUriCache(result);
             }).catch((error) => {
                 console.warn(error.stack);
                 console.error("could not download svg", error.message);
@@ -242,36 +204,15 @@ const QRPage: NextPage = () => {
         try {
             e && e.preventDefault();
 
-            if (!canvasRef.current) {
+            if (!(canvasRef.current || Boolean(text.length)) || getTextBytes(text) > 2953) {
                 return;
             }
-
-            // if (selectedFile) {
-            //     // handle file uploaded creation
-            //     readFileAsDataUrl(selectedFile, async (e) => {
-            //         const data = e.target?.result as string;
-            //         if (!data) return;
-            //         makeCode(data);
-            //     });
-            //
-            //     return;
-            // }
-
-            if (!Boolean(text.length)) {
-                return;
-            }
-
-            const bytes = getTextBytes(text);
-
-            if (bytes > 2953) {
-                return;
-            }
-
-            const code = makeCode(text);
 
             toDataURL(
                 canvasRef.current!,
-                code.segments.map((segment) => ({ ...segment, mode: segment.mode.id } as unknown as QRCodeSegment)),
+                makeCode(text)
+                    .segments
+                    .map((segment) => ({ ...segment, mode: segment.mode.id } as unknown as QRCodeSegment)),
                 qrOpts,
                 (error, url) => {
                     if (error) {
@@ -293,24 +234,46 @@ const QRPage: NextPage = () => {
     }, [canvasRef, qrOpts, text]);
 
     useEffect((): void => {
-        const isBackgroundLen = qrBgColor.length === 4 || qrBgColor.length === 7 || qrBgColor.length === 9;
-        const isPatternLen = qrColor.length === 4 || qrColor.length === 7 || qrColor.length === 9;
+        const lsInput = BrowserStorage.get(StorageKey.qrInput);
+        const lsPatternColor = BrowserStorage.get(StorageKey.qrPatternColor);
+        const lsBackgroundColor = BrowserStorage.get(StorageKey.qrBackgroundColor);
+        const lsMargin = BrowserStorage.get(StorageKey.qrMargin);
 
-        if (!text.length || !isBackgroundLen || !isPatternLen) {
-            return;
+        if (lsInput) {
+            setText(lsInput);
         }
 
+        if (lsPatternColor) {
+            setQrColor(lsPatternColor);
+
+            if (lsPatternColor.length === 9) {
+                setPatternTransparent(true);
+            }
+        }
+
+        if (lsBackgroundColor) {
+            setQrBgColor(lsBackgroundColor);
+
+            if (lsBackgroundColor.length === 9) {
+                setBackgroundTransparent(true);
+            }
+        }
+
+        if (lsMargin) {
+            setQrMargin(Number(lsMargin));
+        }
+    }, []);
+
+    useEffect((): void => {
+        if (!text.length) return;
         handleSubmit();
     }, [handleSubmit, qrBgColor, qrColor, text]);
 
     useEffect(() => {
-        if (!errMessage.length) {
-            return;
-        }
-
-        const timeout = setTimeout(() => setErrMessage(""), 7419);
-
-        return () => clearTimeout(timeout);
+        if (!errMessage.length) return;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        const timeoutMessage = setTimeout(() => setErrMessage(""), 7419);
+        return () => clearTimeout(timeoutMessage);
     }, [errMessage]);
 
     return (
@@ -358,6 +321,7 @@ const QRPage: NextPage = () => {
                             </p>
 
                             <Bounce
+                                ref={errorElementRef}
                                 enabled={alertSignIn || Boolean(errMessage.length)}
                                 className={alertSignIn || Boolean(errMessage.length) ? undefined : "hidden"}
                             >
@@ -368,90 +332,79 @@ const QRPage: NextPage = () => {
                         </div>
 
                         <Input
-                            name="qr-input"
-                            placeholder="gib text, link or good vibes"
                             value={text}
-                            className={`max-w-[25rem] w-full border-4 border-gray-300 placeholder-gray-400 dark:bg-black outline-[var(--clr-orange)] focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4`}
-                            onChange={handleChangeInput}
+                            name="text"
+                            placeholder="gib text, link or good vibes"
+                            className="max-w-[25rem] w-full border-4 border-gray-300 placeholder-gray-400 dark:bg-black outline-[var(--clr-orange)] focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4"
+                            maxLength={2953}
+                            onChange={handleChange}
                         />
-                        {
-                            // <div aria-label="buttons" className="flex flex-wrap items-center justify-center gap-4">
-                            //     <Input
-                            //     type="file"
-                            //     // TODO: TEMP: not done
-                            //     labelclass="hidden hover:bg-[var(--clr-bg-500)] hover:border-[var(--clr-orange)] active:bg-[var(--clr-orange)] active:border-[var(--clr-bg-500)] active:scale-110"
-                            //     onChange={handleChangeFile}
-                            // />
-                            // </div>
-                        }
                     </form>
 
                     <div className="flex max-xs:flex-col xs:justify-center sm:gap-10 gap-6 max-sm:w-full max-xs:max-w-[17rem]">
                         <span>
                             <Input
-                                label="pattern color"
-                                labelclass="whitespace-nowrap"
-                                className="block w-full sm:max-w-[9rem] border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2"
+                                ref={patternInputRef}
                                 value={qrColor}
+                                required={true}
+                                name="pattern"
+                                label="pattern color"
+                                labelClass="sm:max-w-[9rem] whitespace-nowrap"
+                                className={`block w-full sm:max-w-[9rem] border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2 ${!isPatternColor ? "border-red-500" : ""}`}
+                                maxLength={9}
                                 placeholder="hex code"
-                                name="qr-color"
-                                onChange={handleChangeInput}
+                                onChange={handleChange}
                             />
 
                             <Input
+                                checked={patternTransparent}
                                 type="checkbox"
                                 label="transparent"
-                                labelclass="mt-2 select-none cursor-pointer"
-                                className="cursor-pointer border"
                                 name="pattern"
-                                onChange={handleToggleTransparent}
+                                labelClass="mt-2 select-none cursor-pointer"
+                                className="cursor-pointer border"
+                                onChange={handleTransparent}
                             />
                         </span>
 
                         <span>
                             <Input
-                                label="background color"
-                                labelclass="sm:max-w-[9rem] whitespace-nowrap"
-                                className="block w-full border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2"
+                                ref={backgroundInputRef}
                                 value={qrBgColor}
+                                required={true}
+                                name="background"
+                                label="background color"
+                                labelClass="sm:max-w-[9rem] whitespace-nowrap"
+                                className={`block w-full border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2 ${!isBackgroundColor ? "border-red-500" : ""}`}
+                                maxLength={9}
                                 placeholder="hex code"
-                                name="qr-color-bg"
-                                onChange={handleChangeInput}
+                                onChange={handleChange}
                             />
 
                             <Input
+                                checked={backgroundTransparent}
                                 type="checkbox"
                                 label="transparent"
-                                labelclass="mt-2 select-none cursor-pointer"
-                                className="cursor-pointer border"
                                 name="background"
-                                onChange={handleToggleTransparent}
+                                labelClass="mt-2 select-none cursor-pointer"
+                                className="cursor-pointer border"
+                                onChange={handleTransparent}
                             />
                         </span>
 
                         <Input
+                            value={qrMargin}
+                            required={true}
+                            name="margin"
                             type="number"
                             label="margin"
-                            labelclass="sm:max-w-[9rem] whitespace-nowrap"
+                            labelClass="sm:max-w-[9rem] whitespace-nowrap"
                             className="block w-full sm:max-w-[10rem] border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2"
-                            value={qrMargin}
+                            max={7}
                             placeholder="background color"
-                            name="qr-margin"
-                            onChange={handleChangeInput}
+                            onChange={handleChange}
                         />
                     </div>
-
-                    {/* <p
-					className={`flex flex-wrap items-center justify-center gap-4 text-center max-w-[40ch] text-xs sm:max-w-[unset] ${
-						!selectedFile ? 'invisible' : ''
-					}`}
-				>
-					{selectedFile?.name}{' '}
-					<span className="px-2 py-2 ml-4 rounded bg-[var(--clr-orange)]">{selectedFile?.type.split('/')[1]}</span>
-					<span className="px-2 py-2 rounded bg-[var(--clr-orange)]">
-						{fileSize.toFixed(2)}kB {fileSize > 1000 ? '🚀' : ''}
-					</span>
-				</p> */}
                 </Section>
             </div>
         </>

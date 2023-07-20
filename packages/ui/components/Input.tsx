@@ -1,11 +1,10 @@
 import {
-    ChangeEvent,
-    forwardRef,
-    HTMLInputTypeAttribute,
-    InputHTMLAttributes,
-    PropsWithRef,
-    useCallback,
+    type ChangeEvent,
+    type HTMLInputTypeAttribute,
+    type InputHTMLAttributes,
+    type PropsWithRef,
     useId,
+    forwardRef,
 } from "react";
 
 export type InputOnChange = (e: ChangeEvent<HTMLInputElement>, index?: number) => void;
@@ -14,7 +13,7 @@ type Type1 = Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "type" | "
     index?: number;
     type: "file";
     label: string;
-    labelclass?: string;
+    labelClass ?: string;
     onChange: InputOnChange;
 };
 
@@ -22,7 +21,7 @@ type Type2 = Omit<InputHTMLAttributes<HTMLInputElement>, "onChange" | "type"> & 
     index?: number;
     type?: Exclude<HTMLInputTypeAttribute, "file">;
     label?: string;
-    labelclass?: string;
+    labelClass?: string;
     onChange: InputOnChange;
 };
 
@@ -34,27 +33,24 @@ export const Input = forwardRef<HTMLInputElement, PropsWithRef<Props>>(({
     index,
     value,
     label,
-    labelclass,
+    labelClass,
     onChange,
     ...rest
 }, ref) => {
     const id = useId();
 
-    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        onChange(e, index);
-    }, [index, onChange]);
-
     if (type.toLowerCase() === "checkbox") {
         if (label) {
             return (
-                <label className={`${labelclass} flex flex-wrap items-center gap-2`} htmlFor={id}>
+                <label className={`${labelClass} flex flex-wrap items-center gap-2`} htmlFor={id}>
                     <input
                         id={id}
                         ref={ref}
+                        data-index={index}
                         type="checkbox"
                         value={value}
                         className={className}
-                        onChange={handleChange}
+                        onChange={onChange}
                         {...rest}
                     />
                     <span>{label}{rest.required && <sup className="text-red-600">*</sup>}</span>
@@ -66,10 +62,11 @@ export const Input = forwardRef<HTMLInputElement, PropsWithRef<Props>>(({
             <input
                 id={id}
                 ref={ref}
+                data-index={index}
                 type="checkbox"
                 value={value}
                 className={className}
-                onChange={handleChange}
+                onChange={onChange}
                 {...rest}
             />
         );
@@ -78,15 +75,16 @@ export const Input = forwardRef<HTMLInputElement, PropsWithRef<Props>>(({
     if (type.toLowerCase() === "file") {
         // FIXME this is wrong, change it
         return (
-            <label htmlFor={id} className={`input-base ${labelclass}`}>
+            <label htmlFor={id} className={`input-base ${labelClass}`}>
                 {label ?? "gib file"}
                 <input
                     id={id}
                     ref={ref}
+                    data-index={index}
                     type="file"
                     value={value}
                     className={className}
-                    onChange={handleChange}
+                    onChange={onChange}
                     {...rest}
                 />
             </label>
@@ -95,15 +93,16 @@ export const Input = forwardRef<HTMLInputElement, PropsWithRef<Props>>(({
 
     if (label) {
         return (
-            <label htmlFor={id} className={`${labelclass ?? ""} flex flex-col`}>
+            <label htmlFor={id} className={`${labelClass ?? ""} flex flex-col`}>
                 <span>{label}{rest.required && <sup className="text-red-600">*</sup>}</span>
                 <input
                     id={id}
                     ref={ref}
+                    data-index={index}
                     type={type}
                     value={value}
                     className={`${className} input-base`}
-                    onChange={handleChange}
+                    onChange={onChange}
                     {...rest}
                 />
             </label>
@@ -112,11 +111,13 @@ export const Input = forwardRef<HTMLInputElement, PropsWithRef<Props>>(({
 
     return (
         <input
+            id={id}
             ref={ref}
+            data-index={index}
             value={value}
             className={`${className} input-base`}
             type={type}
-            onChange={handleChange}
+            onChange={onChange}
             {...rest}
         />
     );
