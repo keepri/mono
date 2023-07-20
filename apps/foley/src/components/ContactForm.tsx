@@ -3,7 +3,7 @@ import { URLS } from "@utils/enums";
 import { origin } from "@utils/misc";
 import { ContactBodySchema } from "@utils/schemas";
 import { useSession } from "next-auth/react";
-import { useCallback, type FormEvent, useState, ChangeEvent, useEffect } from "react";
+import { useCallback, useState, useEffect, type FormEvent, ChangeEvent, useMemo } from "react";
 import { z } from "zod";
 import { generateErrorMessage } from "zod-error";
 
@@ -33,22 +33,19 @@ export default function ContactForm(props: Props): JSX.Element {
     const [email, setEmail] = useState<string>(session.data?.user?.email ?? "");
     const [message, setMessage] = useState<string>("");
 
-    const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.name === "name") {
-            setName(e.target.value.length ? e.target.value : undefined);
+    const buttonText = useMemo(() => {
+        if (status === Status.idle) return "send";
+        else if (status === Status.loading) return "sending...";
+        else if (status === Status.success) return "sent";
+        else if (status === Status.error) return "oops... try again?";
+        console.warn("ContactForm: button text for status -", status, "- was not handled");
+        return "send";
+    }, [status]);
 
-            return;
-        }
-
-        if (e.target.name === "email") {
-            setEmail(e.target.value);
-
-            return;
-        }
-    }, []);
-
-    const handleMessageChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-        setMessage(e.target.value);
+    const handleChange = useCallback(<T extends HTMLInputElement | HTMLTextAreaElement>(e: ChangeEvent<T>) => {
+        if (e.target.name === "name") setName(e.target.value.length ? e.target.value : undefined);
+        else if (e.target.name === "email") setEmail(e.target.value);
+        else if (e.target.name === "message") setMessage(e.target.value);
     }, []);
 
     const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
@@ -107,24 +104,23 @@ export default function ContactForm(props: Props): JSX.Element {
     }, [email, message, name, session.data?.user?.id]);
 
     useEffect(() => {
-        if (!(status === Status.success || status === Status.error)) {
-            return;
-        }
-
+        if (!(status === Status.success || status === Status.error)) return;
         const timeout = setTimeout(() => setStatus(Status.idle), 4206.9);
-
         return () => clearTimeout(timeout);
     }, [status]);
 
     useEffect(() => {
-        if (!errorFields || !Object.values(errorFields).includes(true)) {
-            return;
-        }
-
+        if (!errorFields || !Object.values(errorFields).includes(true)) return;
         const timeout = setTimeout(() => setErrorFields(null), 4206.9);
-
         return () => clearTimeout(timeout);
     }, [errorFields]);
+
+    useEffect(() => {
+        if (session.status !== "authenticated") return;
+        if (session.data.user?.name) setName(session.data.user.name);
+        if (session.data.user?.email) setEmail(session.data.user.email);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [session.status]);
 
     return (
         <form role="form" onSubmit={handleSubmit} className={`${props.className ?? ""} flex flex-col gap-4`}>
@@ -141,8 +137,8 @@ export default function ContactForm(props: Props): JSX.Element {
                     autoComplete="name"
                     maxLength={255}
                     className={`block border ${errorFields?.name ? "border-red-500" : ""} border-gray-300 placeholder-gray-400 bg-white dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2`}
-                    labelclass="flex-1"
-                    onChange={handleInputChange}
+                    labelClass="flex-1"
+                    onChange={handleChange<HTMLInputElement>}
                 />
 
                 <Input
@@ -158,8 +154,8 @@ export default function ContactForm(props: Props): JSX.Element {
                     autoComplete="email"
                     maxLength={255}
                     className={`border ${errorFields?.email ? "border-red-500" : ""} border-gray-300 placeholder-gray-400 bg-white dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2`}
-                    labelclass="flex-1"
-                    onChange={handleInputChange}
+                    labelClass="flex-1"
+                    onChange={handleChange<HTMLInputElement>}
                 />
             </span>
 
@@ -168,6 +164,7 @@ export default function ContactForm(props: Props): JSX.Element {
                     required={true}
                     inputMode="text"
                     label="message"
+                    name="message"
                     value={message}
                     placeholder="what's up?"
                     autoCorrect="off"
@@ -176,7 +173,7 @@ export default function ContactForm(props: Props): JSX.Element {
                     rows={7}
                     cols={1}
                     className={`resize-none border ${errorFields?.message ? "border-red-500" : ""} border-gray-300 placeholder-gray-400 bg-white dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2`}
-                    onChange={handleMessageChange}
+                    onChange={handleChange<HTMLTextAreaElement>}
                 />
             </span>
 
@@ -184,15 +181,7 @@ export default function ContactForm(props: Props): JSX.Element {
                 type="submit"
                 className={`${status === Status.error ? "!border-red-500 !text-red-500" : status === Status.success ? "!border-green-500 !text-green-500" : ""} button !py-3 mt-4 border-gray-400 bg-white dark:bg-black`}
             >
-                {
-                    status === Status.idle ?
-                        "send" :
-                        status === Status.loading ?
-                            "sending..." :
-                            status === Status.success ?
-                                "sent" :
-                                "oops... try again?"
-                }
+                {buttonText}
             </Button>
         </form>
     );

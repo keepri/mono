@@ -53,12 +53,8 @@ const SmolPage: NextPage = () => {
     }, [isAuthenticated, url]);
 
     useEffect(() => {
-        if (!errMessage.length) {
-            return;
-        }
-
+        if (!errMessage.length) return;
         const timeout = setTimeout(() => setErrMessage(""), 7419);
-
         return () => clearTimeout(timeout);
     }, [errMessage]);
 

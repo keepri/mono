@@ -88,23 +88,9 @@ function DarkModeToggler(props: { className?: string }): JSX.Element {
     const [open, setOpen] = useState<boolean>(false);
 
     const handleChange = useCallback((newTheme: string) => {
-        switch (newTheme) {
-            case "dark":
-                BrowserStorage.set(StorageKey.theme, "dark");
-                break;
-
-            case "light":
-                BrowserStorage.set(StorageKey.theme, "light");
-                break;
-
-            case "system":
-                BrowserStorage.remove(StorageKey.theme);
-                break;
-
-            default:
-                break;
-        }
-
+        if (newTheme === "dark") BrowserStorage.set(StorageKey.theme, "dark");
+        else if (newTheme === "light") BrowserStorage.set(StorageKey.theme, "light");
+        else if (newTheme === "system") BrowserStorage.remove(StorageKey.theme);
         setOpen(false);
     }, []);
 

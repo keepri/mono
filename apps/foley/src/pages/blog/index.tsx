@@ -35,22 +35,14 @@ const BlogPage: NextPage<Props> = (props) => {
     }, [router, slugs]);
 
     useEffect(() => {
-        if (!errMessage.length) {
-            return;
-        }
-
+        if (!errMessage.length) return;
         const timeout = setTimeout(() => setErrMessage(""), 7000);
-
         return () => clearTimeout(timeout);
     }, [errMessage]);
 
     useEffect(() => {
-        if (!alertSignIn) {
-            return;
-        }
-
+        if (!alertSignIn) return;
         const timeout = setTimeout(() => setAlertSignIn(false), 7000);
-
         return () => clearTimeout(timeout);
     }, [alertSignIn]);
 
