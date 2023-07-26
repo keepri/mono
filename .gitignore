@@ -22,6 +22,7 @@ build
 .DS_Store
 *.pem
 project-info
+packages/db/prisma/.client/*
 
 # debug
 npm-debug.log*
