@@ -9,16 +9,6 @@ import { SessionProvider } from "next-auth/react";
 import { AppProps } from "next/app";
 import { useEffect } from "react";
 
-declare global {
-    interface BigInt {
-        toJSON(): string;
-    }
-}
-
-BigInt.prototype.toJSON = function() {
-    return this.toString();
-};
-
 export default function KIPRI({ Component, pageProps: { session, ...pageProps } }: AppProps): JSX.Element {
     colorSchemeHandler();
 
