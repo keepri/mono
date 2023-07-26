@@ -37,17 +37,17 @@ model Account {
 }
 
 model User {
-    id            Int       @id @default(autoincrement()) @db.UnsignedInt
+    id            Int         @id @default(autoincrement()) @db.UnsignedInt
     name          String?
-    email         String?   @unique
+    email         String?     @unique
     emailVerified DateTime?
-    role          String    @default("user") @db.TinyText
-    image         String?   @db.MediumText
+    image         String?     @db.MediumText
     accounts      Account[]
     sessions      Session[]
     smols         Smol[]
     posts         Post[]
     contact       Contact[]
+    roles         User_role[]
 
     @@index(name)
 }
@@ -116,4 +116,25 @@ model Contact {
     @@index(createdAt)
     @@index(name(length: 17))
     @@index(userId)
+}
+
+model Role {
+    id        Int         @id @default(autoincrement()) @db.UnsignedInt
+    name      String      @unique(length: 7) @db.TinyText
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @default(now()) @updatedAt
+    users     User_role[]
+}
+
+model User_role {
+    id        Int      @id @default(autoincrement()) @db.UnsignedInt
+    userId    Int      @db.UnsignedInt
+    roleId    Int      @db.UnsignedInt
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+
+    @@index(userId)
+    @@index(roleId)
 }

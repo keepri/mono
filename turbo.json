@@ -20,6 +20,12 @@
             ],
             "cache": false
         },
+        "db:push-data-loss": {
+            "inputs": [
+                "prisma/schema.prisma"
+            ],
+            "cache": false
+        },
         "db:dev": {
             "persistent": true,
             "cache": false

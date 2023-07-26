@@ -1,33 +1,3 @@
-import { AccountType, Currency, PaymentProvider, StateStatus } from "@utils/enums";
-
-export type User = {
-    uid: string;
-    type: AccountType;
-    email: string;
-    fullName: string;
-    firstName: string;
-    lastName: string;
-    createdAt: number;
-    updatedAt: number;
-};
-
-export type Donation = {
-    uid: string;
-    amount: string;
-    currency: Currency;
-    createdAt: number;
-    provider: PaymentProvider;
-};
-
-export type Question = {
-    uid: string;
-    donationUid: string;
-    status: StateStatus;
-    email: string;
-    message: string;
-    images?: string[];
-};
-
 // COOKIES
 export type CookieOptions = {
     /**

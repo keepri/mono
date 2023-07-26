@@ -12,6 +12,7 @@
         "db:studio": "npm run dev --workspace db",
         "db:generate": "turbo db:generate --filter=db",
         "db:push": "turbo db:push --filter=db",
+        "db:push-data-loss": "turbo db:push-data-loss --filter=db",
         "db-nika:generate": "turbo db:generate --filter=nika",
         "db-nika:push": "turbo db:push --filter=nika",
         "build": "turbo build",

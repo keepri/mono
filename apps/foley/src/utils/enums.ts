@@ -29,26 +29,8 @@ export enum Langs {
     ro = "ro",
 }
 
-export enum Currency {
-    RON = "RON",
-    EUR = "EUR",
-    USD = "USD",
-}
-
 export enum AuthProvider {
-    GITHUB = "github",
-}
-
-export enum PaymentProvider {
-    STRIPE = "stripe",
-    PAYPAL = "paypal",
-}
-
-export enum AccountType {
-    admin = "admin",
-    standard = "standard",
-    member = "member",
-    premium = "premium",
+    github = "github",
 }
 
 export enum StorageKey {

@@ -127,7 +127,6 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   emailVerified: 'emailVerified',
-  role: 'role',
   image: 'image'
 };
 
@@ -179,6 +178,21 @@ exports.Prisma.ContactScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.RoleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.User_roleScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  roleId: 'roleId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -197,7 +211,9 @@ exports.Prisma.ModelName = {
   Session: 'Session',
   Smol: 'Smol',
   Post: 'Post',
-  Contact: 'Contact'
+  Contact: 'Contact',
+  Role: 'Role',
+  User_role: 'User_role'
 };
 
 /**

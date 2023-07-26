@@ -1,4 +1,4 @@
-import { Session, Smol } from "db";
+import { type Session, type Smol, prisma } from "db";
 import { SmolSchema } from "db/schemas";
 import { toMB } from "utils";
 import { FileType, ImageType, StorageKey, URLS } from "@utils/enums";
@@ -162,4 +162,12 @@ export class BrowserStorage {
         window.dispatchEvent(new CustomEvent("storagechange"));
         return;
     }
+}
+
+export async function userIsAdmin$(id: number): Promise<boolean> {
+    const user = await prisma.user.findFirst({ where: { id } });
+    const userRole = await prisma.user_role.findFirst({ where: { userId: user?.id } });
+    const role = await prisma.role.findFirst({ where: { id: userRole?.roleId } });
+
+    return role?.name === "admin" ? true : false;
 }

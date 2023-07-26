@@ -6,7 +6,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useCallback, useState, type HTMLAttributes } from "react";
 
-export const DEFAULT_AUTH_PROVIDER: AuthProvider = AuthProvider.GITHUB;
+export const DEFAULT_AUTH_PROVIDER: AuthProvider = AuthProvider.github;
 
 export default function Auth(props: HTMLAttributes<HTMLSpanElement>): JSX.Element {
     const session = useSession();
@@ -64,7 +64,7 @@ export default function Auth(props: HTMLAttributes<HTMLSpanElement>): JSX.Elemen
                     <div
                         className={`${isAuthenticated || loading ? "hidden" : ""} flex gap-2 items-center justify-evenly group-hover:scale-100 scale-0 group-hover:opacity-100 opacity-0 transition-transform`}
                     >
-                        <GitHub className="dark:fill-white" onClick={() => onSignIn(AuthProvider.GITHUB)} />
+                        <GitHub className="dark:fill-white" onClick={() => onSignIn(AuthProvider.github)} />
                     </div>
                     <button
                         disabled={loading || loadingSession}

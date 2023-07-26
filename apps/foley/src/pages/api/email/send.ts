@@ -1,9 +1,7 @@
 import { sendEmail, type Email } from "@utils/email";
-import { prisma } from "db";
-import { validateSessionApiRequest } from "@utils/helpers";
+import { validateSessionApiRequest, userIsAdmin$ } from "@utils/helpers";
 import { z } from "zod";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
-import { type IncomingHttpHeaders } from "http2";
 import { generateErrorMessage } from "zod-error";
 
 const IdentitySchema = z.array(z.object({
@@ -47,7 +45,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(400).send(generateErrorMessage(body.error.issues));
         }
 
-        await userIsAdmin(req.headers);
+        // always exists because of middleware
+        const session = await validateSessionApiRequest(req.headers);
+
+        if (!(await userIsAdmin$(session!.userId))) {
+            throw {
+                status: 403,
+                message: "insufficient access rights",
+            };
+        }
+
         await sendEmail(body.data as Email);
 
         return res.status(200).send("done");
@@ -68,33 +75,3 @@ export const config = {
         },
     },
 };
-
-async function userIsAdmin(headers: IncomingHttpHeaders): Promise<void> {
-    const session = await validateSessionApiRequest(headers);
-
-    if (!session) {
-        // this should never happen because of middleware
-        throw {
-            status: 401,
-            message: "please sign in",
-        };
-    }
-
-    const user = await prisma.user.findFirst({ where: { id: { equals: session.userId } } });
-
-    if (!user) {
-        throw {
-            status: 404,
-            message: "user not found",
-        };
-    }
-
-    if (user.role !== "admin") {
-        throw {
-            status: 403,
-            message: "insufficient access rights",
-        };
-    }
-
-    return void 0;
-}
