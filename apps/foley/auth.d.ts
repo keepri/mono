@@ -10,7 +10,7 @@ declare module "next-auth/core/types" {
     interface Session {
         jwt?: JWT;
         user?: {
-            id?: string;
+            id?: number;
             role?: "user" | "admin";
         } & DefaultSession["user"];
     }

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const AccountSchema = z.object({
-    id: z.string().cuid(),
+    id: z.number(),
     userId: z.string().optional(),
     type: z.string(),
     provider: z.string(),
@@ -18,7 +18,7 @@ export const AccountSchema = z.object({
 });
 
 export const UserSchema = z.object({
-    id: z.string().cuid(),
+    id: z.number(),
     name: z.string().optional(),
     email: z.string().email().min(5).max(255).optional(),
     emailVerified: z.date().optional(),
@@ -27,14 +27,14 @@ export const UserSchema = z.object({
 });
 
 export const SessionSchema = z.object({
-    id: z.string().cuid(),
+    id: z.number(),
     sessionToken: z.string(),
     userId: UserSchema.shape.id,
     expires: z.date(),
 });
 
 export const SmolSchema = z.object({
-    id: z.string().cuid(),
+    id: z.number(),
     userId: UserSchema.shape.id,
     status: z.enum(["active", "inactive"]),
     slug: z.string().length(4),
@@ -45,7 +45,7 @@ export const SmolSchema = z.object({
 });
 
 export const PostSchema = z.object({
-    id: z.string().cuid(),
+    id: z.number(),
     slug: z.string(),
     title: z.string(),
     description: z.string(),
@@ -59,7 +59,7 @@ export const PostSchema = z.object({
 });
 
 export const ContactSchema = z.object({
-    id: z.string().cuid(),
+    id: z.number(),
     userId: UserSchema.shape.id.optional(),
     name: z.string().min(1).max(255).optional(),
     email: z.string().email().min(5).max(255),

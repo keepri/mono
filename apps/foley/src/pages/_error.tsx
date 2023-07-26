@@ -1,4 +1,4 @@
-import { Section } from "@components/Section";
+import Section from "@components/Section";
 import { URLS } from "@utils/enums";
 import { fontLondrinaSketch } from "@utils/font";
 import { GetServerSidePropsContext, GetServerSidePropsResult, InferGetServerSidePropsType } from "next";

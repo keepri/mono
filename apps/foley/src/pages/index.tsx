@@ -1,10 +1,10 @@
 import { fontJua } from "@utils/font";
 import { type NextPage } from "next/types";
-import ContactForm from "@components/ContactForm";
-import { Balancer } from "react-wrap-balancer";
-import { Section } from "@components/Section";
 import { Link } from "ui/components/Link";
-import RocketSvg from "assets/RocketSvg";
+import { Balancer } from "react-wrap-balancer";
+import ContactForm from "@components/ContactForm";
+import Section from "@components/Section";
+import Rocket from "@components/Svg/Rocket";
 
 const HomePage: NextPage = () => {
     return (
@@ -40,7 +40,7 @@ function HeroSection(): JSX.Element {
                 </Link>
             </div>
 
-            <RocketSvg />
+            <Rocket />
         </Section>
     );
 }

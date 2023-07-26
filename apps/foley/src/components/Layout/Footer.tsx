@@ -1,6 +1,6 @@
 import { GitHub } from "ui";
 import { Link } from "ui/components/Link";
-import { Section } from "@components/Section";
+import Section from "@components/Section";
 import { StorageKey, URLS } from "@utils/enums";
 import { fontJua, fontLondrinaSketch } from "@utils/font";
 import { BrowserStorage } from "@utils/helpers";

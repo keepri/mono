@@ -19,7 +19,7 @@ export default NextAuth({
     callbacks: {
         session: function sessionCallback({ session, user }) {
             if (session.user) {
-                session.user.id = user.id;
+                session.user.id = Number(user.id);
                 session.user.role = user.role;
             }
 

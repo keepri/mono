@@ -16,8 +16,8 @@ datasource db {
 // NextAuth.js Models
 // @see https://next-auth.js.org/schemas/models
 model Account {
-    id                       String  @id @default(cuid())
-    userId                   String?
+    id                       Int     @id @default(autoincrement()) @db.UnsignedInt
+    userId                   Int?    @db.UnsignedInt
     type                     String
     provider                 String
     providerAccountId        String
@@ -37,7 +37,7 @@ model Account {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            Int       @id @default(autoincrement()) @db.UnsignedInt
     name          String?
     email         String?   @unique
     emailVerified DateTime?
@@ -61,9 +61,9 @@ model VerificationToken {
 }
 
 model Session {
-    id           String   @id @default(cuid())
+    id           Int      @id @default(autoincrement()) @db.UnsignedInt
     sessionToken String   @unique
-    userId       String
+    userId       Int      @db.UnsignedInt
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -71,8 +71,8 @@ model Session {
 }
 
 model Smol {
-    id        String   @id @default(cuid())
-    userId    String
+    id        Int      @id @default(autoincrement()) @db.UnsignedInt
+    userId    Int      @db.UnsignedInt
     status    String   @default("active") @db.VarChar(10)
     slug      String   @db.VarChar(4)
     url       String   @db.MediumText
@@ -86,7 +86,7 @@ model Smol {
 }
 
 model Post {
-    id          String   @id @default(cuid())
+    id          Int      @id @default(autoincrement()) @db.UnsignedInt
     slug        String   @unique @db.VarChar(350)
     title       String   @db.TinyText
     description String   @db.TinyText
@@ -94,7 +94,7 @@ model Post {
     author      String   @db.TinyText
     category    String   @db.TinyText
     accessed    Int      @default(0) @db.UnsignedInt
-    ownerId     String?
+    ownerId     Int?     @db.UnsignedInt
     owner       User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
     createdAt   DateTime @default(now())
     updatedAt   DateTime @default(now()) @updatedAt
@@ -104,11 +104,11 @@ model Post {
 }
 
 model Contact {
-    id        String   @id @default(cuid())
+    id        Int      @id @default(autoincrement()) @db.UnsignedInt
     name      String?  @db.TinyText
     email     String   @db.TinyText
     message   String   @db.VarChar(1000)
-    userId    String?
+    userId    Int?     @db.UnsignedInt
     user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
     createdAt DateTime @default(now())
     updatedAt DateTime @default(now()) @updatedAt

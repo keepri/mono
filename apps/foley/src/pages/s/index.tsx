@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { type NextPage } from "next/types";
 import { useCallback, useState, type FormEvent, useEffect } from "react";
 import { generateErrorMessage } from "zod-error";
-import { Section } from "@components/Section";
+import Section from "@components/Section";
 import { SmolSchema } from "db/schemas";
 
 const SmolPage: NextPage = () => {

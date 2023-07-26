@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         console.log("successfully saved contact form", contact.id, "from", contact.email, "on", contact.createdAt);
 
-        const user = body.data.userId?.length ?
+        const user = body.data.userId ?
             await prisma.user.findFirst({ where: { id: { equals: body.data.userId } } }) :
             null;
 

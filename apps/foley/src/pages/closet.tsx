@@ -1,5 +1,5 @@
 import { ProductCard } from "ui";
-import { Section } from "@components/Section";
+import Section from "@components/Section";
 import { fontLondrinaSketch } from "@utils/font";
 
 export default function ClosetPage(): JSX.Element {

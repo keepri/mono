@@ -3,7 +3,7 @@ import { URLS } from "@utils/enums";
 import Auth from "./Auth";
 import { useRouter } from "next/router";
 import { fontInconsolata, fontLondrinaSketch } from "@utils/font";
-import { Section } from "./Section";
+import Section from "./Section";
 
 export default function Navbar(): JSX.Element {
     const router = useRouter();

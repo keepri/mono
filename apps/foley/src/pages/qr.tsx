@@ -2,7 +2,7 @@ import { makeCode, toDataURL, type QRCodeToDataURLOptions, type QRCodeSegment } 
 import { Button, Input } from "ui";
 import { getTextBytes, isHexCode } from "utils";
 import Bounce from "@components/Animations/Bounce";
-import { Section } from "@components/Section";
+import Section from "@components/Section";
 import { StorageKey, URLS } from "@utils/enums";
 import { fontInconsolata, fontLondrinaSketch } from "@utils/font";
 import { BrowserStorage } from "@utils/helpers";
