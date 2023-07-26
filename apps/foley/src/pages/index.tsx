@@ -7,6 +7,7 @@ import Section from "@components/Section";
 import Rocket from "@components/Svg/Rocket";
 
 const HomePage: NextPage = () => {
+
     return (
         <div className="grid sm:place-items-center place-items-start lg:gap-32 gap-16 bg-ivory dark:bg-black dark:text-white">
             <HeroSection />
