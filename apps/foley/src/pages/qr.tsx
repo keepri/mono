@@ -278,7 +278,7 @@ const QRPage: NextPage = () => {
 
     return (
         <>
-            <div className="flex sm:items-center items-start justify-center py-12 bg-ivory dark:bg-black dark:text-white">
+            <div className="flex sm:items-center items-start justify-center py-12 min-h-[70vh] bg-ivory dark:bg-black dark:text-white">
                 <Section className="flex flex-col items-center justify-center gap-12">
                     <form className="flex flex-col items-center justify-center gap-8 w-full">
                         <div className="flex flex-col items-center justify-center gap-4 flex-[1]">
