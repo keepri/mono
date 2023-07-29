@@ -1,7 +1,7 @@
-import { type Session, type Smol } from "db";
+import { type Session, type Smol, Prisma } from "db";
 import { SmolSchema } from "db/schemas";
 import { toMB } from "utils";
-import { FileType, ImageType, StorageKey, URLS } from "@utils/enums";
+import { FileType, ImageType, RoleName, StorageKey, URLS } from "@utils/enums";
 import { AcceptedFileTypeSchema } from "@utils/schemas";
 import { IncomingHttpHeaders } from "http";
 import { ZodError, z } from "zod";
@@ -114,7 +114,7 @@ export async function getSessionByToken$(sessionToken: string): Promise<Session 
     return session;
 }
 
-export async function validateSessionApiRequest(headers: IncomingHttpHeaders): Promise<Session | null> {
+export async function validateSession$(headers: IncomingHttpHeaders): Promise<Session | null> {
     const getCookieParser = await import("next/dist/server/api-utils").then((res) => res.getCookieParser);
     const cookies = getCookieParser(headers)();
     const sessionToken = cookies["__Secure-next-auth.session-token"] || cookies["next-auth.session-token"];
@@ -164,10 +164,37 @@ export class BrowserStorage {
     }
 }
 
-export async function userIsAdmin$(id: number): Promise<boolean> {
-    const prisma = (await import("db")).prisma;
-    const userRole = await prisma.user_role.findFirst({ where: { userId: id } });
-    const role = await prisma.role.findFirst({ where: { id: userRole?.roleId } });
+export class RoleManager {
+    static async getByName(roleName: RoleName, options?: { select?: Prisma.RoleSelect }) {
+        const prisma = (await import("db")).prisma;
 
-    return role?.name === "admin" ? true : false;
+        return await prisma.role.findFirstOrThrow({ where: { name: roleName }, select: options?.select });
+    }
+
+    static async assign(id: number, roleName: RoleName): Promise<void> {
+        const prisma = (await import("db")).prisma;
+        const role = await this.getByName(roleName, { select: { id: true } });
+        const userRole = await prisma.user_role.findFirst({ where: { userId: id, roleId: role.id } });
+
+        if (!userRole) {
+            await prisma.user_role.create({ data: { userId: id, roleId: role.id! } });
+            console.log(`assigned user ${id} the role of ${roleName}`);
+        }
+
+        return void 0;
+    }
+
+    static async isAdmin(id: number): Promise<boolean> {
+        const prisma = (await import("db")).prisma;
+        const adminRole = await this.getByName(RoleName.admin, { select: { id: true } });
+        const userAdminRole = await prisma.user_role.findFirst({
+            where: {
+                userId: id,
+                roleId: adminRole.id,
+            },
+            select: {},
+        });
+
+        return userAdminRole ? true : false;
+    }
 }

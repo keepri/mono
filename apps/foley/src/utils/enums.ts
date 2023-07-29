@@ -33,6 +33,11 @@ export enum AuthProvider {
     github = "github",
 }
 
+export enum RoleName {
+    user = "user",
+    admin = "admin",
+}
+
 export enum StorageKey {
     qrInput = "kdv-qr-input",
     qrMargin = "kdv-qr-margin",

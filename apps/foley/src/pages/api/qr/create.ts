@@ -1,5 +1,5 @@
 import { toFile } from "qr";
-import { validateSessionApiRequest } from "@utils/helpers";
+import { validateSession$ } from "@utils/helpers";
 import { readFileSync } from "fs";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 import { z } from "zod";
@@ -32,7 +32,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(400).send(generateErrorMessage(bodyParse.error.issues));
         }
 
-        const session = await validateSessionApiRequest(req.headers);
+        const session = await validateSession$(req.headers);
 
         if (!session) {
             console.warn("could not validate session for headers:", req.headers);

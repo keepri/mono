@@ -2,7 +2,6 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { URLS } from "@utils/enums";
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
-import { getSessionByToken$ } from "@utils/helpers";
 
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(69, "10 s") });
 const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([URLS.API_SMOL_CREATE, URLS.API_QR_CREATE, URLS.API_EMAIL_SEND]);
@@ -40,8 +39,8 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
 
             const sessionToken = req.cookies.get("__Secure-next-auth.session-token") || req.cookies.get("next-auth.session-token");
 
-            // TODO add expired check?
-            if (!sessionToken || !(await getSessionByToken$(sessionToken.value))) {
+            // TODO add expired check, session validation
+            if (!sessionToken) {
                 console.error("middleware could not find session token on path", req.nextUrl.pathname);
 
                 return NextResponse.error();

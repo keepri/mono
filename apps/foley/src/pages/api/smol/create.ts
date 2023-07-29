@@ -2,7 +2,7 @@ import { Smol, prisma } from "db";
 import { SmolSchema } from "db/schemas";
 import { makeLetterMix } from "utils";
 import { URLS } from "@utils/enums";
-import { validateSessionApiRequest } from "@utils/helpers";
+import { validateSession$ } from "@utils/helpers";
 import { protocol, siteHost } from "@utils/misc";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 import { generateErrorMessage } from "zod-error";
@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(400).send(generateErrorMessage(body.error.issues));
         }
 
-        const session = await validateSessionApiRequest(req.headers);
+        const session = await validateSession$(req.headers);
 
         if (!session) {
             return res.status(401).send("invalid session");

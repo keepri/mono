@@ -2,6 +2,8 @@ import { PrismaAdapter, prisma } from "db";
 import { serverEnv } from "@env/server.mjs";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
+import { RoleName } from "@utils/enums";
+import { RoleManager } from "@utils/helpers";
 
 export default NextAuth({
     adapter: PrismaAdapter(prisma),
@@ -20,15 +22,14 @@ export default NextAuth({
             return session;
         },
         async signIn(params) {
-            const userRole = await prisma.user_role.findFirst({ where: { userId: +params.user.id } });
-
-            if (!userRole) {
-                const role = await prisma.role.findFirst({ where: { name: "user" } });
-                await prisma.user_role.create({ data: { userId: +params.user.id, roleId: role!.id } });
-                console.log(`set user ${params.user.id} the role of "user"`);
+            try {
+                RoleManager.assign(+params.user.id, RoleName.user);
+                return true;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch ({ message }: any) {
+                console.error("sign in callback", message);
+                return "failed signing in";
             }
-
-            return true;
         },
     },
 });

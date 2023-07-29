@@ -1,5 +1,5 @@
 import { sendEmail, type Email } from "@utils/email";
-import { validateSessionApiRequest, userIsAdmin$ } from "@utils/helpers";
+import { validateSession$, RoleManager } from "@utils/helpers";
 import { z } from "zod";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 import { generateErrorMessage } from "zod-error";
@@ -46,9 +46,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         // always exists because of middleware
-        const session = await validateSessionApiRequest(req.headers);
+        const session = await validateSession$(req.headers);
 
-        if (!(await userIsAdmin$(session!.userId))) {
+        if (!(await RoleManager.isAdmin(session!.userId))) {
             throw {
                 status: 403,
                 message: "insufficient access rights",
