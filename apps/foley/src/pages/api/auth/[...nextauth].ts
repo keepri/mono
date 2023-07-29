@@ -14,10 +14,21 @@ export default NextAuth({
     callbacks: {
         session({ session, user }) {
             if (session.user) {
-                session.user.id = user.id as unknown as number; // this is actually a number but the types are annoying
+                session.user.id = +user.id; // this is actually a number but the types are annoying
             }
 
             return session;
+        },
+        async signIn(params) {
+            const userRole = await prisma.user_role.findFirst({ where: { userId: +params.user.id } });
+
+            if (!userRole) {
+                const role = await prisma.role.findFirst({ where: { name: "user" } });
+                await prisma.user_role.create({ data: { userId: +params.user.id, roleId: role!.id } });
+                console.log(`set user ${params.user.id} the role of "user"`);
+            }
+
+            return true;
         },
     },
 });

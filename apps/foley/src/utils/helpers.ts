@@ -166,8 +166,7 @@ export class BrowserStorage {
 
 export async function userIsAdmin$(id: number): Promise<boolean> {
     const prisma = (await import("db")).prisma;
-    const user = await prisma.user.findFirst({ where: { id } });
-    const userRole = await prisma.user_role.findFirst({ where: { userId: user?.id } });
+    const userRole = await prisma.user_role.findFirst({ where: { userId: id } });
     const role = await prisma.role.findFirst({ where: { id: userRole?.roleId } });
 
     return role?.name === "admin" ? true : false;
