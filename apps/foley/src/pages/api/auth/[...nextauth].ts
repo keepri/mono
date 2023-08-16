@@ -14,16 +14,20 @@ export default NextAuth({
         }),
     ],
     callbacks: {
-        session({ session, user }) {
-            if (session.user) {
-                session.user.id = +user.id; // this is actually a number but the types are annoying
+        session(params) {
+            if (params.session.user) {
+                params.session.user.id = +params.user.id; // this is actually a number but the types are annoying
+                // params.session.user.roles = params.user.roles;
             }
 
-            return session;
+            return params.session;
         },
         async signIn(params) {
             try {
                 RoleManager.assign(+params.user.id, RoleName.user);
+                // FIXME
+                // params.user.roles = await RoleManager.getUserRoles(+params.user.id);
+
                 return true;
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch ({ message }: any) {

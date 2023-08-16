@@ -23,6 +23,7 @@ build
 *.pem
 project-info
 packages/db/prisma/.client/*
+packages/db/prisma/client/*
 
 # debug
 npm-debug.log*

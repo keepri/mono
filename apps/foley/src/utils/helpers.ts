@@ -1,4 +1,4 @@
-import { type Session, type Smol, Prisma } from "db";
+import { type Session, type Smol, Prisma, Role, User } from "db";
 import { SmolSchema } from "db/schemas";
 import { toMB } from "utils";
 import { FileType, ImageType, RoleName, StorageKey, URLS } from "@utils/enums";
@@ -165,20 +165,57 @@ export class BrowserStorage {
 }
 
 export class RoleManager {
-    static async getByName(roleName: RoleName, options?: { select?: Prisma.RoleSelect }) {
+    static async getById(id: Role["id"], options?: { select?: Prisma.RoleSelect }) {
         const prisma = (await import("db")).prisma;
+        const role = await prisma.role.findFirst({ where: { id }, select: options?.select });
 
-        return await prisma.role.findFirstOrThrow({ where: { name: roleName }, select: options?.select });
+        return role;
     }
 
-    static async assign(id: number, roleName: RoleName): Promise<void> {
+    static async getByIdOrThrow(id: Role["id"], options?: { select?: Prisma.RoleSelect }) {
         const prisma = (await import("db")).prisma;
-        const role = await this.getByName(roleName, { select: { id: true } });
+        const role = await prisma.role.findFirstOrThrow({ where: { id }, select: options?.select });
+
+        return role;
+    }
+
+    static async getByName(name: RoleName, options?: { select?: Prisma.RoleSelect }) {
+        const prisma = (await import("db")).prisma;
+        const role = await prisma.role.findFirst({ where: { name }, select: options?.select });
+
+        return role;
+    }
+
+    static async getByNameOrThrow(name: RoleName, options?: { select?: Prisma.RoleSelect }) {
+        const prisma = (await import("db")).prisma;
+        const role = await prisma.role.findFirstOrThrow({ where: { name }, select: options?.select });
+
+        return role;
+    }
+
+    static async getUserRoles(id: User["id"]): Promise<Array<RoleName>> {
+        const prisma = (await import("db")).prisma;
+        const roleList = await prisma.user_role.findMany({
+            where: { userId: id },
+            include: { role: { select: { name: true } } },
+        });
+
+        const roleNameList = Array(roleList.length) as Array<RoleName>;
+        for (let i = 0; i < roleNameList.length; ++i) {
+            roleNameList[i] = roleList[i].role.name as RoleName;
+        }
+
+        return roleNameList;
+    }
+
+    static async assign(id: number, name: RoleName): Promise<void> {
+        const prisma = (await import("db")).prisma;
+        const role = await this.getByNameOrThrow(name, { select: { id: true } });
         const userRole = await prisma.user_role.findFirst({ where: { userId: id, roleId: role.id } });
 
         if (!userRole) {
             await prisma.user_role.create({ data: { userId: id, roleId: role.id! } });
-            console.log(`assigned user ${id} the role of ${roleName}`);
+            console.log(`assigned user ${id} the role of ${name}`);
         }
 
         return void 0;
@@ -186,7 +223,7 @@ export class RoleManager {
 
     static async isAdmin(id: number): Promise<boolean> {
         const prisma = (await import("db")).prisma;
-        const adminRole = await this.getByName(RoleName.admin, { select: { id: true } });
+        const adminRole = await this.getByNameOrThrow(RoleName.admin, { select: { id: true } });
         const userAdminRole = await prisma.user_role.findFirst({
             where: {
                 userId: id,
@@ -195,6 +232,6 @@ export class RoleManager {
             select: {},
         });
 
-        return userAdminRole ? true : false;
+        return Boolean(userAdminRole);
     }
 }
