@@ -17,7 +17,6 @@ export default NextAuth({
         session(params) {
             if (params.session.user) {
                 params.session.user.id = +params.user.id; // this is actually a number but the types are annoying
-                // params.session.user.roles = params.user.roles;
             }
 
             return params.session;
@@ -25,8 +24,6 @@ export default NextAuth({
         async signIn(params) {
             try {
                 RoleManager.assign(+params.user.id, RoleName.user);
-                // FIXME
-                // params.user.roles = await RoleManager.getUserRoles(+params.user.id);
 
                 return true;
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
