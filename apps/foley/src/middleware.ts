@@ -20,7 +20,6 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
             return await handleSmolRedirect(req);
         } else if (
             (onSmol && !onSmolRedirect) ||
-            req.nextUrl.pathname.startsWith(URLS.API_AUTH) ||
             req.nextUrl.hostname === "localhost" /** we don't want to rate limit dev */
         ) {
             return NextResponse.next();
