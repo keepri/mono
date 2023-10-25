@@ -26,7 +26,7 @@ export default function Auth(props: HTMLAttributes<HTMLSpanElement>): JSX.Elemen
         }
     }, []);
 
-    const onSignOut = useCallback(async () => {
+    const onSignOut = useCallback(async function() {
         try {
             setLoading(true);
             await signOut();
