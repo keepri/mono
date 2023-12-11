@@ -1,8 +1,9 @@
-import { prisma, PrismaAdapter } from "@clfxc/db";
+import { PrismaAdapter, prisma } from "db";
 import { serverEnv } from "@env/server.mjs";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
-// import Twitter from "next-auth/providers/twitter";
+import { RoleName } from "@utils/enums";
+import { RoleManager } from "@utils/helpers";
 
 export default NextAuth({
     adapter: PrismaAdapter(prisma),
@@ -11,19 +12,25 @@ export default NextAuth({
             clientId: serverEnv.GITHUB_ID,
             clientSecret: serverEnv.GITHUB_SECRET,
         }),
-        // Twitter({
-        //     clientId: serverEnv.TWITTER_ID,
-        //     clientSecret: serverEnv.TWITTER_SECRET,
-        //     version: "2.0",
-        // }),
     ],
     callbacks: {
-        session: ({ session, user }) => {
-            if (session.user) {
-                session.user.id = user.id;
+        session(params) {
+            if (params.session.user) {
+                params.session.user.id = +params.user.id; // this is actually a number but the types are annoying
             }
 
-            return session;
+            return params.session;
+        },
+        async signIn(params) {
+            try {
+                RoleManager.assign(+params.user.id, RoleName.user);
+
+                return true;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch ({ message }: any) {
+                console.error("sign in callback", message);
+                return "failed signing in";
+            }
         },
     },
 });

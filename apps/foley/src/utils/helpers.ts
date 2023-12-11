@@ -1,18 +1,25 @@
-import { ErrorStatusSchema, SmolSchema, StatusSmol, SuccessStatusSchema } from "@clfxc/db/schemas";
-import { createQRCode, type QRCode } from "@clfxc/services/qr";
-import { AcceptedFileTypeSchema } from "@declarations/schemas";
-import { URLS } from "@declarations/enums";
-import { type ValidateFileReturn } from "@declarations/types";
-import { z } from "zod";
-import { generateErrorMessage } from "zod-error";
+import { type Session, type Smol, Prisma, Role, User } from "db";
+import { SmolSchema } from "db/schemas";
+import { toMB } from "utils";
+import { FileType, ImageType, RoleName, StorageKey, URLS } from "@utils/enums";
+import { AcceptedFileTypeSchema } from "@utils/schemas";
 import { IncomingHttpHeaders } from "http";
-import { Session } from "@clfxc/db";
+import { ZodError, z } from "zod";
+import { origin } from "./misc";
+import { BodySchema as CreateSmolBodySchema } from "pages/api/smol/create";
 
-export function validateFile(file: File | undefined, maxFileSize?: number): ValidateFileReturn {
+export function validateFile(
+    file: File | undefined,
+    maxFileSize?: number
+):
+    | { file: File; ok: true; error?: undefined }
+    | { file?: undefined; ok: false; error?: ZodError<ImageType | FileType> | "file too big" } {
     if (!file) return { ok: false };
+
     const fileType = AcceptedFileTypeSchema.safeParse(file.type);
+
     if (!fileType.success) {
-        console.warn(`invalid file type`);
+        console.warn("invalid file type");
         return { ok: false, error: fileType.error };
     }
 
@@ -27,164 +34,204 @@ export function validateFile(file: File | undefined, maxFileSize?: number): Vali
     return { file, ok: true };
 }
 
-export function toMB(size: number): number {
-    if (typeof size !== "number") return -1;
-    return parseFloat((size / 1e6).toFixed(6));
-}
-export function toKB(size: number): number {
-    if (typeof size !== "number") return -1;
-    return parseFloat((size / 1e3).toFixed(6));
-}
+export async function incrementSmolAccessed$(id: Smol["id"]): Promise<void> {
+    const prisma = (await import("db")).prisma;
+    const update = await prisma.smol.update({
+        where: { id },
+        select: { accessed: true, slug: true },
+        data: { accessed: { increment: 1 } },
+    });
 
-export function readFileAsDataUrl(file: Blob, callback: (e: ProgressEvent<FileReader>) => void): void {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = callback;
+    console.log(`smol ${update.slug} was accessed ${update.accessed} times`);
 }
 
-export function getTextBytes(data: string) {
-    const encoder = new TextEncoder();
-    const dataEncoded = encoder.encode(data);
-    const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
-    return bytes;
-}
+const PickedSmolSchema = SmolSchema.pick({ status: true, url: true, id: true, accessed: true });
+export type PickedSmol = z.infer<typeof PickedSmolSchema>;
 
-export async function makeCode(data: string): Promise<QRCode> {
-    const { ok, code: newCode, error } = await createQRCode(data);
+export async function fetchSmolBySlug(slug: string): Promise<PickedSmol> {
+    const res = await fetch(origin + URLS.API_SMOL + "/" + slug);
 
-    if (!ok) {
-        console.error("failed making qr code");
-        throw error;
+    if (res.status !== 200) {
+        throw new Error(await res.text());
     }
 
-    return newCode;
+    const smol = await res.json() as PickedSmol;
+
+    if (smol.status !== "active") {
+        throw new Error("not active");
+    }
+
+    return smol;
 }
 
-const PickedSchema = SmolSchema.pick({ id: true, status: true, url: true });
-type PickedSmol = z.infer<typeof PickedSchema>;
-type ErrorStatus = z.infer<typeof ErrorStatusSchema>;
-type SuccessStatus = z.infer<typeof SuccessStatusSchema>;
-type GetSmolUrlOptions = { client: true; origin: string } | { client?: false };
-export async function getSmolBySlug<SlugType extends string, OptionsType extends GetSmolUrlOptions>(
-    slug: SlugType,
-    options?: OptionsType
-): Promise<{ status: SuccessStatus; smol: PickedSmol } | { status: ErrorStatus; message: string }> {
-    let result: unknown | null = null;
+export async function getSmolBySlug$(slug: string): Promise<PickedSmol> {
+    const prisma = (await import("db")).prisma;
+    const smol = await prisma.smol.findFirst({
+        where: { slug: { equals: slug } },
+        select: { status: true, url: true, id: true, accessed: true },
+    });
 
-    if (options?.client === true) {
-        const url = `${options.origin}/api/smol/${slug}`;
-        const smolRes = await fetch(url);
-        const smolJson = (await smolRes.json()) as PickedSmol | { message: string };
-
-        if ("message" in smolJson && !smolRes.ok) {
-            const status = smolRes.status as ErrorStatus;
-            return { status, message: smolJson.message };
-        }
-
-        result = smolJson;
-    } else {
-        const prisma = (await import("@clfxc/db")).prisma;
-        const smolRes$ = await prisma.smol.findFirst({
-            where: { slug: { equals: slug } },
-            select: { status: true, url: true, id: true, accessed: true },
-        });
-
-        if (!smolRes$) {
-            return { status: 404, message: "not found Sadge" };
-        }
-
-        result = smolRes$;
-
-        const update = await prisma.smol.update({
-            where: { id: smolRes$.id },
-            select: { accessed: true },
-            data: { accessed: ++smolRes$.accessed },
-        });
-
-        console.log(`smol ${smolRes$.id} was accessed ${update.accessed} times`);
+    if (!smol) {
+        throw new Error("not found Sadge");
     }
 
-    const parsed = PickedSchema.safeParse(result);
-    if (!parsed.success) {
-        console.error(generateErrorMessage(parsed.error.issues));
-        return { status: 500, message: "something went wrong when parsing smol" };
+    await incrementSmolAccessed$(smol.id);
+
+    if (smol.status !== "active") {
+        throw new Error("smol not active");
     }
 
-    if (parsed.data.status !== StatusSmol.active) {
-        console.warn("inactive smol url hit");
-        return { status: 401, message: "smol not active anymore" };
-    }
-
-    return { status: 200, smol: parsed.data };
+    return smol as PickedSmol;
 }
 
-export function isHexCode(str: string): boolean {
-    if (str.charAt(0) !== "#" || !(str.length === 4 || str.length === 7 || str.length === 9)) {
-        return false;
+export async function fetchCreateSmol(url: string): Promise<Smol["url"]> {
+    const headers = new Headers();
+    headers.set("Content-Type", "application/json");
+
+    const res = await fetch(origin + URLS.API_SMOL_CREATE, {
+        method: "POST",
+        body: JSON.stringify({
+            url,
+        } satisfies z.infer<typeof CreateSmolBodySchema>),
+        headers,
+        credentials: "same-origin",
+    });
+    const result = await res.text();
+
+    if (res.status !== 200) {
+        throw new Error(result);
     }
 
-    for (let i = 1; i < str.length; i++) {
-        const charCode = str.charCodeAt(i);
-
-        if (
-            !(charCode >= 48 && charCode <= 57) && // 0-9
-            !(charCode >= 65 && charCode <= 70) && // A-F
-            !(charCode >= 97 && charCode <= 102) // a-f
-        ) {
-            return false;
-        }
-    }
-
-    return true;
+    return result;
 }
 
-export async function fetchCreateSmol(url: string): Promise<{ message: string } | {
-    short: string,
-    smol: string,
-}> {
-    const fetchUrl = `${origin}/api${URLS.SMOL}/create` as const;
-    const data = await (
-        await fetch(fetchUrl, {
-            method: "POST",
-            body: JSON.stringify({ url }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "same-origin",
-        })
-    ).json();
-
-    return data;
-}
-
-export async function getSessionByToken(sessionToken: string): Promise<Session | null> {
-    const prisma = await import("@clfxc/db").then((res) => res.prisma);
+export async function getSessionByToken$(sessionToken: string): Promise<Session | null> {
+    const prisma = await import("db").then((res) => res.prisma);
     const session = await prisma.session.findFirst({ where: { sessionToken } });
+
     if (!session) return null;
+
     return session;
 }
 
-export function getRandom(upTo?: number) {
-    const random = Math.floor(Math.random() * (upTo ?? 10));
-    return random;
-}
-
-const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" as const;
-export function makeLetterMix(len: number) {
-    let mix: string = "";
-    for (let i = 0; i < len; i++) {
-        const letter = letters[getRandom(letters.length - 1)];
-        mix += letter;
-    }
-    return mix;
-}
-
-export async function validateSession(headers: IncomingHttpHeaders): Promise<Session | null> {
+export async function validateSession$(headers: IncomingHttpHeaders): Promise<Session | null> {
     const getCookieParser = await import("next/dist/server/api-utils").then((res) => res.getCookieParser);
-    const cookies = getCookieParser(headers);
-    const sessionToken = cookies()["next-auth.session-token"];
-    if (!sessionToken) return null;
-    const session = await getSessionByToken(sessionToken);
-    if (!session || session.expires.getTime() < Date.now()) return null;
+    const cookies = getCookieParser(headers)();
+    const sessionToken = cookies["__Secure-next-auth.session-token"] || cookies["next-auth.session-token"];
+
+    if (!sessionToken) {
+        return null;
+    }
+
+    const session = await getSessionByToken$(sessionToken);
+
+    if (!session) {
+        return null;
+    }
+
     return session;
+}
+
+export class BrowserStorage {
+    private static isSupported: boolean = typeof Storage === "function";
+
+    static get(key: StorageKey): string | null {
+        if (!BrowserStorage.isSupported) {
+            return null;
+        }
+
+        return localStorage.getItem(key);
+    }
+
+    static set(key: StorageKey, value: string): void {
+        if (!BrowserStorage.isSupported) {
+            return void 0;
+        }
+
+        localStorage.setItem(key, value);
+        window.dispatchEvent(new CustomEvent("storagechange"));
+        return;
+    }
+
+    static remove(key: StorageKey): void {
+        if (!BrowserStorage.isSupported) {
+            return void 0;
+        }
+
+        localStorage.removeItem(key);
+        window.dispatchEvent(new CustomEvent("storagechange"));
+        return;
+    }
+}
+
+export class RoleManager {
+    static async getById(id: Role["id"], options?: { select?: Prisma.RoleSelect }) {
+        const prisma = (await import("db")).prisma;
+        const role = await prisma.role.findFirst({ where: { id }, select: options?.select });
+
+        return role;
+    }
+
+    static async getByIdOrThrow(id: Role["id"], options?: { select?: Prisma.RoleSelect }) {
+        const prisma = (await import("db")).prisma;
+        const role = await prisma.role.findFirstOrThrow({ where: { id }, select: options?.select });
+
+        return role;
+    }
+
+    static async getByName(name: RoleName, options?: { select?: Prisma.RoleSelect }) {
+        const prisma = (await import("db")).prisma;
+        const role = await prisma.role.findFirst({ where: { name }, select: options?.select });
+
+        return role;
+    }
+
+    static async getByNameOrThrow(name: RoleName, options?: { select?: Prisma.RoleSelect }) {
+        const prisma = (await import("db")).prisma;
+        const role = await prisma.role.findFirstOrThrow({ where: { name }, select: options?.select });
+
+        return role;
+    }
+
+    static async getUserRoles(id: User["id"]): Promise<Array<RoleName>> {
+        const prisma = (await import("db")).prisma;
+        const roleList = await prisma.user_role.findMany({
+            where: { userId: id },
+            include: { role: { select: { name: true } } },
+        });
+
+        const roleNameList = Array(roleList.length) as Array<RoleName>;
+        for (let i = 0; i < roleNameList.length; ++i) {
+            roleNameList[i] = roleList[i].role.name as RoleName;
+        }
+
+        return roleNameList;
+    }
+
+    static async assign(id: number, name: RoleName): Promise<void> {
+        const prisma = (await import("db")).prisma;
+        const role = await this.getByNameOrThrow(name, { select: { id: true } });
+        const userRole = await prisma.user_role.findFirst({ where: { userId: id, roleId: role.id } });
+
+        if (!userRole) {
+            await prisma.user_role.create({ data: { userId: id, roleId: role.id! } });
+            console.log(`assigned user ${id} the role of ${name}`);
+        }
+
+        return void 0;
+    }
+
+    static async isAdmin(id: number): Promise<boolean> {
+        const prisma = (await import("db")).prisma;
+        const adminRole = await this.getByNameOrThrow(RoleName.admin, { select: { id: true } });
+        const userAdminRole = await prisma.user_role.findFirst({
+            where: {
+                userId: id,
+                roleId: adminRole.id,
+            },
+            select: {},
+        });
+
+        return Boolean(userAdminRole);
+    }
 }

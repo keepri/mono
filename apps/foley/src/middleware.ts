@@ -1,60 +1,91 @@
-import { URLS } from "@declarations/enums";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { type NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { URLS } from "@utils/enums";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 
 const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(69, "10 s") });
+const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([URLS.API_SMOL_CREATE, URLS.API_QR_CREATE, URLS.API_EMAIL_SEND]);
+
+export const config = {
+    matcher: ["/api/:path*", "/s/:path*"],
+};
 
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
-    const { pathname } = req.nextUrl;
-    const origin = req.nextUrl.origin;
-    const pathSplit = pathname.split("/");
-    pathSplit.splice(0, 1);
-    const pathSplitLen = pathSplit.length;
-    const slug = pathSplit.pop();
+    try {
+        const onSmol = req.nextUrl.pathname.startsWith(URLS.SMOL);
+        const onSmolRedirect = onSmol && req.nextUrl.pathname.length > `${URLS.SMOL}/`.length;
+        const onApi = req.nextUrl.pathname.startsWith("/api/");
 
-    const onSmolRedirect = pathname.startsWith(URLS.SMOL) && Boolean(slug?.length) && pathSplitLen === 2;
-    const onApi = pathname.startsWith("/api/");
-
-    // early escape
-    if (!onSmolRedirect && !onApi) {
-        return NextResponse.next();
-    }
-
-    // smol pages
-    if (onSmolRedirect) {
-        if (typeof slug !== "string") {
-            return NextResponse.json({ message: "invalid slug" });
+        if (onSmolRedirect) {
+            return await handleSmolRedirect(req);
+        } else if (
+            (onSmol && !onSmolRedirect) ||
+            req.nextUrl.hostname === "localhost" /** we don't want to rate limit dev */
+        ) {
+            return NextResponse.next();
         }
 
-        const getSmolBySlug = (await import("@utils/helpers")).getSmolBySlug;
-        const smolRes = await getSmolBySlug(slug, { client: true, origin });
+        if (onApi) {
+            const isExceeded = await validateRateLimit(req, ev);
 
-        if ("message" in smolRes) {
-            return NextResponse.json({ message: smolRes.message });
+            if (isExceeded) {
+                return isExceeded;
+            }
+
+            if (!API_PROTECTED_ROUTES.has(req.nextUrl.pathname as URLS)) {
+                return NextResponse.next();
+            }
+
+            const sessionToken = req.cookies.get("__Secure-next-auth.session-token") || req.cookies.get("next-auth.session-token");
+
+            // TODO add expired check, session validation
+            if (!sessionToken) {
+                console.error("middleware could not find session token on path", req.nextUrl.pathname);
+
+                return NextResponse.error();
+            }
+
+            return NextResponse.next();
         }
 
-        return NextResponse.redirect(smolRes.smol.url);
+        console.log("middleware failed on path", req.nextUrl.pathname);
+
+        return NextResponse.error();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch ({ stack, message }: any) {
+        console.error(stack);
+        console.error("middleware failed", message);
+
+        return NextResponse.rewrite(URLS.HOME);
+    }
+}
+
+async function handleSmolRedirect(req: NextRequest): Promise<NextResponse> {
+    const slug = req.nextUrl.pathname.split("/").at(-1);
+
+    if (!slug) {
+        return NextResponse.rewrite(URLS.SMOL);
     }
 
-    // all api endpoints
-    if (onApi) {
-        const ip = req.ip ?? "127.0.0.1";
-        const { success, pending, limit, remaining, reset } = await ratelimit.limit(`mw_${ip}`);
-        ev.waitUntil(pending);
+    const fetchSmolBySlug = (await import("@utils/helpers")).fetchSmolBySlug;
+    const smol = await fetchSmolBySlug(slug);
 
-        if (!success) {
-            const res = NextResponse.json({ message: "chill" });
-            res.headers.set("X-RateLimit-Limit", limit.toString());
-            res.headers.set("X-RateLimit-Remaining", remaining.toString());
-            res.headers.set("X-RateLimit-Reset", reset.toString());
-            return res;
-        }
+    return NextResponse.rewrite(smol.url);
+}
 
-        // TODO add session validation for predefined vec of routes
-        // atm session validation happens separately
+async function validateRateLimit(req: NextRequest, ev: NextFetchEvent): Promise<Response | void> {
+    const ip = req.ip ?? "127.0.0.1";
+    const { success, pending, limit, remaining, reset } = await ratelimit.limit(`mw_${ip}`);
+    ev.waitUntil(pending);
+
+    if (success === true) {
+        return;
     }
 
+    const res = NextResponse.error();
+    res.headers.set("X-RateLimit-Limit", limit.toString());
+    res.headers.set("X-RateLimit-Remaining", remaining.toString());
+    res.headers.set("X-RateLimit-Reset", reset.toString());
 
-    return NextResponse.next();
+    return res;
 }

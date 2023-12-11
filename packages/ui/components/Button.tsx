@@ -9,7 +9,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 export const Button: FC<PropsWithChildren<Props>> = ({ children, varient, className, ...rest }) => {
     return (
         <button
-            className={`button-base ${className ? className : ""} ${varient ? `button-varient-${varient}` : ""}`}
+            className={`button-base ${className ?? ""} ${varient ? `button-varient-${varient}` : ""}`}
             {...rest}
         >
             {children}

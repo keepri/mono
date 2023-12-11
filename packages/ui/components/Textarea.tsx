@@ -1,17 +1,19 @@
-import { FC, TextareaHTMLAttributes, useId } from "react";
+import { FC, useId, type TextareaHTMLAttributes } from "react";
 
 interface Props extends TextareaHTMLAttributes<Omit<HTMLTextAreaElement, "id">> {
-	initialValue?: string;
-	label?: string;
+    initialValue?: string;
+    label?: string;
+    labelClassName?: string;
 }
 
-export const Textarea: FC<Props> = ({ className, initialValue, rows, cols, label, ...rest }) => {
+export const Textarea: FC<Props> = ({ className, labelClassName, initialValue, label, ...rest }) => {
     const id = useId();
 
     return (
         <>
-            <label htmlFor={id}>{label}</label>
-            <textarea id={id} rows={rows} cols={cols} className={`input-base ${className}`} {...rest}>
+            {label && <label htmlFor={id} className={labelClassName}>{label}{rest.required && <sup className="text-red-600">*</sup>}</label>}
+
+            <textarea id={id} className={`${className ?? ""} input-base`} {...rest}>
                 {initialValue}
             </textarea>
         </>

@@ -1,0 +1,21 @@
+{
+    "name": "utils",
+    "version": "0.0.1",
+    "private": true,
+    "main": "./index.ts",
+    "types": "./index.ts",
+    "scripts": {
+        "lint": "TIMING=2 eslint **/*.ts **/*.js --fix",
+        "clean": "rm -rf node_modules .turbo"
+    },
+    "dependencies": {
+        "qrcode": "^1.5.3"
+    },
+    "devDependencies": {
+        "@types/node": "^18.8.5",
+        "@types/qrcode": "^1.5.0",
+        "eslint-config-custom": "*",
+        "tsconfig": "*",
+        "typescript": "^5.0.4"
+    }
+}

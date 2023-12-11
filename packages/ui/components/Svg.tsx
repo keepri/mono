@@ -3,9 +3,9 @@ import { SVGProps } from "react";
 export function GitHub({ className, width, height, ...rest }: SVGProps<SVGSVGElement>) {
     return (
         <svg
-            className={`${className ? className : ""} group-hover:fill-[var(--clr-orange)] fill-white cursor-pointer`}
-            width={width ?? "35px"}
-            height={height ?? "35px"}
+            className={`${className ?? ""} group-hover:fill-[var(--clr-orange)] fill-black cursor-pointer`}
+            width={width ?? "30px"}
+            height={height ?? width ?? "30px"}
             viewBox="0 0 24 24"
             fill="white"
             xmlns="http://www.w3.org/2000/svg"

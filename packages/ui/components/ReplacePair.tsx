@@ -57,13 +57,10 @@ export const ReplacePair = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
             clear(index);
         }, [clear, index]);
 
-        const handleInputChange = useCallback(
-            (e: ChangeEvent<HTMLInputElement>) => {
-                if (typeof index !== "number") return;
-                onChange(e, index);
-            },
-            [onChange, index]
-        );
+        const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+            if (typeof index !== "number") return;
+            onChange(e, index);
+        }, [onChange, index]);
 
         return (
             <>

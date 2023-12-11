@@ -1,7 +1,7 @@
-import { useRouter } from "next/router";
-import { default as NextHead } from "next/head";
-import { DESCRIPTION, KEYWORDS, Langs, OG_DESCRIPTION, OG_TITLE, TITLE } from "@declarations/enums";
+import { DESCRIPTION, KEYWORDS, Langs, OG_DESCRIPTION, OG_TITLE, TITLE } from "@utils/enums";
 import { siteName } from "@utils/misc";
+import { default as NextHead } from "next/head";
+import { useRouter } from "next/router";
 
 interface Props {
     keywords?: KEYWORDS;

@@ -1,21 +1,24 @@
-import { getSmolBySlug, validateSession } from "@utils/helpers";
+import { getSmolBySlug$ } from "@utils/helpers";
 import type { NextApiRequest, NextApiResponse } from "next/types";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-    const slug = req.query["slug"];
-    if (typeof slug !== "string") {
-        return res.status(400).json({ message: "slug not valid" });
+    if (req.method !== "GET") {
+        return res.status(405).send("unsupported method");
     }
 
-    const session = await validateSession(req.headers);
-    if (!session) {
-        return res.status(401).json({ message: "could not validate session" });
-    }
+    try {
+        const slug = req.query["slug"];
 
-    const smolRes = await getSmolBySlug(slug);
-    if ("message" in smolRes) {
-        return res.status(smolRes.status).json({ message: smolRes.message });
-    }
+        if (typeof slug !== "string") {
+            return res.status(400).send("invalid slug");
+        }
 
-    return res.status(200).json(smolRes.smol);
+        return res.status(200).json(await getSmolBySlug$(slug));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch ({ stack, message }: any) {
+        console.error("get smol by slug endpoint fail stack:", stack);
+        console.error("get smol by slug endpoint fail message:", message);
+
+        return res.status((message as string).startsWith("not found") ? 404 : 500).send(message);
+    }
 };

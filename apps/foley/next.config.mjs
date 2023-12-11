@@ -1,5 +1,6 @@
 import { dirname, join } from "path";
 import { serverEnv } from "./src/env/server.mjs";
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 
 /**
  * @template {import('next').NextConfig} T
@@ -11,21 +12,24 @@ function defineNextConfig(config) {
 }
 
 export default defineNextConfig({
-    transpilePackages: ["@clfxc/ui", "@clfxc/services", "@clfxc/db"],
+    transpilePackages: ["ui", "qr", "utils", "db"],
     distDir: join(dirname("."), ".next"),
     reactStrictMode: true,
     env: serverEnv,
-    // i18n: {
-    // 	locales: ['en'],
-    // 	defaultLocale: 'en',
-    // },
+    typescript: {
+        ignoreBuildErrors: process.env.NODE_ENV === "production" ? true : false,
+    },
     images: {
         domains: ["firebasestorage.googleapis.com", "avatars.githubusercontent.com"],
     },
     sassOptions: {
         includePaths: [join(dirname("."), "src", "styles")],
     },
-    webpack(config) {
+    webpack(config, { isServer }) {
+        if (isServer) {
+            config.plugins = [...config.plugins, new PrismaPlugin()];
+        }
+
         config.resolve = {
             ...config.resolve,
             fallback: {
@@ -37,13 +41,4 @@ export default defineNextConfig({
 
         return config;
     },
-    // redirects() {
-    // return [
-    // {
-    // 	source: '/',
-    // 	destination: '/dashboard',
-    // 	permanent: true,
-    // },
-    // ];
-    // },
 });

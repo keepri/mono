@@ -1,8 +1,8 @@
 import {
-    type DefaultSession,
-    type DefaultUser,
     type Account as DefaultAccount,
     type Profile as DefaultProfile,
+    type DefaultSession,
+    type DefaultUser,
 } from "next-auth/core/types";
 import { JWT } from "next-auth/jwt";
 
@@ -10,7 +10,7 @@ declare module "next-auth/core/types" {
     interface Session {
         jwt?: JWT;
         user?: {
-            id?: string;
+            id: number;
         } & DefaultSession["user"];
     }
 
@@ -29,4 +29,3 @@ declare module "next-auth/core/types" {
     /** The OAuth profile returned from your provider */
     interface Profile extends DefaultProfile { }
 }
-

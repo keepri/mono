@@ -16,7 +16,7 @@
 
 /* BUTTONS */
 .button-base {
-	padding: 0.25em 0.55em;
+    padding: 0.45em 0.85em;
 	border-radius: var(--radius);
 	border-width: 1px;
 	border-style: solid;
