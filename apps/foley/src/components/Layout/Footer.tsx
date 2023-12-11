@@ -63,12 +63,12 @@ export default function Footer(): JSX.Element {
             </Section>
 
             <Section className="flex max-xs:flex-col items-center max-xs:justify-center gap-6 min-h-[2.5rem] dark:text-white">
-                <span className="flex items-center max-xs:justify-center gap-6">
-                    <Link href={URLS.HOME} className={`text-4xl hover:text-[var(--clr-orange)] ${fontLondrinaSketch}`}>
+                <span>
+                    <Link href={URLS.HOME} className={`block text-4xl hover:text-[var(--clr-orange)] ${fontLondrinaSketch}`}>
                         K
                     </Link>
 
-                    <p className="text-xs text-center font-extralight leading-none">
+                    <p className="text-xs text-center font-extralight leading-none py-1">
                         <Balancer>
                             Copyright © 2023 KIPRI. All rights reserved.
                         </Balancer>
