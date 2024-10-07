@@ -8,6 +8,7 @@ import { RoleName } from "@utils/enums";
 export default NextAuth({
     events: {
         async createUser(params) {
+
             await RoleManager.assign(+params.user.id, RoleName.user);
         },
     },
