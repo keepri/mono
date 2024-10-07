@@ -7,6 +7,7 @@ import { IncomingHttpHeaders } from "http";
 import { ZodError, z } from "zod";
 import { origin } from "./misc";
 import { BodySchema as CreateSmolBodySchema } from "pages/api/smol/create";
+import { parseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 export function validateFile(
     file: File | undefined,
@@ -55,7 +56,7 @@ export async function fetchSmolBySlug(slug: string): Promise<PickedSmol> {
         throw new Error(await res.text());
     }
 
-    const smol = await res.json() as PickedSmol;
+    const smol = (await res.json()) as PickedSmol;
 
     if (smol.status !== "active") {
         throw new Error("not active");
@@ -115,9 +116,9 @@ export async function getSessionByToken$(sessionToken: string): Promise<Session 
 }
 
 export async function validateSession$(headers: IncomingHttpHeaders): Promise<Session | null> {
-    const getCookieParser = await import("next/dist/server/api-utils").then((res) => res.getCookieParser);
-    const cookies = getCookieParser(headers)();
-    const sessionToken = cookies["__Secure-next-auth.session-token"] || cookies["next-auth.session-token"];
+    const cookieHeader = headers.cookie || headers.Cookie;
+    const cookies = parseCookie(cookieHeader as string);
+    const sessionToken = cookies.get("__Secure-next-auth.session-token") || cookies.get("next-auth.session-token");
 
     if (!sessionToken) {
         return null;

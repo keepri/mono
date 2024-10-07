@@ -36,7 +36,8 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
                 return NextResponse.next();
             }
 
-            const sessionToken = req.cookies.get("__Secure-next-auth.session-token") || req.cookies.get("next-auth.session-token");
+            const sessionToken =
+                req.cookies.get("__Secure-next-auth.session-token") || req.cookies.get("next-auth.session-token");
 
             // TODO add expired check, session validation
             if (!sessionToken) {

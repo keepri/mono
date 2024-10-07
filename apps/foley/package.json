@@ -10,7 +10,7 @@
         "start": "next start"
     },
     "dependencies": {
-        "@prisma/nextjs-monorepo-workaround-plugin": "^5.0.0",
+        "@prisma/nextjs-monorepo-workaround-plugin": "^5.20.0",
         "@sendinblue/client": "^3.3.1",
         "@uploadthing/react": "^5.0.0",
         "@upstash/ratelimit": "^0.4.3",

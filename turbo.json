@@ -1,29 +1,18 @@
 {
     "$schema": "https://turborepo.org/schema.json",
-    "globalEnv": [
-        "NODE_ENV",
-        "TZ"
-    ],
+    "globalEnv": ["NODE_ENV", "TZ"],
     "pipeline": {
         "db:generate": {
-            "inputs": [
-                "prisma/schema.prisma"
-            ],
-            "outputs": [
-                "prisma/.client/**"
-            ],
+            "inputs": ["prisma/schema.prisma"],
+            "outputs": ["prisma/.client/**"],
             "cache": true
         },
         "db:push": {
-            "inputs": [
-                "prisma/schema.prisma"
-            ],
+            "inputs": ["prisma/schema.prisma"],
             "cache": false
         },
         "db:push-data-loss": {
-            "inputs": [
-                "prisma/schema.prisma"
-            ],
+            "inputs": ["prisma/schema.prisma"],
             "cache": false
         },
         "db:dev": {
@@ -34,20 +23,11 @@
             "cache": false
         },
         "build": {
-            "dependsOn": [
-                "^db:generate",
-                "db:generate",
-                "^build"
-            ],
-            "outputs": [
-                ".next/**",
-                "!.next/cache/**",
-                ".solid/**",
-                ".vercel/output/**"
-            ],
+            "dependsOn": ["^db:generate", "db:generate", "^build"],
+            "outputs": [".next/**", "!.next/cache/**", ".solid/**", ".vercel/output/**"],
             "env": [
                 "DATABASE_URL",
-                "SHADOW_DATABASE_URL",
+                "DATABASE_AUTH_TOKEN",
                 "UPSTASH_REDIS_REST_TOKEN",
                 "UPSTASH_REDIS_REST_URL",
                 "AUTH_SECRET",
@@ -56,10 +36,7 @@
         },
         "dev": {
             "persistent": true,
-            "dependsOn": [
-                "^db:generate",
-                "db:generate"
-            ],
+            "dependsOn": ["^db:generate", "db:generate"],
             "cache": false
         },
         "lint": {},

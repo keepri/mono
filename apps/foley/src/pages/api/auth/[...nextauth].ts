@@ -2,10 +2,15 @@ import { PrismaAdapter, prisma } from "db";
 import { serverEnv } from "@env/server.mjs";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
-import { RoleName } from "@utils/enums";
 import { RoleManager } from "@utils/helpers";
+import { RoleName } from "@utils/enums";
 
 export default NextAuth({
+    events: {
+        async createUser(params) {
+            await RoleManager.assign(+params.user.id, RoleName.user);
+        },
+    },
     adapter: PrismaAdapter(prisma),
     providers: [
         GitHub({
@@ -21,10 +26,8 @@ export default NextAuth({
 
             return params.session;
         },
-        async signIn(params) {
+        async signIn() {
             try {
-                RoleManager.assign(+params.user.id, RoleName.user);
-
                 return true;
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch ({ message }: any) {

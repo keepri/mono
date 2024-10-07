@@ -21,7 +21,7 @@ export const serverScheme = z
     .object({
         HOST: z.string(),
         DATABASE_URL: z.string().min(1),
-        SHADOW_DATABASE_URL: z.string().min(1),
+        DATABASE_AUTH_TOKEN: z.string().min(1),
         // RESEND_API_KEY: z.string().min(1),
         SENDINBLUE_API_KEY: z.string().min(1),
         CONTACT_EMAIL: z.string().min(1),
