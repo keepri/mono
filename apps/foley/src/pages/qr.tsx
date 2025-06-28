@@ -12,6 +12,7 @@ import { type NextPage } from "next/types";
 import {
     type FormEvent,
     type ChangeEvent,
+    type ClipboardEvent,
     createRef,
     startTransition,
     useCallback,
@@ -62,7 +63,7 @@ const QRPage: NextPage = () => {
             },
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [qrMargin, isPatternColor, isBackgroundColor]);
+    }, [qrColor, qrBgColor, qrMargin, isPatternColor, isBackgroundColor]);
 
     const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
         svgUriCache && setSvgUriCache(null);
@@ -96,6 +97,43 @@ const QRPage: NextPage = () => {
             BrowserStorage.set(StorageKey.qrMargin, String(margin));
             setQrMargin(margin);
         }
+    }, [svgUriCache]);
+
+    const handlePaste = useCallback((e: ClipboardEvent<HTMLInputElement>): void => {
+        e.clipboardData.items[0]?.getAsString((value)=> {
+            svgUriCache && setSvgUriCache(null);
+
+            if ("name" in e.target && e.target.name === "text") {
+                if (!value.length) {
+                    setPngUrl(null);
+                }
+
+                value.length ?
+                    BrowserStorage.set(StorageKey.qrInput, value) :
+                    BrowserStorage.remove(StorageKey.qrInput);
+
+                setText(value);
+            } else if ("name" in e.target && (e.target.name === "pattern" || e.target.name === "background")) {
+                if ((!value.startsWith("#") && value !== "") || value.length > 9) {
+                    return;
+                }
+
+                const key = e.target.name === "pattern" ? StorageKey.qrPatternColor : StorageKey.qrBackgroundColor;
+
+                value.length ? BrowserStorage.set(key, value) : BrowserStorage.remove(key);
+                e.target.name === "pattern" ? setQrColor(value) : setQrBgColor(value);
+            } else {
+                const margin = value.at(0) === "-" ? 2 : Number(value.charAt(value.length - 1));
+
+                if (isNaN(margin) === true || margin > MAX_MARGIN || margin < 0) {
+                    return;
+                }
+
+                BrowserStorage.set(StorageKey.qrMargin, String(margin));
+                setQrMargin(margin);
+            }
+        });
+
     }, [svgUriCache]);
 
     const handleTransparent = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
@@ -338,6 +376,7 @@ const QRPage: NextPage = () => {
                             className="max-w-[25rem] w-full border-4 border-gray-300 placeholder-gray-400 dark:bg-black outline-[var(--clr-orange)] focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-4"
                             maxLength={2953}
                             onChange={handleChange}
+                            onPaste={handlePaste}
                         />
                     </form>
 
@@ -354,6 +393,7 @@ const QRPage: NextPage = () => {
                                 maxLength={9}
                                 placeholder="hex code"
                                 onChange={handleChange}
+                                onPaste={handlePaste}
                             />
 
                             <Input
@@ -379,6 +419,7 @@ const QRPage: NextPage = () => {
                                 maxLength={9}
                                 placeholder="hex code"
                                 onChange={handleChange}
+                                onPaste={handlePaste}
                             />
 
                             <Input
@@ -403,6 +444,7 @@ const QRPage: NextPage = () => {
                             max={7}
                             placeholder="background color"
                             onChange={handleChange}
+                            onPaste={handlePaste}
                         />
                     </div>
                 </Section>
