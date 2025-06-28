@@ -1,70 +1,77 @@
 {
-  "$schema": "https://turborepo.org/schema.json",
-  "globalEnv": [
-    "NODE_ENV",
-    "TZ"
-  ],
-  "tasks": {
-    "db:generate": {
-      "inputs": [
-        "prisma/schema.prisma"
-      ],
-      "outputs": [
-        "prisma/.client/**"
-      ],
-      "cache": true
-    },
-    "db:push": {
-      "inputs": [
-        "prisma/schema.prisma"
-      ],
-      "cache": false
-    },
-    "db:push-data-loss": {
-      "inputs": [
-        "prisma/schema.prisma"
-      ],
-      "cache": false
-    },
-    "db:dev": {
-      "persistent": true,
-      "cache": false
-    },
-    "db:connect": {
-      "cache": false
-    },
-    "build": {
-      "dependsOn": [
-        "^db:generate",
-        "db:generate",
-        "^build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        ".solid/**",
-        ".vercel/output/**"
-      ],
-      "env": [
-        "DATABASE_URL",
-        "DATABASE_AUTH_TOKEN",
-        "UPSTASH_REDIS_REST_TOKEN",
-        "UPSTASH_REDIS_REST_URL",
-        "AUTH_SECRET",
-        "AUTH_TRUST_HOST"
-      ]
-    },
-    "dev": {
-      "persistent": true,
-      "dependsOn": [
-        "^db:generate",
-        "db:generate"
-      ],
-      "cache": false
-    },
-    "lint": {},
-    "clean": {
-      "cache": false
+    "$schema": "https://turborepo.org/schema.json",
+    "globalEnv": ["NODE_ENV", "TZ"],
+    "tasks": {
+        "db:generate": {
+            "inputs": ["prisma/schema.prisma"],
+            "outputs": ["prisma/.client/**"],
+            "cache": true,
+            "env": [
+                "HOST",
+                "UPSTASH_REDIS_REST_URL",
+                "UPSTASH_REDIS_REST_TOKEN",
+                "REDIS_URL",
+                "SHADOW_DATABASE_URL",
+                "GITHUB_ID",
+                "GITHUB_SECRET",
+                "NEXTAUTH_SECRET",
+                "NEXTAUTH_URL",
+                "DATABASE_URL",
+                "UPLOADTHING_SECRET",
+                "UPLOADTHING_APP_ID",
+                "RESEND_API_KEY",
+                "SENDINBLUE_API_KEY",
+                "CONTACT_EMAIL",
+                "DATABASE_AUTH_TOKEN"
+            ]
+        },
+        "db:push": {
+            "inputs": ["prisma/schema.prisma"],
+            "cache": false
+        },
+        "db:push-data-loss": {
+            "inputs": ["prisma/schema.prisma"],
+            "cache": false
+        },
+        "db:dev": {
+            "persistent": true,
+            "cache": false
+        },
+        "db:connect": {
+            "cache": false
+        },
+        "build": {
+            "dependsOn": ["^db:generate", "db:generate", "^build"],
+            "outputs": [".next/**", "!.next/cache/**", ".solid/**", ".vercel/output/**"],
+            "env": [
+                "DATABASE_URL",
+                "DATABASE_AUTH_TOKEN",
+                "UPSTASH_REDIS_REST_TOKEN",
+                "UPSTASH_REDIS_REST_URL",
+                "AUTH_SECRET",
+                "AUTH_TRUST_HOST",
+                "HOST",
+                "REDIS_URL",
+                "SHADOW_DATABASE_URL",
+                "GITHUB_ID",
+                "GITHUB_SECRET",
+                "NEXTAUTH_SECRET",
+                "NEXTAUTH_URL",
+                "UPLOADTHING_SECRET",
+                "UPLOADTHING_APP_ID",
+                "RESEND_API_KEY",
+                "SENDINBLUE_API_KEY",
+                "CONTACT_EMAIL"
+            ]
+        },
+        "dev": {
+            "persistent": true,
+            "dependsOn": ["^db:generate", "db:generate"],
+            "cache": false
+        },
+        "lint": {},
+        "clean": {
+            "cache": false
+        }
     }
-  }
 }
