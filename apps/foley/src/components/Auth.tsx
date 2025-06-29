@@ -8,7 +8,9 @@ import { useCallback, useState, type HTMLAttributes } from "react";
 
 export const DEFAULT_AUTH_PROVIDER: AuthProvider = AuthProvider.github;
 
-export default function Auth(props: HTMLAttributes<HTMLSpanElement>): JSX.Element {
+export default function Auth(
+    props: HTMLAttributes<HTMLSpanElement>
+): JSX.Element {
     const session = useSession();
     const isAuthenticated = session.status === "authenticated";
     const loadingSession = session.status === "loading";
@@ -39,10 +41,16 @@ export default function Auth(props: HTMLAttributes<HTMLSpanElement>): JSX.Elemen
 
     return (
         <>
-            <span className={`${props.className ?? ""} flex flex-col ${isAuthenticated ? "gap-[.27rem]" : "gap-1"}`}>
+            <span
+                className={`${props.className ?? ""} flex flex-col ${
+                    isAuthenticated ? "gap-[.27rem]" : "gap-1"
+                }`}
+            >
                 <span
                     className={
-                        !isAuthenticated && !loading ? "hidden" : "flex flex-wrap items-center justify-end gap-2"
+                        !isAuthenticated && !loading
+                            ? "hidden"
+                            : "flex flex-wrap items-center justify-end gap-2"
                     }
                 >
                     <Bounce enabled={loading} className="justify-end">
@@ -70,16 +78,27 @@ export default function Auth(props: HTMLAttributes<HTMLSpanElement>): JSX.Elemen
                             isAuthenticated || loading ? "hidden" : ""
                         } flex gap-2 items-center justify-evenly group-hover:scale-100 scale-0 group-hover:opacity-100 opacity-0 transition-transform`}
                     >
-                        <GitHub className="dark:fill-white" onClick={() => onSignIn(AuthProvider.github)} />
+                        <GitHub
+                            className="dark:fill-white"
+                            onClick={() => onSignIn(AuthProvider.github)}
+                        />
                     </div>
                     <button
                         disabled={loading || loadingSession}
-                        onClick={() => (isAuthenticated ? onSignOut() : onSignIn(DEFAULT_AUTH_PROVIDER))}
+                        onClick={() =>
+                            isAuthenticated
+                                ? onSignOut()
+                                : onSignIn(DEFAULT_AUTH_PROVIDER)
+                        }
                         className={`${
                             isAuthenticated || loading ? "text-xs" : ""
                         } ${fontInconsolata} dark:text-white group-hover:text-[var(--clr-orange)] transition-colors duration-100`}
                     >
-                        {loading ? "on it" : isAuthenticated ? "sign out" : "sign in"}
+                        {loading
+                            ? "on it"
+                            : isAuthenticated
+                            ? "sign out"
+                            : "sign in"}
                     </button>
                 </span>
             </span>

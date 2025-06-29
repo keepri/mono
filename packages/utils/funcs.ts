@@ -10,7 +10,10 @@ export function toKB(size: number): number {
     return parseFloat((size / 1e3).toFixed(6));
 }
 
-export function readFileAsDataUrl(file: Blob, callback: (e: ProgressEvent<FileReader>) => void): void {
+export function readFileAsDataUrl(
+    file: Blob,
+    callback: (e: ProgressEvent<FileReader>) => void
+): void {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = callback;
@@ -24,7 +27,10 @@ export function getTextBytes(data: string): number {
 }
 
 export function isHexCode(str: string): boolean {
-    if (str.charAt(0) !== "#" || !(str.length === 4 || str.length === 7 || str.length === 9)) {
+    if (
+        str.charAt(0) !== "#" ||
+        !(str.length === 4 || str.length === 7 || str.length === 9)
+    ) {
         return false;
     }
 
@@ -49,7 +55,8 @@ export function randomNumber(max?: number): number {
 }
 
 export function makeLetterMix(len: number): string {
-    const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" as const;
+    const letters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" as const;
     let mix: string = "";
     for (let i = 0; i < len; i++) {
         const letter = letters[randomNumber(letters.length - 1)];

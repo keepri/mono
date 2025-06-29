@@ -19,6 +19,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         console.error("get smol by slug endpoint fail stack:", stack);
         console.error("get smol by slug endpoint fail message:", message);
 
-        return res.status((message as string).startsWith("not found") ? 404 : 500).send(message);
+        return res
+            .status((message as string).startsWith("not found") ? 404 : 500)
+            .send(message);
     }
 };

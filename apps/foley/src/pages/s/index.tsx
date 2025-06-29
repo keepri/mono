@@ -18,39 +18,45 @@ const SmolPage: NextPage = () => {
     const [url, setUrl] = useState<string>("");
     const [smol, setSmol] = useState<string>("");
 
-    const handleMakeSmol = useCallback(async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleMakeSmol = useCallback(
+        async (e: FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
 
-        if (!isAuthenticated) {
-            setAlertSignIn(true);
-            setTimeout(() => setAlertSignIn(false), 2769);
+            if (!isAuthenticated) {
+                setAlertSignIn(true);
+                setTimeout(() => setAlertSignIn(false), 2769);
 
-            return;
-        }
+                return;
+            }
 
-        setLoading(true);
+            setLoading(true);
 
-        const parsed = SmolSchema.shape.url.safeParse(url);
+            const parsed = SmolSchema.shape.url.safeParse(url);
 
-        if (!parsed.success) {
-            console.warn("invalid url", generateErrorMessage(parsed.error.issues));
-            setErrMessage("please provide a valid url");
-            setLoading(false);
+            if (!parsed.success) {
+                console.warn(
+                    "invalid url",
+                    generateErrorMessage(parsed.error.issues)
+                );
+                setErrMessage("please provide a valid url");
+                setLoading(false);
 
-            return;
-        }
+                return;
+            }
 
-        try {
-            setSmol(await fetchCreateSmol(parsed.data));
-            setLoading(false);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch ({ stack, message }: any) {
-            console.error(stack);
-            console.error("create smol", message);
-            setErrMessage("nope");
-            setLoading(false);
-        }
-    }, [isAuthenticated, url]);
+            try {
+                setSmol(await fetchCreateSmol(parsed.data));
+                setLoading(false);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch ({ stack, message }: any) {
+                console.error(stack);
+                console.error("create smol", message);
+                setErrMessage("nope");
+                setLoading(false);
+            }
+        },
+        [isAuthenticated, url]
+    );
 
     useEffect(() => {
         if (!errMessage.length) return;
@@ -62,22 +68,38 @@ const SmolPage: NextPage = () => {
         <div className="grid place-items-center py-12 min-h-[70vh] bg-ivory dark:bg-black leading-tight">
             <Section className="flex flex-col items-center justify-center gap-8">
                 <div className="text-center leading-none">
-                    <Bounce enabled={alertSignIn} className={alertSignIn ? undefined : "invisible"}>
-                        <p className={`text-lg dark:text-white ${fontInconsolata}`}>please sign in</p>
+                    <Bounce
+                        enabled={alertSignIn}
+                        className={alertSignIn ? undefined : "invisible"}
+                    >
+                        <p
+                            className={`text-lg dark:text-white ${fontInconsolata}`}
+                        >
+                            please sign in
+                        </p>
                     </Bounce>
 
-                    <h1 className={`max-xxs:text-7xl max-xs:text-9xl text-[200px] dark:text-white ${fontLondrinaSketch}`}>
+                    <h1
+                        className={`max-xxs:text-7xl max-xs:text-9xl text-[200px] dark:text-white ${fontLondrinaSketch}`}
+                    >
                         smol
                     </h1>
 
                     <p className="max-sm:mt-2 dark:text-white">shorten link</p>
                 </div>
 
-                <Spinner variant="puff" className={`stroke-white relative top-[5.5rem] ${!loading ? "hidden" : ""}`} />
+                <Spinner
+                    variant="puff"
+                    className={`stroke-white relative top-[5.5rem] ${
+                        !loading ? "hidden" : ""
+                    }`}
+                />
 
                 {Boolean(smol.length || errMessage.length) && !loading && (
                     <div className="flex flex-col justify-center gap-4">
-                        {Boolean(smol.length) && <span className="text-center text-3xl">🚀</span>}
+                        {Boolean(smol.length) && (
+                            <span className="text-center text-3xl">🚀</span>
+                        )}
 
                         <div className="flex flex-col items-center justify-center">
                             <a
@@ -87,7 +109,9 @@ const SmolPage: NextPage = () => {
                                 href={smol.length ? smol : "#"}
                                 rel="noreferrer"
                             >
-                                {errMessage.length ? errMessage : String(smol?.split("://")[1])}
+                                {errMessage.length
+                                    ? errMessage
+                                    : String(smol?.split("://")[1])}
                                 <br />
                             </a>
 
@@ -100,7 +124,9 @@ const SmolPage: NextPage = () => {
 
                 <form
                     onSubmit={handleMakeSmol}
-                    className={`grid auto-rows-auto gap-8 place-items-center dark:text-white w-full ${loading ? "invisible" : ""}`}
+                    className={`grid auto-rows-auto gap-8 place-items-center dark:text-white w-full ${
+                        loading ? "invisible" : ""
+                    }`}
                 >
                     <Input
                         placeholder="gib text, link or good vibes"
@@ -109,7 +135,11 @@ const SmolPage: NextPage = () => {
                         onChange={(e) => setUrl(e.target.value)}
                     />
 
-                    <Button type="submit" className={`button border-gray-400 bg-white dark:bg-black ${fontInconsolata}`} disabled={loading}>
+                    <Button
+                        type="submit"
+                        className={`button border-gray-400 bg-white dark:bg-black ${fontInconsolata}`}
+                        disabled={loading}
+                    >
                         boop
                     </Button>
                 </form>

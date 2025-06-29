@@ -2,7 +2,8 @@ import { FC, SVGProps } from "react";
 
 export type SpinnerVarient = "puff" | "rings";
 
-interface Props extends Omit<SVGProps<SVGSVGElement>, "id" | "height" | "width"> {
+interface Props
+    extends Omit<SVGProps<SVGSVGElement>, "id" | "height" | "width"> {
     variant: SpinnerVarient;
 }
 
@@ -83,7 +84,14 @@ export const Spinner: FC<Props> = ({ variant, strokeWidth = 2, ...rest }) => {
             >
                 <g fill="none" fillRule="evenodd" transform="translate(1 1)">
                     <circle cx="22" cy="22" r="6" strokeOpacity="0">
-                        <animate attributeName="r" begin="1.5s" dur="3s" values="6;22" calcMode="linear" repeatCount="indefinite" />
+                        <animate
+                            attributeName="r"
+                            begin="1.5s"
+                            dur="3s"
+                            values="6;22"
+                            calcMode="linear"
+                            repeatCount="indefinite"
+                        />
                         <animate
                             attributeName="stroke-opacity"
                             begin="1.5s"
@@ -102,7 +110,14 @@ export const Spinner: FC<Props> = ({ variant, strokeWidth = 2, ...rest }) => {
                         />
                     </circle>
                     <circle cx="22" cy="22" r="6" strokeOpacity="0">
-                        <animate attributeName="r" begin="3s" dur="3s" values="6;22" calcMode="linear" repeatCount="indefinite" />
+                        <animate
+                            attributeName="r"
+                            begin="3s"
+                            dur="3s"
+                            values="6;22"
+                            calcMode="linear"
+                            repeatCount="indefinite"
+                        />
                         <animate
                             attributeName="stroke-opacity"
                             begin="3s"

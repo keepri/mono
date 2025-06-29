@@ -1,4 +1,9 @@
-import { makeCode, toDataURL, type QRCodeToDataURLOptions, type QRCodeSegment } from "qr";
+import {
+    makeCode,
+    toDataURL,
+    type QRCodeToDataURLOptions,
+    type QRCodeSegment,
+} from "qr";
 import { Button, Input } from "ui";
 import { getTextBytes, isHexCode } from "utils";
 import Bounce from "@components/Animations/Bounce";
@@ -45,11 +50,19 @@ const QRPage: NextPage = () => {
     const [qrColor, setQrColor] = useState<string>(DEFAULT_QR_COLOR);
     const [qrBgColor, setQrBgColor] = useState<string>(DEFAULT_BG_COLOR);
     const [qrMargin, setQrMargin] = useState<number>(DEFAULT_MARGIN);
-    const [patternTransparent, setPatternTransparent] = useState<boolean>(false);
-    const [backgroundTransparent, setBackgroundTransparent] = useState<boolean>(false);
+    const [patternTransparent, setPatternTransparent] =
+        useState<boolean>(false);
+    const [backgroundTransparent, setBackgroundTransparent] =
+        useState<boolean>(false);
 
-    const isPatternColor = useMemo((): boolean => isHexCode(qrColor), [qrColor]);
-    const isBackgroundColor = useMemo((): boolean => isHexCode(qrBgColor), [qrBgColor]);
+    const isPatternColor = useMemo(
+        (): boolean => isHexCode(qrColor),
+        [qrColor]
+    );
+    const isBackgroundColor = useMemo(
+        (): boolean => isHexCode(qrBgColor),
+        [qrBgColor]
+    );
     const qrOpts = useMemo((): QRCodeToDataURLOptions => {
         return {
             margin: qrMargin,
@@ -65,128 +78,207 @@ const QRPage: NextPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [qrColor, qrBgColor, qrMargin, isPatternColor, isBackgroundColor]);
 
-    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
-        svgUriCache && setSvgUriCache(null);
-
-        const value = e.target.value.trim();
-
-        if (e.target.name === "text") {
-            if (!value.length) {
-                setPngUrl(null);
-            }
-
-            value.length ?
-                BrowserStorage.set(StorageKey.qrInput, value) :
-                BrowserStorage.remove(StorageKey.qrInput);
-
-            setText(e.target.value);
-        } else if (e.target.name === "pattern" || e.target.name === "background") {
-            if ((!value.startsWith("#") && value !== "") || value.length > 9) {
-                return;
-            }
-
-            const key = e.target.name === "pattern" ? StorageKey.qrPatternColor : StorageKey.qrBackgroundColor;
-
-            value.length ? BrowserStorage.set(key, value) : BrowserStorage.remove(key);
-            e.target.name === "pattern" ? setQrColor(value) : setQrBgColor(value);
-        } else {
-            const margin = value.at(0) === "-" ? 2 : Number(value.charAt(value.length - 1));
-
-            if (isNaN(margin) === true || margin > MAX_MARGIN || margin < 0) {
-                return;
-            }
-
-            BrowserStorage.set(StorageKey.qrMargin, String(margin));
-            setQrMargin(margin);
-        }
-    }, [svgUriCache]);
-
-    const handlePaste = useCallback((e: ClipboardEvent<HTMLInputElement>): void => {
-        e.clipboardData.items[0]?.getAsString((value)=> {
+    const handleChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement>): void => {
             svgUriCache && setSvgUriCache(null);
 
-            value = value.trim();
+            const value = e.target.value.trim();
 
-            if ("name" in e.target && e.target.name === "text") {
+            if (e.target.name === "text") {
                 if (!value.length) {
                     setPngUrl(null);
                 }
 
-                value.length ?
-                    BrowserStorage.set(StorageKey.qrInput, value) :
-                    BrowserStorage.remove(StorageKey.qrInput);
+                value.length
+                    ? BrowserStorage.set(StorageKey.qrInput, value)
+                    : BrowserStorage.remove(StorageKey.qrInput);
 
-                setText(value);
-            } else if ("name" in e.target && (e.target.name === "pattern" || e.target.name === "background")) {
-                if ((!value.startsWith("#") && value !== "") || value.length > 9) {
+                setText(e.target.value);
+            } else if (
+                e.target.name === "pattern" ||
+                e.target.name === "background"
+            ) {
+                if (
+                    (!value.startsWith("#") && value !== "") ||
+                    value.length > 9
+                ) {
                     return;
                 }
 
-                const key = e.target.name === "pattern" ? StorageKey.qrPatternColor : StorageKey.qrBackgroundColor;
+                const key =
+                    e.target.name === "pattern"
+                        ? StorageKey.qrPatternColor
+                        : StorageKey.qrBackgroundColor;
 
-                value.length ? BrowserStorage.set(key, value) : BrowserStorage.remove(key);
-                e.target.name === "pattern" ? setQrColor(value) : setQrBgColor(value);
+                value.length
+                    ? BrowserStorage.set(key, value)
+                    : BrowserStorage.remove(key);
+                e.target.name === "pattern"
+                    ? setQrColor(value)
+                    : setQrBgColor(value);
             } else {
-                const margin = value.at(0) === "-" ? 2 : Number(value.charAt(value.length - 1));
+                const margin =
+                    value.at(0) === "-"
+                        ? 2
+                        : Number(value.charAt(value.length - 1));
 
-                if (isNaN(margin) === true || margin > MAX_MARGIN || margin < 0) {
+                if (
+                    isNaN(margin) === true ||
+                    margin > MAX_MARGIN ||
+                    margin < 0
+                ) {
                     return;
                 }
 
                 BrowserStorage.set(StorageKey.qrMargin, String(margin));
                 setQrMargin(margin);
             }
-        });
+        },
+        [svgUriCache]
+    );
 
-    }, [svgUriCache]);
+    const handlePaste = useCallback(
+        (e: ClipboardEvent<HTMLInputElement>): void => {
+            e.clipboardData.items[0]?.getAsString((value) => {
+                svgUriCache && setSvgUriCache(null);
 
-    const handleTransparent = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
-        const isPattern = e.target.name === "pattern";
-        const color = isPattern ? qrColor : qrBgColor;
+                value = value.trim();
 
-        if (!isHexCode(color)) {
-            if (isPattern && !patternInputRef.current?.classList.contains("motion-safe:animate-wiggle-translate")) {
-                patternInputRef.current?.classList.add("motion-safe:animate-wiggle-translate");
-                setTimeout(() => patternInputRef.current?.classList.remove("motion-safe:animate-wiggle-translate"), 769);
-            } else if (!isPattern && !backgroundInputRef.current?.classList.contains("motion-safe:animate-wiggle-translate")) {
-                backgroundInputRef.current?.classList.add("motion-safe:animate-wiggle-translate");
-                setTimeout(() => backgroundInputRef.current?.classList.remove("motion-safe:animate-wiggle-translate"), 769);
+                if ("name" in e.target && e.target.name === "text") {
+                    if (!value.length) {
+                        setPngUrl(null);
+                    }
+
+                    value.length
+                        ? BrowserStorage.set(StorageKey.qrInput, value)
+                        : BrowserStorage.remove(StorageKey.qrInput);
+
+                    setText(value);
+                } else if (
+                    "name" in e.target &&
+                    (e.target.name === "pattern" ||
+                        e.target.name === "background")
+                ) {
+                    if (
+                        (!value.startsWith("#") && value !== "") ||
+                        value.length > 9
+                    ) {
+                        return;
+                    }
+
+                    const key =
+                        e.target.name === "pattern"
+                            ? StorageKey.qrPatternColor
+                            : StorageKey.qrBackgroundColor;
+
+                    value.length
+                        ? BrowserStorage.set(key, value)
+                        : BrowserStorage.remove(key);
+                    e.target.name === "pattern"
+                        ? setQrColor(value)
+                        : setQrBgColor(value);
+                } else {
+                    const margin =
+                        value.at(0) === "-"
+                            ? 2
+                            : Number(value.charAt(value.length - 1));
+
+                    if (
+                        isNaN(margin) === true ||
+                        margin > MAX_MARGIN ||
+                        margin < 0
+                    ) {
+                        return;
+                    }
+
+                    BrowserStorage.set(StorageKey.qrMargin, String(margin));
+                    setQrMargin(margin);
+                }
+            });
+        },
+        [svgUriCache]
+    );
+
+    const handleTransparent = useCallback(
+        (e: ChangeEvent<HTMLInputElement>): void => {
+            const isPattern = e.target.name === "pattern";
+            const color = isPattern ? qrColor : qrBgColor;
+
+            if (!isHexCode(color)) {
+                if (
+                    isPattern &&
+                    !patternInputRef.current?.classList.contains(
+                        "motion-safe:animate-wiggle-translate"
+                    )
+                ) {
+                    patternInputRef.current?.classList.add(
+                        "motion-safe:animate-wiggle-translate"
+                    );
+                    setTimeout(
+                        () =>
+                            patternInputRef.current?.classList.remove(
+                                "motion-safe:animate-wiggle-translate"
+                            ),
+                        769
+                    );
+                } else if (
+                    !isPattern &&
+                    !backgroundInputRef.current?.classList.contains(
+                        "motion-safe:animate-wiggle-translate"
+                    )
+                ) {
+                    backgroundInputRef.current?.classList.add(
+                        "motion-safe:animate-wiggle-translate"
+                    );
+                    setTimeout(
+                        () =>
+                            backgroundInputRef.current?.classList.remove(
+                                "motion-safe:animate-wiggle-translate"
+                            ),
+                        769
+                    );
+                }
+
+                return;
             }
 
-            return;
-        }
+            const key = isPattern
+                ? StorageKey.qrPatternColor
+                : StorageKey.qrBackgroundColor;
+            const setColor = isPattern ? setQrColor : setQrBgColor;
+            const setTransparent = isPattern
+                ? setPatternTransparent
+                : setBackgroundTransparent;
 
-        const key = isPattern ? StorageKey.qrPatternColor : StorageKey.qrBackgroundColor;
-        const setColor = isPattern ? setQrColor : setQrBgColor;
-        const setTransparent = isPattern ? setPatternTransparent : setBackgroundTransparent;
+            setTransparent(e.target.checked);
 
-        setTransparent(e.target.checked);
+            if (color.length === 4) {
+                const newColor = `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`;
 
-        if (color.length === 4) {
-            const newColor = `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}00`;
+                setColor(newColor);
+                BrowserStorage.set(key, newColor);
 
-            setColor(newColor);
-            BrowserStorage.set(key, newColor);
+                return;
+            }
 
-            return;
-        }
+            if (color.length === 7) {
+                setColor(color + "00");
+                BrowserStorage.set(key, color + "00");
 
-        if (color.length === 7) {
-            setColor(color + "00");
-            BrowserStorage.set(key, color + "00");
+                return;
+            }
 
-            return;
-        }
+            if (color.length === 9 && !e.target.checked) {
+                const newColor = color.slice(0, 7);
 
-        if (color.length === 9 && !e.target.checked) {
-            const newColor = color.slice(0, 7);
+                setColor(newColor);
+                BrowserStorage.set(key, newColor);
 
-            setColor(newColor);
-            BrowserStorage.set(key, newColor);
-
-            return;
-        }
-    }, [qrColor, qrBgColor, patternInputRef, backgroundInputRef]);
+                return;
+            }
+        },
+        [qrColor, qrBgColor, patternInputRef, backgroundInputRef]
+    );
 
     const handleSvgDownload = useCallback(async (): Promise<void> => {
         if (!isAuthenticated) {
@@ -217,68 +309,86 @@ const QRPage: NextPage = () => {
                 method: "POST",
                 body: JSON.stringify({ data: text, options: qrOpts }),
                 credentials: "same-origin",
-            }).then(async (res) => {
-                const result = await res.text();
+            })
+                .then(async (res) => {
+                    const result = await res.text();
 
-                if (res.status !== 200) {
-                    console.error("failed with status:", res.status);
-                    console.error("error message:", result);
-                    setErrMessage("nope");
-
-                    return;
-                }
-
-                linkTag.href = result;
-                linkTag.download = FILE_NAME;
-                linkTag.click();
-
-                setSvgUriCache(result);
-            }).catch((error) => {
-                console.warn(error.stack);
-                console.error("could not download svg", error.message);
-            }).finally(() => {
-                setLoading(false);
-            });
-        });
-    }, [isAuthenticated, qrOpts, svgUriCache, text]);
-
-    const handleSubmit = useCallback((e?: FormEvent<HTMLFormElement>): void => {
-        try {
-            e && e.preventDefault();
-
-            if (!(canvasRef.current || Boolean(text.length)) || getTextBytes(text) > 2953) {
-                return;
-            }
-
-            toDataURL(
-                canvasRef.current!,
-                makeCode(text)
-                    .segments
-                    .map((segment) => ({ ...segment, mode: segment.mode.id } as unknown as QRCodeSegment)),
-                qrOpts,
-                (error, url) => {
-                    if (error) {
-                        console.error(error.stack);
-                        console.error("could not create code image", error.message);
+                    if (res.status !== 200) {
+                        console.error("failed with status:", res.status);
+                        console.error("error message:", result);
+                        setErrMessage("nope");
 
                         return;
                     }
 
-                    setPngUrl(url);
+                    linkTag.href = result;
+                    linkTag.download = FILE_NAME;
+                    linkTag.click();
 
+                    setSvgUriCache(result);
+                })
+                .catch((error) => {
+                    console.warn(error.stack);
+                    console.error("could not download svg", error.message);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        });
+    }, [isAuthenticated, qrOpts, svgUriCache, text]);
+
+    const handleSubmit = useCallback(
+        (e?: FormEvent<HTMLFormElement>): void => {
+            try {
+                e && e.preventDefault();
+
+                if (
+                    !(canvasRef.current || Boolean(text.length)) ||
+                    getTextBytes(text) > 2953
+                ) {
                     return;
                 }
-            );
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch ({ stack, message }: any) {
-            console.error("submit failed", message);
-        }
-    }, [canvasRef, qrOpts, text]);
+
+                toDataURL(
+                    canvasRef.current!,
+                    makeCode(text).segments.map(
+                        (segment) =>
+                            ({
+                                ...segment,
+                                mode: segment.mode.id,
+                            } as unknown as QRCodeSegment)
+                    ),
+                    qrOpts,
+                    (error, url) => {
+                        if (error) {
+                            console.error(error.stack);
+                            console.error(
+                                "could not create code image",
+                                error.message
+                            );
+
+                            return;
+                        }
+
+                        setPngUrl(url);
+
+                        return;
+                    }
+                );
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch ({ stack, message }: any) {
+                console.error("submit failed", message);
+            }
+        },
+        [canvasRef, qrOpts, text]
+    );
 
     useEffect((): void => {
         const lsInput = BrowserStorage.get(StorageKey.qrInput);
         const lsPatternColor = BrowserStorage.get(StorageKey.qrPatternColor);
-        const lsBackgroundColor = BrowserStorage.get(StorageKey.qrBackgroundColor);
+        const lsBackgroundColor = BrowserStorage.get(
+            StorageKey.qrBackgroundColor
+        );
         const lsMargin = BrowserStorage.get(StorageKey.qrMargin);
 
         if (lsInput) {
@@ -325,18 +435,28 @@ const QRPage: NextPage = () => {
                     <form className="flex flex-col items-center justify-center gap-8 w-full">
                         <div className="flex flex-col items-center justify-center gap-4 flex-[1]">
                             <div
-                                className={`flex flex-col justify-center items-center max-xxs:gap-4 text-center leading-none ${pngUrl ? "hidden" : ""}`}
+                                className={`flex flex-col justify-center items-center max-xxs:gap-4 text-center leading-none ${
+                                    pngUrl ? "hidden" : ""
+                                }`}
                             >
-                                <h1 className={`max-xxs:text-8xl text-[200px] tracking-wide ${fontLondrinaSketch}`}>qr</h1>
+                                <h1
+                                    className={`max-xxs:text-8xl text-[200px] tracking-wide ${fontLondrinaSketch}`}
+                                >
+                                    qr
+                                </h1>
 
-                                <p className="xxs:mt-[-.75rem] xxs:ml-16 xxs:max-w-[4ch] xxs:text-left leading-none">code generator</p>
+                                <p className="xxs:mt-[-.75rem] xxs:ml-16 xxs:max-w-[4ch] xxs:text-left leading-none">
+                                    code generator
+                                </p>
                             </div>
 
                             <canvas
                                 ref={canvasRef}
                                 width={150}
                                 height={150}
-                                className={`rounded max-w-[176px] max-h-[176px] w-[176px] h-[176px] border border-gray-300 placeholder-gray-400 ${!pngUrl ? "hidden" : ""}`}
+                                className={`rounded max-w-[176px] max-h-[176px] w-[176px] h-[176px] border border-gray-300 placeholder-gray-400 ${
+                                    !pngUrl ? "hidden" : ""
+                                }`}
                             />
 
                             <div className="flex justify-around items-center gap-4">
@@ -344,31 +464,53 @@ const QRPage: NextPage = () => {
                                     role="button"
                                     href={pngUrl ?? "#"}
                                     download={FILE_NAME}
-                                    className={`button dark:border-white border-black ${fontInconsolata} ${!pngUrl ? "invisible" : ""}`}
+                                    className={`button dark:border-white border-black ${fontInconsolata} ${
+                                        !pngUrl ? "invisible" : ""
+                                    }`}
                                 >
                                     png
                                 </a>
 
                                 <Button
                                     disabled={loading}
-                                    className={`button ${fontInconsolata} ${!pngUrl ? "invisible" : ""}`}
+                                    className={`button ${fontInconsolata} ${
+                                        !pngUrl ? "invisible" : ""
+                                    }`}
                                     onClick={handleSvgDownload}
                                 >
                                     {loading ? "on it..." : "svg"}
                                 </Button>
                             </div>
 
-                            <p className={`text-xl ${!pngUrl || alertSignIn || Boolean(errMessage.length) ? "hidden" : ""}`}>
+                            <p
+                                className={`text-xl ${
+                                    !pngUrl ||
+                                    alertSignIn ||
+                                    Boolean(errMessage.length)
+                                        ? "hidden"
+                                        : ""
+                                }`}
+                            >
                                 🚀
                             </p>
 
                             <Bounce
                                 ref={errorElementRef}
-                                enabled={alertSignIn || Boolean(errMessage.length)}
-                                className={alertSignIn || Boolean(errMessage.length) ? undefined : "hidden"}
+                                enabled={
+                                    alertSignIn || Boolean(errMessage.length)
+                                }
+                                className={
+                                    alertSignIn || Boolean(errMessage.length)
+                                        ? undefined
+                                        : "hidden"
+                                }
                             >
                                 <p className="text-lg text-yellow">
-                                    {alertSignIn ? "please sign in" : errMessage.length ? errMessage : "🦀"}
+                                    {alertSignIn
+                                        ? "please sign in"
+                                        : errMessage.length
+                                        ? errMessage
+                                        : "🦀"}
                                 </p>
                             </Bounce>
                         </div>
@@ -393,7 +535,9 @@ const QRPage: NextPage = () => {
                                 name="pattern"
                                 label="pattern color"
                                 labelClass="sm:max-w-[9rem] whitespace-nowrap"
-                                className={`block w-full sm:max-w-[9rem] border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2 ${!isPatternColor ? "border-red-500" : ""}`}
+                                className={`block w-full sm:max-w-[9rem] border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2 ${
+                                    !isPatternColor ? "border-red-500" : ""
+                                }`}
                                 maxLength={9}
                                 placeholder="hex code"
                                 onChange={handleChange}
@@ -419,7 +563,9 @@ const QRPage: NextPage = () => {
                                 name="background"
                                 label="background color"
                                 labelClass="sm:max-w-[9rem] whitespace-nowrap"
-                                className={`block w-full border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2 ${!isBackgroundColor ? "border-red-500" : ""}`}
+                                className={`block w-full border border-gray-300 placeholder-gray-400 dark:bg-black focus:outline-[var(--clr-orange)] focus:outline-dotted focus:outline-2 ${
+                                    !isBackgroundColor ? "border-red-500" : ""
+                                }`}
                                 maxLength={9}
                                 placeholder="hex code"
                                 onChange={handleChange}

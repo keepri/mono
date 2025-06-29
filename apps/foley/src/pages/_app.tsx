@@ -9,7 +9,10 @@ import { SessionProvider } from "next-auth/react";
 import { AppProps } from "next/app";
 import { useEffect } from "react";
 
-export default function KIPRI({ Component, pageProps: { session, ...pageProps } }: AppProps): JSX.Element {
+export default function KIPRI({
+    Component,
+    pageProps: { session, ...pageProps },
+}: AppProps): JSX.Element {
     colorSchemeHandler();
 
     return (
@@ -29,12 +32,19 @@ function colorSchemeHandler() {
     return useEffect(() => {
         handleColorSchemeChange();
 
-        const colorSchemeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        const colorSchemeMediaQuery = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+        );
 
-        colorSchemeMediaQuery.addEventListener("change", handleColorSchemeChange);
+        colorSchemeMediaQuery.addEventListener(
+            "change",
+            handleColorSchemeChange
+        );
         document.addEventListener("visibilitychange", handleVisibilityChange);
         window.addEventListener("storage", handleLocalStorageChange);
-        window.addEventListener("storagechange", function handleThemeChange() { handleColorSchemeChange(); });
+        window.addEventListener("storagechange", function handleThemeChange() {
+            handleColorSchemeChange();
+        });
 
         function handleColorSchemeChange(): void {
             const theme = BrowserStorage.get(StorageKey.theme);
@@ -43,16 +53,19 @@ function colorSchemeHandler() {
                 document.documentElement.classList.add("bg-ivory");
                 document.documentElement.classList.remove("dark", "bg-black");
             } else if (
-                (theme === "dark" && !document.documentElement.classList.contains("dark")) ||
-                (window.matchMedia("(prefers-color-scheme: dark)").matches && !document.documentElement.classList.contains("dark"))
+                (theme === "dark" &&
+                    !document.documentElement.classList.contains("dark")) ||
+                (window.matchMedia("(prefers-color-scheme: dark)").matches &&
+                    !document.documentElement.classList.contains("dark"))
             ) {
                 document.documentElement.classList.add("dark", "bg-black");
                 document.documentElement.classList.remove("bg-ivory");
-            } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+            } else if (
+                window.matchMedia("(prefers-color-scheme: light)").matches
+            ) {
                 document.documentElement.classList.add("bg-ivory");
                 document.documentElement.classList.remove("dark", "bg-black");
             }
-
         }
 
         function handleVisibilityChange(): void {
@@ -68,10 +81,21 @@ function colorSchemeHandler() {
         }
 
         return () => {
-            colorSchemeMediaQuery.removeEventListener("change", handleColorSchemeChange);
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            colorSchemeMediaQuery.removeEventListener(
+                "change",
+                handleColorSchemeChange
+            );
+            document.removeEventListener(
+                "visibilitychange",
+                handleVisibilityChange
+            );
             window.removeEventListener("storage", handleLocalStorageChange);
-            window.removeEventListener("storagechange", function handleThemeChange() { handleColorSchemeChange(); });
+            window.removeEventListener(
+                "storagechange",
+                function handleThemeChange() {
+                    handleColorSchemeChange();
+                }
+            );
         };
     }, []);
 }

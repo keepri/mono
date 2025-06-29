@@ -14,16 +14,27 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const body = ContactBodySchema.safeParse(req.body);
 
         if (!body.success) {
-            return res.status(400).send(generateErrorMessage(body.error.issues));
+            return res
+                .status(400)
+                .send(generateErrorMessage(body.error.issues));
         }
 
-        const contact = await prisma.contact.create({ data: body.data, });
+        const contact = await prisma.contact.create({ data: body.data });
 
-        console.log("successfully saved contact form", contact.id, "from", contact.email, "on", contact.createdAt);
+        console.log(
+            "successfully saved contact form",
+            contact.id,
+            "from",
+            contact.email,
+            "on",
+            contact.createdAt
+        );
 
-        const user = body.data.userId ?
-            await prisma.user.findFirst({ where: { id: { equals: body.data.userId } } }) :
-            null;
+        const user = body.data.userId
+            ? await prisma.user.findFirst({
+                  where: { id: { equals: body.data.userId } },
+              })
+            : null;
 
         await sendEmail({
             to: [{ name: "KIPRI.dev", email: serverEnv.CONTACT_EMAIL }],
@@ -33,7 +44,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 Email: ${body.data.email}
                 Message: ${body.data.message}
                 
-                ${user ? `User name & id: ${user.name ?? "missing name"} - ${user.id}` : "User not logged in"}
+                ${
+                    user
+                        ? `User name & id: ${user.name ?? "missing name"} - ${
+                              user.id
+                          }`
+                        : "User not logged in"
+                }
                 Date: ${contact.createdAt.toLocaleString()}
                 DatabaseId: ${contact.id}
             `,

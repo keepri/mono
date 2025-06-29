@@ -1,14 +1,23 @@
 import { Button, ReplacePair, Textarea, type ReplacePairName } from "ui";
 import { fontInconsolata } from "@utils/font";
 import type { NextPage } from "next/types";
-import { ChangeEvent, ChangeEventHandler, useCallback, useEffect, useMemo, useState } from "react";
+import {
+    ChangeEvent,
+    ChangeEventHandler,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
 type Declaration = Record<ReplacePairName, string>;
 
 const initDeclaration: Declaration = { replace: "", replaceValue: "" } as const;
 
 const ReplaceTextPage: NextPage = () => {
-    const [declarations, updateDeclarations] = useState<Declaration[]>([initDeclaration]);
+    const [declarations, updateDeclarations] = useState<Declaration[]>([
+        initDeclaration,
+    ]);
     const [input, updateInput] = useState<string>("");
     const [output, updateOutput] = useState<string>("");
 
@@ -21,36 +30,51 @@ const ReplaceTextPage: NextPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [declarations.length]);
 
-    const handleChangeReplacePair = useCallback((e: ChangeEvent<HTMLInputElement>, index: number) => {
-        updateDeclarations((d) => d.map((declaration, idx) => index === idx ?
-            { ...declaration, [e.target.name]: e.target.value } :
-            declaration)
+    const handleChangeReplacePair = useCallback(
+        (e: ChangeEvent<HTMLInputElement>, index: number) => {
+            updateDeclarations((d) =>
+                d.map((declaration, idx) =>
+                    index === idx
+                        ? { ...declaration, [e.target.name]: e.target.value }
+                        : declaration
+                )
+            );
+        },
+        []
+    );
+
+    const handleClearReplacePair = useCallback((index: number) => {
+        updateDeclarations((d) =>
+            d.map((declaration, idx) =>
+                index === idx ? initDeclaration : declaration
+            )
         );
     }, []);
 
-    const handleClearReplacePair = useCallback((index: number) => {
-        updateDeclarations((d) => d.map((declaration, idx) => (index === idx ? initDeclaration : declaration)));
-    }, []);
+    const handleOutputChange: ChangeEventHandler<HTMLTextAreaElement> =
+        useCallback((e) => {
+            updateOutput(e.target.value);
+        }, []);
 
-    const handleOutputChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback((e) => {
-        updateOutput(e.target.value);
-    }, []);
-
-    const handleInputChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback((e) => {
-        updateInput(e.target.value);
-    }, []);
+    const handleInputChange: ChangeEventHandler<HTMLTextAreaElement> =
+        useCallback((e) => {
+            updateInput(e.target.value);
+        }, []);
 
     const handleAddReplacePair = useCallback(() => {
         updateDeclarations((d) => d.concat(initDeclaration));
     }, []);
 
-    const handleRemoveReplacePair = useCallback((index: number) => {
-        if (declarations.length === 1) {
-            return;
-        }
+    const handleRemoveReplacePair = useCallback(
+        (index: number) => {
+            if (declarations.length === 1) {
+                return;
+            }
 
-        updateDeclarations((d) => d.filter((_, i) => i !== index));
-    }, [declarations.length]);
+            updateDeclarations((d) => d.filter((_, i) => i !== index));
+        },
+        [declarations.length]
+    );
 
     const handleSubmit = useCallback(() => {
         if (!input?.length) {
@@ -60,11 +84,16 @@ const ReplaceTextPage: NextPage = () => {
         let output = String(input);
 
         for (const declaration of declarations) {
-            if (!declaration.replace.length || !declaration.replaceValue.length) {
+            if (
+                !declaration.replace.length ||
+                !declaration.replaceValue.length
+            ) {
                 continue;
             }
 
-            output = output.split(declaration.replace).join(declaration.replaceValue);
+            output = output
+                .split(declaration.replace)
+                .join(declaration.replaceValue);
         }
 
         updateOutput(output);
@@ -111,23 +140,26 @@ const ReplaceTextPage: NextPage = () => {
                     remove={handleRemoveReplacePair}
                 />
 
-                {extraDeclarationIndexes && extraDeclarationIndexes.map((index) => {
-                    return <ReplacePair
-                        key={"replace-pair-" + (index + 1)}
-                        index={index}
-                        replace={declarations[index].replace}
-                        replaceValue={declarations[index].replaceValue}
-                        label1="replace"
-                        label2="with"
-                        wrapperClass={`p-2 border border-black dark:border-white rounded-md ${fontInconsolata}`}
-                        button1Class="button bg-white dark:bg-black border-black dark:border-white"
-                        button2Class="button bg-white dark:bg-black border-black dark:border-white"
-                        className="w-full border border-black dark:border-white dark:bg-black placeholder-gray-500"
-                        onChange={handleChangeReplacePair}
-                        clear={handleClearReplacePair}
-                        remove={handleRemoveReplacePair}
-                    />;
-                })}
+                {extraDeclarationIndexes &&
+                    extraDeclarationIndexes.map((index) => {
+                        return (
+                            <ReplacePair
+                                key={"replace-pair-" + (index + 1)}
+                                index={index}
+                                replace={declarations[index].replace}
+                                replaceValue={declarations[index].replaceValue}
+                                label1="replace"
+                                label2="with"
+                                wrapperClass={`p-2 border border-black dark:border-white rounded-md ${fontInconsolata}`}
+                                button1Class="button bg-white dark:bg-black border-black dark:border-white"
+                                button2Class="button bg-white dark:bg-black border-black dark:border-white"
+                                className="w-full border border-black dark:border-white dark:bg-black placeholder-gray-500"
+                                onChange={handleChangeReplacePair}
+                                clear={handleClearReplacePair}
+                                remove={handleRemoveReplacePair}
+                            />
+                        );
+                    })}
             </aside>
 
             <section className="flex flex-col gap-2">
@@ -146,7 +178,10 @@ const ReplaceTextPage: NextPage = () => {
                 />
 
                 <div className="min-h-[50px] rounded-md">
-                    <Button className={`button w-full h-full bg-white dark:bg-black border-black dark:border-white ${fontInconsolata}`} onClick={handleSubmit}>
+                    <Button
+                        className={`button w-full h-full bg-white dark:bg-black border-black dark:border-white ${fontInconsolata}`}
+                        onClick={handleSubmit}
+                    >
                         boop
                     </Button>
                 </div>

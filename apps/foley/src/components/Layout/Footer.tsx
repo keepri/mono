@@ -15,32 +15,42 @@ export default function Footer(): JSX.Element {
         <footer className="py-12 bg-ivory dark:bg-black">
             <Section className="grid xs:grid-cols-3 gap-8 mb-6 items-start dark:text-white">
                 <div>
-                    <h4 className={`mb-2 text-lg font-medium ${fontJua}`}>Pages</h4>
+                    <h4 className={`mb-2 text-lg font-medium ${fontJua}`}>
+                        Pages
+                    </h4>
 
                     <Link
                         href={URLS.HOME}
-                        className={`block py-1 ${router.pathname === URLS.HOME ? "underline" : ""} dark:text-white hover:!text-[var(--clr-orange)]`}
+                        className={`block py-1 ${
+                            router.pathname === URLS.HOME ? "underline" : ""
+                        } dark:text-white hover:!text-[var(--clr-orange)]`}
                     >
                         home
                     </Link>
 
                     <Link
                         href={URLS.QR}
-                        className={`block py-1 ${router.pathname === URLS.QR ? "underline" : ""} dark:text-white hover:!text-[var(--clr-orange)]`}
+                        className={`block py-1 ${
+                            router.pathname === URLS.QR ? "underline" : ""
+                        } dark:text-white hover:!text-[var(--clr-orange)]`}
                     >
                         qr
                     </Link>
 
                     <Link
                         href={URLS.SMOL}
-                        className={`block py-1 ${router.pathname === URLS.SMOL ? "underline" : ""} dark:text-white hover:!text-[var(--clr-orange)]`}
+                        className={`block py-1 ${
+                            router.pathname === URLS.SMOL ? "underline" : ""
+                        } dark:text-white hover:!text-[var(--clr-orange)]`}
                     >
                         smol
                     </Link>
                 </div>
 
                 <div>
-                    <h4 className={`mb-2 text-lg font-medium ${fontJua}`}>Links</h4>
+                    <h4 className={`mb-2 text-lg font-medium ${fontJua}`}>
+                        Links
+                    </h4>
 
                     <a
                         href="https://github.com/keepri"
@@ -48,15 +58,24 @@ export default function Footer(): JSX.Element {
                         target="_blank"
                         rel="noreferrer"
                     >
-                        <GitHub width="17px" className="dark:fill-white group-hover:fill-[var(--clr-orange)]" />
+                        <GitHub
+                            width="17px"
+                            className="dark:fill-white group-hover:fill-[var(--clr-orange)]"
+                        />
                         github/keepri
                     </a>
                 </div>
 
                 <div>
-                    <h4 className={`mb-2 text-lg font-medium ${fontJua}`}>Contact</h4>
+                    <h4 className={`mb-2 text-lg font-medium ${fontJua}`}>
+                        Contact
+                    </h4>
 
-                    <Link button href={`${URLS.HOME}#contact`} className="button block text-center border-gray-400 bg-white dark:bg-black">
+                    <Link
+                        button
+                        href={`${URLS.HOME}#contact`}
+                        className="button block text-center border-gray-400 bg-white dark:bg-black"
+                    >
                         let&apos;s talk
                     </Link>
                 </div>
@@ -64,7 +83,10 @@ export default function Footer(): JSX.Element {
 
             <Section className="flex max-xs:flex-col items-center max-xs:justify-center gap-6 min-h-[2.5rem] dark:text-white">
                 <span>
-                    <Link href={URLS.HOME} className={`block text-4xl hover:text-[var(--clr-orange)] ${fontLondrinaSketch}`}>
+                    <Link
+                        href={URLS.HOME}
+                        className={`block text-4xl hover:text-[var(--clr-orange)] ${fontLondrinaSketch}`}
+                    >
                         K
                     </Link>
 
@@ -89,7 +111,8 @@ function DarkModeToggler(props: { className?: string }): JSX.Element {
 
     const handleChange = useCallback((newTheme: string) => {
         if (newTheme === "dark") BrowserStorage.set(StorageKey.theme, "dark");
-        else if (newTheme === "light") BrowserStorage.set(StorageKey.theme, "light");
+        else if (newTheme === "light")
+            BrowserStorage.set(StorageKey.theme, "light");
         else if (newTheme === "system") BrowserStorage.remove(StorageKey.theme);
         setOpen(false);
     }, []);
@@ -123,10 +146,12 @@ function DarkModeToggler(props: { className?: string }): JSX.Element {
     }
 
     return (
-        <div className={!open ? "hidden" : `${props.className ?? ""} relative h-8 w-24`}>
-            <div
-                className="absolute bottom-0 right-0 flex flex-col gap-1 px-4 py-2 bg-white dark:bg-black border border-slate-400 dark:border-white rounded-md"
-            >
+        <div
+            className={
+                !open ? "hidden" : `${props.className ?? ""} relative h-8 w-24`
+            }
+        >
+            <div className="absolute bottom-0 right-0 flex flex-col gap-1 px-4 py-2 bg-white dark:bg-black border border-slate-400 dark:border-white rounded-md">
                 <span
                     className="group flex items-center gap-2 cursor-pointer hover:text-[var(--clr-orange)]"
                     onClick={handleChange.bind(handleChange, "dark")}
@@ -181,7 +206,14 @@ function DarkSvg(): JSX.Element {
 
 function LightSvg(): JSX.Element {
     return (
-        <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group w-7 h-7">
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="group w-7 h-7"
+        >
             <path
                 d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                 className="stroke-slate-600 dark:stroke-white group-hover:stroke-[var(--clr-orange)]"
@@ -205,7 +237,8 @@ function MonitorSvg(): JSX.Element {
                 className="stroke-slate-600 dark:stroke-white group-hover:stroke-[var(--clr-orange)]"
             />
 
-            <path d="M14 15c0 3 2 5 2 5H8s2-2 2-5"
+            <path
+                d="M14 15c0 3 2 5 2 5H8s2-2 2-5"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"

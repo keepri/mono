@@ -14,7 +14,11 @@ export function validateFile(
     maxFileSize?: number
 ):
     | { file: File; ok: true; error?: undefined }
-    | { file?: undefined; ok: false; error?: ZodError<ImageType | FileType> | "file too big" } {
+    | {
+          file?: undefined;
+          ok: false;
+          error?: ZodError<ImageType | FileType> | "file too big";
+      } {
     if (!file) return { ok: false };
 
     const fileType = AcceptedFileTypeSchema.safeParse(file.type);
@@ -46,7 +50,12 @@ export async function incrementSmolAccessed$(id: Smol["id"]): Promise<void> {
     console.log(`smol ${update.slug} was accessed ${update.accessed} times`);
 }
 
-const PickedSmolSchema = SmolSchema.pick({ status: true, url: true, id: true, accessed: true });
+const PickedSmolSchema = SmolSchema.pick({
+    status: true,
+    url: true,
+    id: true,
+    accessed: true,
+});
 export type PickedSmol = z.infer<typeof PickedSmolSchema>;
 
 export async function fetchSmolBySlug(slug: string): Promise<PickedSmol> {
@@ -106,7 +115,9 @@ export async function fetchCreateSmol(url: string): Promise<Smol["url"]> {
     return result;
 }
 
-export async function getSessionByToken$(sessionToken: string): Promise<Session | null> {
+export async function getSessionByToken$(
+    sessionToken: string
+): Promise<Session | null> {
     const prisma = await import("db").then((res) => res.prisma);
     const session = await prisma.session.findFirst({ where: { sessionToken } });
 
@@ -115,10 +126,14 @@ export async function getSessionByToken$(sessionToken: string): Promise<Session 
     return session;
 }
 
-export async function validateSession$(headers: IncomingHttpHeaders): Promise<Session | null> {
+export async function validateSession$(
+    headers: IncomingHttpHeaders
+): Promise<Session | null> {
     const cookieHeader = headers.cookie || headers.Cookie;
     const cookies = parseCookie(cookieHeader as string);
-    const sessionToken = cookies.get("__Secure-next-auth.session-token") || cookies.get("next-auth.session-token");
+    const sessionToken =
+        cookies.get("__Secure-next-auth.session-token") ||
+        cookies.get("next-auth.session-token");
 
     if (!sessionToken) {
         return null;
@@ -166,30 +181,54 @@ export class BrowserStorage {
 }
 
 export class RoleManager {
-    static async getById(id: Role["id"], options?: { select?: Prisma.RoleSelect }) {
+    static async getById(
+        id: Role["id"],
+        options?: { select?: Prisma.RoleSelect }
+    ) {
         const prisma = (await import("db")).prisma;
-        const role = await prisma.role.findFirst({ where: { id }, select: options?.select });
+        const role = await prisma.role.findFirst({
+            where: { id },
+            select: options?.select,
+        });
 
         return role;
     }
 
-    static async getByIdOrThrow(id: Role["id"], options?: { select?: Prisma.RoleSelect }) {
+    static async getByIdOrThrow(
+        id: Role["id"],
+        options?: { select?: Prisma.RoleSelect }
+    ) {
         const prisma = (await import("db")).prisma;
-        const role = await prisma.role.findFirstOrThrow({ where: { id }, select: options?.select });
+        const role = await prisma.role.findFirstOrThrow({
+            where: { id },
+            select: options?.select,
+        });
 
         return role;
     }
 
-    static async getByName(name: RoleName, options?: { select?: Prisma.RoleSelect }) {
+    static async getByName(
+        name: RoleName,
+        options?: { select?: Prisma.RoleSelect }
+    ) {
         const prisma = (await import("db")).prisma;
-        const role = await prisma.role.findFirst({ where: { name }, select: options?.select });
+        const role = await prisma.role.findFirst({
+            where: { name },
+            select: options?.select,
+        });
 
         return role;
     }
 
-    static async getByNameOrThrow(name: RoleName, options?: { select?: Prisma.RoleSelect }) {
+    static async getByNameOrThrow(
+        name: RoleName,
+        options?: { select?: Prisma.RoleSelect }
+    ) {
         const prisma = (await import("db")).prisma;
-        const role = await prisma.role.findFirstOrThrow({ where: { name }, select: options?.select });
+        const role = await prisma.role.findFirstOrThrow({
+            where: { name },
+            select: options?.select,
+        });
 
         return role;
     }
@@ -211,11 +250,17 @@ export class RoleManager {
 
     static async assign(id: number, name: RoleName): Promise<void> {
         const prisma = (await import("db")).prisma;
-        const role = await this.getByNameOrThrow(name, { select: { id: true } });
-        const userRole = await prisma.user_role.findFirst({ where: { userId: id, roleId: role.id } });
+        const role = await this.getByNameOrThrow(name, {
+            select: { id: true },
+        });
+        const userRole = await prisma.user_role.findFirst({
+            where: { userId: id, roleId: role.id },
+        });
 
         if (!userRole) {
-            await prisma.user_role.create({ data: { userId: id, roleId: role.id! } });
+            await prisma.user_role.create({
+                data: { userId: id, roleId: role.id! },
+            });
             console.log(`assigned user ${id} the role of ${name}`);
         }
 
@@ -224,7 +269,9 @@ export class RoleManager {
 
     static async isAdmin(id: number): Promise<boolean> {
         const prisma = (await import("db")).prisma;
-        const adminRole = await this.getByNameOrThrow(RoleName.admin, { select: { id: true } });
+        const adminRole = await this.getByNameOrThrow(RoleName.admin, {
+            select: { id: true },
+        });
         const userAdminRole = await prisma.user_role.findFirst({
             where: {
                 userId: id,

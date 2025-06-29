@@ -1,18 +1,29 @@
-import { type SendSmtpEmail, TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@sendinblue/client";
+import {
+    type SendSmtpEmail,
+    TransactionalEmailsApi,
+    TransactionalEmailsApiApiKeys,
+} from "@sendinblue/client";
 import { serverEnv } from "@env/server.mjs";
 
-export type Email =
-    Omit<SendSmtpEmail, "sender"> &
-    (Required<Pick<SendSmtpEmail, "to" | "subject" | "htmlContent">> | Required<Pick<SendSmtpEmail, "to" | "subject" | "textContent">>);
+export type Email = Omit<SendSmtpEmail, "sender"> &
+    (
+        | Required<Pick<SendSmtpEmail, "to" | "subject" | "htmlContent">>
+        | Required<Pick<SendSmtpEmail, "to" | "subject" | "textContent">>
+    );
 
 const emailApi = new TransactionalEmailsApi();
-emailApi.setApiKey(TransactionalEmailsApiApiKeys.apiKey, serverEnv.SENDINBLUE_API_KEY);
+emailApi.setApiKey(
+    TransactionalEmailsApiApiKeys.apiKey,
+    serverEnv.SENDINBLUE_API_KEY
+);
 
 export async function sendEmail(email: Email) {
     let emails = "";
 
     for (let index = 0; index < email.to.length; index++) {
-        emails += `${index + 1}(${email.to[index].name ?? "email"}: ${email.to[index].email}), `;
+        emails += `${index + 1}(${email.to[index].name ?? "email"}: ${
+            email.to[index].email
+        }), `;
     }
 
     emails = emails.trim().slice(0, emails.length - 1);
@@ -37,11 +48,11 @@ export async function sendEmail(email: Email) {
             "status message:",
             result.response.statusMessage,
             "message ids:",
-            typeof id === "string" ?
-                id :
-                typeof id === "object" ?
-                    id.join(", ").trim() :
-                    "no ids"
+            typeof id === "string"
+                ? id
+                : typeof id === "object"
+                ? id.join(", ").trim()
+                : "no ids"
         );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch ({ message }: any) {

@@ -2,7 +2,10 @@ import { screens } from "tailwindcss/defaultTheme";
 
 /** @type {import("tailwindcss").Config} */
 module.exports = {
-    content: ["./src/**/*.{js,ts,jsx,tsx}", "../../packages/ui/**/*.{js,ts,jsx,tsx}"],
+    content: [
+        "./src/**/*.{js,ts,jsx,tsx}",
+        "../../packages/ui/**/*.{js,ts,jsx,tsx}",
+    ],
     darkMode: "class",
     theme: {
         /** @type {import("tailwindcss/types/config").ThemeConfig["container"]} */
@@ -33,18 +36,19 @@ module.exports = {
                 "wiggle-translate": {
                     "0%, 100%": { transform: "translate(-3px)" },
                     "50%": { transform: "translate(3px)" },
-                }
+                },
             },
             animation: {
                 "wiggle-rotate": "wiggle-rotate 250ms ease-in-out infinite",
-                "wiggle-translate": "wiggle-translate 250ms ease-in-out infinite",
+                "wiggle-translate":
+                    "wiggle-translate 250ms ease-in-out infinite",
             },
             fontFamily: {
                 underdog: ["var(--font-underdog)"],
                 inconsolata: ["var(--font-inconsolata)"],
                 "nixie-one": ["var(--font-nixie-one)"],
                 "londrina-sketch": ["var(--font-londrina-sketch)"],
-                "jua": ["var(--font-jua)"],
+                jua: ["var(--font-jua)"],
             },
         },
     },

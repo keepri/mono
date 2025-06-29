@@ -29,7 +29,12 @@ export const ProductCard: FC<Props> = ({
     ...rest
 }) => {
     return (
-        <div className={`${className ?? ""} flex flex-col justify-center items-center gap-10 px-4 py-5 bg-[var(--clr-bg-500)] rounded border-[var(--clr-orange)] border-[1px] w-[17rem] h-[27rem]`} {...rest}>
+        <div
+            className={`${
+                className ?? ""
+            } flex flex-col justify-center items-center gap-10 px-4 py-5 bg-[var(--clr-bg-500)] rounded border-[var(--clr-orange)] border-[1px] w-[17rem] h-[27rem]`}
+            {...rest}
+        >
             <Image
                 src={photo}
                 alt={`A photo of the ${name} that I am selling. It ain't no lie, baby, buy buy buy!`}
@@ -40,9 +45,21 @@ export const ProductCard: FC<Props> = ({
             />
 
             <div className="flex flex-col justify-between items-center gap-4">
-                <h4 className={`${nameClassName ?? ""} text-lg text-center text-white leading-tight`}>{name}</h4>
+                <h4
+                    className={`${
+                        nameClassName ?? ""
+                    } text-lg text-center text-white leading-tight`}
+                >
+                    {name}
+                </h4>
 
-                <p className={`${descriptionClassName ?? ""} text-center text-white text-[.85rem]`}>{description}</p>
+                <p
+                    className={`${
+                        descriptionClassName ?? ""
+                    } text-center text-white text-[.85rem]`}
+                >
+                    {description}
+                </p>
 
                 <div className="flex justify-between items-center gap-6">
                     <Link
@@ -53,7 +70,11 @@ export const ProductCard: FC<Props> = ({
                         contact
                     </Link>
 
-                    <p className={`flex items-center gap-1 ${priceClassName ?? ""} text-[2rem] text-[var(--clr-orange)] font-bold`}>
+                    <p
+                        className={`flex items-center gap-1 ${
+                            priceClassName ?? ""
+                        } text-[2rem] text-[var(--clr-orange)] font-bold`}
+                    >
                         {price}
                         <small className="relative" data-tooltip="RON">
                             {currency || "🦁"}

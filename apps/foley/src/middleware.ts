@@ -1,10 +1,21 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { URLS } from "@utils/enums";
-import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import {
+    NextResponse,
+    type NextFetchEvent,
+    type NextRequest,
+} from "next/server";
 
-const ratelimit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.fixedWindow(69, "10 s") });
-const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([URLS.API_SMOL_CREATE, URLS.API_QR_CREATE, URLS.API_EMAIL_SEND]);
+const ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.fixedWindow(69, "10 s"),
+});
+const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([
+    URLS.API_SMOL_CREATE,
+    URLS.API_QR_CREATE,
+    URLS.API_EMAIL_SEND,
+]);
 
 export const config = {
     matcher: ["/api/:path*", "/s/:path*"],
@@ -13,14 +24,16 @@ export const config = {
 export default async function handler(req: NextRequest, ev: NextFetchEvent) {
     try {
         const onSmol = req.nextUrl.pathname.startsWith(URLS.SMOL);
-        const onSmolRedirect = onSmol && req.nextUrl.pathname.length > `${URLS.SMOL}/`.length;
+        const onSmolRedirect =
+            onSmol && req.nextUrl.pathname.length > `${URLS.SMOL}/`.length;
         const onApi = req.nextUrl.pathname.startsWith("/api/");
 
         if (onSmolRedirect) {
             return await handleSmolRedirect(req);
         } else if (
             (onSmol && !onSmolRedirect) ||
-            req.nextUrl.hostname === "localhost" /** we don't want to rate limit dev */
+            req.nextUrl.hostname ===
+                "localhost" /** we don't want to rate limit dev */
         ) {
             return NextResponse.next();
         }
@@ -37,11 +50,15 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
             }
 
             const sessionToken =
-                req.cookies.get("__Secure-next-auth.session-token") || req.cookies.get("next-auth.session-token");
+                req.cookies.get("__Secure-next-auth.session-token") ||
+                req.cookies.get("next-auth.session-token");
 
             // TODO add expired check, session validation
             if (!sessionToken) {
-                console.error("middleware could not find session token on path", req.nextUrl.pathname);
+                console.error(
+                    "middleware could not find session token on path",
+                    req.nextUrl.pathname
+                );
 
                 return NextResponse.error();
             }
@@ -74,9 +91,14 @@ async function handleSmolRedirect(req: NextRequest): Promise<NextResponse> {
     return NextResponse.rewrite(smol.url);
 }
 
-async function validateRateLimit(req: NextRequest, ev: NextFetchEvent): Promise<Response | void> {
+async function validateRateLimit(
+    req: NextRequest,
+    ev: NextFetchEvent
+): Promise<Response | void> {
     const ip = req.ip ?? "127.0.0.1";
-    const { success, pending, limit, remaining, reset } = await ratelimit.limit(`mw_${ip}`);
+    const { success, pending, limit, remaining, reset } = await ratelimit.limit(
+        `mw_${ip}`
+    );
     ev.waitUntil(pending);
 
     if (success === true) {

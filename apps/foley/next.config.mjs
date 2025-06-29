@@ -20,7 +20,10 @@ export default defineNextConfig({
         ignoreBuildErrors: process.env.NODE_ENV === "production" ? true : false,
     },
     images: {
-        domains: ["firebasestorage.googleapis.com", "avatars.githubusercontent.com"],
+        domains: [
+            "firebasestorage.googleapis.com",
+            "avatars.githubusercontent.com",
+        ],
     },
     sassOptions: {
         includePaths: [join(dirname("."), "src", "styles")],

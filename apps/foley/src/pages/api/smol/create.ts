@@ -18,7 +18,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const body = BodySchema.safeParse(req.body);
 
         if (!body.success) {
-            return res.status(400).send(generateErrorMessage(body.error.issues));
+            return res
+                .status(400)
+                .send(generateErrorMessage(body.error.issues));
         }
 
         const session = await validateSession$(req.headers);
@@ -47,7 +49,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         if (typeof slug !== "string" || exists) {
             console.error("new slug has invalid type", typeof slug, slug);
-            console.error(`user: ${session.userId} session token: ${session.sessionToken}`);
+            console.error(
+                `user: ${session.userId} session token: ${session.sessionToken}`
+            );
 
             return res.status(500).send("could not generate slug");
         }
@@ -61,12 +65,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 accessed: 0,
                 updatedAt: new Date(),
                 createdAt: new Date(),
-            } satisfies Omit<Smol, "id">
+            } satisfies Omit<Smol, "id">,
         });
 
-        console.log(`created shortened link for user: ${session.userId} with slug: ${slug}`);
+        console.log(
+            `created shortened link for user: ${session.userId} with slug: ${slug}`
+        );
 
-        return res.status(200).send(`${protocol}${siteHost}${URLS.SMOL}/${slug}` satisfies Smol["url"]);
+        return res
+            .status(200)
+            .send(
+                `${protocol}${siteHost}${URLS.SMOL}/${slug}` satisfies Smol["url"]
+            );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch ({ stack, message }: any) {
         console.error("create short link fail stack:", stack);
