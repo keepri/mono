@@ -68,27 +68,29 @@ const QRPage: NextPage = () => {
     const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
         svgUriCache && setSvgUriCache(null);
 
+        const value = e.target.value.trim();
+
         if (e.target.name === "text") {
-            if (!e.target.value.length) {
+            if (!value.length) {
                 setPngUrl(null);
             }
 
-            e.target.value.length ?
-                BrowserStorage.set(StorageKey.qrInput, e.target.value) :
+            value.length ?
+                BrowserStorage.set(StorageKey.qrInput, value) :
                 BrowserStorage.remove(StorageKey.qrInput);
 
             setText(e.target.value);
         } else if (e.target.name === "pattern" || e.target.name === "background") {
-            if ((!e.target.value.startsWith("#") && e.target.value !== "") || e.target.value.length > 9) {
+            if ((!value.startsWith("#") && value !== "") || value.length > 9) {
                 return;
             }
 
             const key = e.target.name === "pattern" ? StorageKey.qrPatternColor : StorageKey.qrBackgroundColor;
 
-            e.target.value.length ? BrowserStorage.set(key, e.target.value) : BrowserStorage.remove(key);
-            e.target.name === "pattern" ? setQrColor(e.target.value) : setQrBgColor(e.target.value);
+            value.length ? BrowserStorage.set(key, value) : BrowserStorage.remove(key);
+            e.target.name === "pattern" ? setQrColor(value) : setQrBgColor(value);
         } else {
-            const margin = e.target.value.at(0) === "-" ? 2 : Number(e.target.value.charAt(e.target.value.length - 1));
+            const margin = value.at(0) === "-" ? 2 : Number(value.charAt(value.length - 1));
 
             if (isNaN(margin) === true || margin > MAX_MARGIN || margin < 0) {
                 return;
@@ -102,6 +104,8 @@ const QRPage: NextPage = () => {
     const handlePaste = useCallback((e: ClipboardEvent<HTMLInputElement>): void => {
         e.clipboardData.items[0]?.getAsString((value)=> {
             svgUriCache && setSvgUriCache(null);
+
+            value = value.trim();
 
             if ("name" in e.target && e.target.name === "text") {
                 if (!value.length) {
