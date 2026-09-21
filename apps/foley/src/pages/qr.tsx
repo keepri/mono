@@ -352,7 +352,7 @@ const QRPage: NextPage = () => {
                 toDataURL(
                     canvasRef.current!,
                     makeCode(text).segments.map(
-                        (segment) =>
+                        (segment: { mode: { id: string } }) =>
                             ({
                                 ...segment,
                                 mode: segment.mode.id,
