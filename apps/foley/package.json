@@ -7,7 +7,7 @@
         "clean": "rm -rf node_modules .next .turbo",
         "dev": "next dev --port 3001",
         "build": "next build",
-        "vercel-build": "cd ../ && npm install && npm run foley:build",
+        "vercel-build": "npm install && npm run foley:build",
         "start": "next start"
     },
     "dependencies": {

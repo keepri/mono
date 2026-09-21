@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "apps/foley",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/apps/foley/$1"
+    }
+  ]
+}
