@@ -22,16 +22,14 @@ const Bounce = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
                 {...rest}
             >
                 <span
-                    ref={(dotOne) =>
-                        setTimeout(
-                            () =>
-                                enabled &&
-                                dotOne?.classList.add(
-                                    "motion-safe:animate-bounce"
-                                ),
-                            342.69
-                        )
-                    }
+                    ref={(dotOne) => {
+                        if (!dotOne) return;
+                        setTimeout(() => {
+                            if (enabled) {
+                                dotOne.classList.add("motion-safe:animate-bounce");
+                            }
+                        }, 342.69);
+                    }}
                     className={`${
                         !enabled ? "hidden" : ""
                     } m-0 p-0 text-xl dark:text-white leading-none ${fontLondrinaSketch}`}
@@ -39,16 +37,14 @@ const Bounce = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
                     .
                 </span>
                 <span
-                    ref={(dotTwo) =>
-                        setTimeout(
-                            () =>
-                                enabled &&
-                                dotTwo?.classList.add(
-                                    "motion-safe:animate-bounce"
-                                ),
-                            117.42
-                        )
-                    }
+                    ref={(dotTwo) => {
+                        if (!dotTwo) return;
+                        setTimeout(() => {
+                            if (enabled) {
+                                dotTwo.classList.add("motion-safe:animate-bounce");
+                            }
+                        }, 117.42);
+                    }}
                     className={`${
                         !enabled ? "hidden" : ""
                     } m-0 p-0 text-xl dark:text-white leading-none ${fontLondrinaSketch}`}
@@ -56,16 +52,14 @@ const Bounce = forwardRef<HTMLSpanElement, PropsWithRef<Props>>(
                     .
                 </span>
                 <span
-                    ref={(dotThree) =>
-                        setTimeout(
-                            () =>
-                                enabled &&
-                                dotThree?.classList.add(
-                                    "motion-safe:animate-bounce"
-                                ),
-                            69.42
-                        )
-                    }
+                    ref={(dotThree) => {
+                        if (!dotThree) return;
+                        setTimeout(() => {
+                            if (enabled) {
+                                dotThree.classList.add("motion-safe:animate-bounce");
+                            }
+                        }, 69.42);
+                    }}
                     className={`${
                         !enabled ? "hidden" : ""
                     } m-0 p-0 text-xl dark:text-white leading-none ${fontLondrinaSketch}`}
