@@ -33,7 +33,7 @@
         "turbo": "^2.5.4"
     },
     "engines": {
-        "node": "^18.16.1"
+        "node": "^22.0.0"
     },
     "packageManager": "npm@9.6.7"
 }
