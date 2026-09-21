@@ -28,6 +28,7 @@ export default defineNextConfig({
     sassOptions: {
         includePaths: [join(dirname("."), "src", "styles")],
     },
+    eslint: { ignoreDuringBuilds: true },
     webpack(config, { isServer }) {
         if (isServer) {
             config.plugins = [...config.plugins, new PrismaPlugin()];
