@@ -21,7 +21,7 @@
         "lint": "turbo lint",
         "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,md}\"",
         "foley:dev": "turbo dev --filter=foley",
-        "foley:build": "turbo build --filter=foley",
+        "foley:build": "npm run db:generate --workspace db && npm run build --workspace foley",
         "nika:dev": "turbo dev --filter=nika",
         "nika:build": "turbo build --filter=nika"
     },

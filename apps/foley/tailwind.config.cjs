@@ -1,4 +1,4 @@
-import { screens } from "tailwindcss/defaultTheme";
+const { screens } = require("tailwindcss/defaultTheme");
 
 /** @type {import("tailwindcss").Config} */
 module.exports = {

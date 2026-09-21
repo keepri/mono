@@ -34,9 +34,7 @@
         "src",
         "next-env.d.ts",
         "**/*.ts",
-        "**/*.tsx",
-        "**/*.cjs",
-        "**/*.mjs"
+        "**/*.tsx"
     ],
     "exclude": [
         "node_modules",
