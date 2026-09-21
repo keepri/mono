@@ -359,7 +359,7 @@ const QRPage: NextPage = () => {
                             } as unknown as QRCodeSegment)
                     ),
                     qrOpts,
-                    (error, url) => {
+                    (error: Error | null | undefined, url: string) => {
                         if (error) {
                             console.error(error.stack);
                             console.error(
