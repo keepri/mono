@@ -6,6 +6,7 @@ import {
     type NextFetchEvent,
     type NextRequest,
 } from "next/server";
+import { extractIpFromRequest } from "./ipHelper";
 
 const ratelimit = new Ratelimit({
     redis: Redis.fromEnv(),
@@ -95,7 +96,7 @@ async function validateRateLimit(
     req: NextRequest,
     ev: NextFetchEvent
 ): Promise<Response | void> {
-    const ip = req.ip ?? "127.0.0.1";
+    const ip = extractIpFromRequest(req);
     const { success, pending, limit, remaining, reset } = await ratelimit.limit(
         `mw_${ip}`
     );
@@ -112,3 +113,5 @@ async function validateRateLimit(
 
     return res;
 }
+
+
