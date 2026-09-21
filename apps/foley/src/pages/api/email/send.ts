@@ -4,32 +4,49 @@ import { z } from "zod";
 import { type NextApiRequest, type NextApiResponse } from "next/types";
 import { generateErrorMessage } from "zod-error";
 
-const IdentitySchema = z.array(z.object({
-    name: z.string().min(1).optional(),
-    email: z.string().email().min(1),
-})).min(1);
+const IdentitySchema = z
+    .array(
+        z.object({
+            name: z.string().min(1).optional(),
+            email: z.string().email().min(1),
+        })
+    )
+    .min(1);
 
-export const EmailSchema = z.object({
-    sender: IdentitySchema,
-    subject: z.string().min(1),
-    to: IdentitySchema,
-    cc: IdentitySchema.optional(),
-    bcc: IdentitySchema.optional(),
-    tags: z.array(z.string().min(1)).min(1).optional(),
-    replyTo: IdentitySchema.optional(),
-    attachment: z.array(z.object({
-        url: z.string().url().min(1).optional(),
-        content: z.string().min(1).optional(),
-        name: z.string().min(1).optional(),
-    })).min(1).optional(),
-    batchId: z.string().min(1).optional(),
-    templateId: z.number().nonnegative().optional(),
-    scheduledAt: z.string().min(1).optional(),
-}).and(z.object({
-    textContent: z.string().min(1)
-}).or(z.object({
-    htmlContent: z.string().min(1)
-})));
+export const EmailSchema = z
+    .object({
+        sender: IdentitySchema,
+        subject: z.string().min(1),
+        to: IdentitySchema,
+        cc: IdentitySchema.optional(),
+        bcc: IdentitySchema.optional(),
+        tags: z.array(z.string().min(1)).min(1).optional(),
+        replyTo: IdentitySchema.optional(),
+        attachment: z
+            .array(
+                z.object({
+                    url: z.string().url().min(1).optional(),
+                    content: z.string().min(1).optional(),
+                    name: z.string().min(1).optional(),
+                })
+            )
+            .min(1)
+            .optional(),
+        batchId: z.string().min(1).optional(),
+        templateId: z.number().nonnegative().optional(),
+        scheduledAt: z.string().min(1).optional(),
+    })
+    .and(
+        z
+            .object({
+                textContent: z.string().min(1),
+            })
+            .or(
+                z.object({
+                    htmlContent: z.string().min(1),
+                })
+            )
+    );
 
 const BodySchema = EmailSchema;
 
@@ -42,7 +59,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const body = BodySchema.safeParse(req.body);
 
         if (!body.success) {
-            return res.status(400).send(generateErrorMessage(body.error.issues));
+            return res
+                .status(400)
+                .send(generateErrorMessage(body.error.issues));
         }
 
         // always exists because of middleware

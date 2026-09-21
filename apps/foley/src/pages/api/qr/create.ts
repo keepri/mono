@@ -29,13 +29,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const bodyParse = BodySchema.safeParse(req.body);
 
         if (!bodyParse.success) {
-            return res.status(400).send(generateErrorMessage(bodyParse.error.issues));
+            return res
+                .status(400)
+                .send(generateErrorMessage(bodyParse.error.issues));
         }
 
         const session = await validateSession$(req.headers);
 
         if (!session) {
-            console.warn("could not validate session for headers:", req.headers);
+            console.warn(
+                "could not validate session for headers:",
+                req.headers
+            );
             return res.status(401).send("could not validate session");
         }
 
@@ -47,7 +52,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const bytes = dataEncoded.BYTES_PER_ELEMENT * dataEncoded.byteLength;
 
         if (bytes >= 2953) {
-            console.warn("data too big:", bytes, "bytes sent. user:", session.userId);
+            console.warn(
+                "data too big:",
+                bytes,
+                "bytes sent. user:",
+                session.userId
+            );
             return res.status(401).send("too big");
         }
 

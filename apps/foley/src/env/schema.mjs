@@ -33,7 +33,11 @@ export const serverScheme = z
 export const clientScheme = z.object({});
 
 // @ts-ignore : ZodFormattedError<Map<string, string>>
-export const formatErrors = (errors) => Object.entries(errors).map(([name, value]) => {
-    if ("_errors" in value) return `${name}: ${value._errors.join(", ")}\n`;
-    return "";
-}).filter(Boolean);
+export const formatErrors = (errors) =>
+    Object.entries(errors)
+        .map(([name, value]) => {
+            if ("_errors" in value)
+                return `${name}: ${value._errors.join(", ")}\n`;
+            return "";
+        })
+        .filter(Boolean);

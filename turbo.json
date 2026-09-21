@@ -1,11 +1,29 @@
 {
     "$schema": "https://turborepo.org/schema.json",
     "globalEnv": ["NODE_ENV", "TZ"],
-    "pipeline": {
+    "tasks": {
         "db:generate": {
             "inputs": ["prisma/schema.prisma"],
             "outputs": ["prisma/.client/**"],
-            "cache": true
+            "cache": true,
+            "env": [
+                "HOST",
+                "UPSTASH_REDIS_REST_URL",
+                "UPSTASH_REDIS_REST_TOKEN",
+                "REDIS_URL",
+                "SHADOW_DATABASE_URL",
+                "GITHUB_ID",
+                "GITHUB_SECRET",
+                "NEXTAUTH_SECRET",
+                "NEXTAUTH_URL",
+                "DATABASE_URL",
+                "UPLOADTHING_SECRET",
+                "UPLOADTHING_APP_ID",
+                "RESEND_API_KEY",
+                "SENDINBLUE_API_KEY",
+                "CONTACT_EMAIL",
+                "DATABASE_AUTH_TOKEN"
+            ]
         },
         "db:push": {
             "inputs": ["prisma/schema.prisma"],
@@ -31,7 +49,19 @@
                 "UPSTASH_REDIS_REST_TOKEN",
                 "UPSTASH_REDIS_REST_URL",
                 "AUTH_SECRET",
-                "AUTH_TRUST_HOST"
+                "AUTH_TRUST_HOST",
+                "HOST",
+                "REDIS_URL",
+                "SHADOW_DATABASE_URL",
+                "GITHUB_ID",
+                "GITHUB_SECRET",
+                "NEXTAUTH_SECRET",
+                "NEXTAUTH_URL",
+                "UPLOADTHING_SECRET",
+                "UPLOADTHING_APP_ID",
+                "RESEND_API_KEY",
+                "SENDINBLUE_API_KEY",
+                "CONTACT_EMAIL"
             ]
         },
         "dev": {

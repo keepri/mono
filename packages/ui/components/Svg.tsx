@@ -1,9 +1,16 @@
 import { SVGProps } from "react";
 
-export function GitHub({ className, width, height, ...rest }: SVGProps<SVGSVGElement>) {
+export function GitHub({
+    className,
+    width,
+    height,
+    ...rest
+}: SVGProps<SVGSVGElement>) {
     return (
         <svg
-            className={`${className ?? ""} group-hover:fill-[var(--clr-orange)] fill-black cursor-pointer`}
+            className={`${
+                className ?? ""
+            } group-hover:fill-[var(--clr-orange)] fill-black cursor-pointer`}
             width={width ?? "30px"}
             height={height ?? width ?? "30px"}
             viewBox="0 0 24 24"

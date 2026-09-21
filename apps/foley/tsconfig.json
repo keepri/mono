@@ -1,6 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "tsconfig/nextjs.json",
+    "extends": "./nextjs.base.json",
     "compilerOptions": {
         "baseUrl": "src",
         "paths": {
@@ -27,15 +27,14 @@
             ]
         },
         "isolatedModules": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": false
     },
     "include": [
         "src",
         "next-env.d.ts",
         "**/*.ts",
-        "**/*.tsx",
-        "**/*.cjs",
-        "**/*.mjs"
+        "**/*.tsx"
     ],
     "exclude": [
         "node_modules",

@@ -26,16 +26,22 @@ function HeroSection(): JSX.Element {
                     style={{ fontSize: "clamp(18px, 7vw, 60px)" }}
                     className={`max-lg:mt-10 xs:mb-6 mb-4 sm:max-w-[24ch] max-w-[18ch] max-sm:leading-tight leading-none ${fontJua}`}
                 >
-                    Fullstack<small className="max-sm:text-sm text-lg">web</small> Connoisseur at Your Service
+                    Fullstack
+                    <small className="max-sm:text-sm text-lg">web</small>{" "}
+                    Connoisseur at Your Service
                 </h1>
 
                 <p className="max-sm:mb-8 mb-12 max-xs:text-sm text-lg">
                     <Balancer>
-                        Until I leave for Mars, <br className="max-xs:hidden" />let&apos;s build cool stuff together! ✌️
+                        Until I leave for Mars, <br className="max-xs:hidden" />
+                        let&apos;s build cool stuff together! ✌️
                     </Balancer>
                 </p>
 
-                <Link href="#contact" className="button text-center bg-white dark:bg-black border-gray-400 hover:text-[var(--clr-orange)]">
+                <Link
+                    href="#contact"
+                    className="button text-center bg-white dark:bg-black border-gray-400 hover:text-[var(--clr-orange)]"
+                >
                     let&apos;s talk
                 </Link>
             </div>
@@ -48,7 +54,9 @@ function HeroSection(): JSX.Element {
 function SkillsSection(): JSX.Element {
     return (
         <Section>
-            <h2 className={`lg:mb-10 mb-6 font-bold text-4xl ${fontJua}`}>Skills</h2>
+            <h2 className={`lg:mb-10 mb-6 font-bold text-4xl ${fontJua}`}>
+                Skills
+            </h2>
 
             <div className="grid sm:grid-cols-2 gap-12">
                 <Skill
@@ -85,7 +93,11 @@ function SkillsSection(): JSX.Element {
     );
 }
 
-function Skill(props: { title: string; description: string; iconList?: Array<string> }): JSX.Element {
+function Skill(props: {
+    title: string;
+    description: string;
+    iconList?: Array<string>;
+}): JSX.Element {
     return (
         <span className="max-w-[60ch]">
             <h3 className={`mb-2 text-xl font-medium ${fontJua}`}>
@@ -93,9 +105,7 @@ function Skill(props: { title: string; description: string; iconList?: Array<str
             </h3>
 
             <p className="leading-snug">
-                <Balancer>
-                    {props.description}
-                </Balancer>
+                <Balancer>{props.description}</Balancer>
             </p>
         </span>
     );
@@ -114,8 +124,9 @@ function ContactSection(): JSX.Element {
                 <span className="xs:flex-1 xs:max-w-[65ch] xs:mx-auto xs:text-lg xs:text-center">
                     <p>
                         <Balancer>
-                            Have a thrilling project idea, a burning question, or just want to geek out about code?
-                            I’m up for it all.
+                            Have a thrilling project idea, a burning question,
+                            or just want to geek out about code? I’m up for it
+                            all.
                         </Balancer>
                     </p>
 

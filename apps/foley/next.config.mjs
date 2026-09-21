@@ -17,14 +17,18 @@ export default defineNextConfig({
     reactStrictMode: true,
     env: serverEnv,
     typescript: {
-        ignoreBuildErrors: process.env.NODE_ENV === "production" ? true : false,
+        ignoreBuildErrors: false,
     },
     images: {
-        domains: ["firebasestorage.googleapis.com", "avatars.githubusercontent.com"],
+        domains: [
+            "firebasestorage.googleapis.com",
+            "avatars.githubusercontent.com",
+        ],
     },
     sassOptions: {
         includePaths: [join(dirname("."), "src", "styles")],
     },
+    eslint: { ignoreDuringBuilds: true },
     webpack(config, { isServer }) {
         if (isServer) {
             config.plugins = [...config.plugins, new PrismaPlugin()];

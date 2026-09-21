@@ -1,5 +1,11 @@
 import { create, type QRCode } from "qrcode";
-export { toDataURL, toFile, type QRCodeToDataURLOptions, type QRCodeToFileOptions, type QRCodeSegment } from "qrcode";
+export {
+    toDataURL,
+    toFile,
+    type QRCodeToDataURLOptions,
+    type QRCodeToFileOptions,
+    type QRCodeSegment,
+} from "qrcode";
 export { create, type QRCode };
 
 export function makeCode(data: string): QRCode {

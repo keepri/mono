@@ -32,7 +32,9 @@ const BlogEntry: NextPage<Props> = (props) => {
 export default BlogEntry;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function getStaticPaths(_ctx: GetStaticPathsContext): Promise<GetStaticPathsResult> {
+export async function getStaticPaths(
+    _ctx: GetStaticPathsContext
+): Promise<GetStaticPathsResult> {
     const paths: GetStaticPathsResult["paths"] = [];
 
     return {
@@ -43,7 +45,7 @@ export async function getStaticPaths(_ctx: GetStaticPathsContext): Promise<GetSt
 
 export async function getStaticProps(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _ctx: GetStaticPropsContext,
+    _ctx: GetStaticPropsContext
 ): Promise<GetStaticPropsResult<{ markdown: string }>> {
     return {
         props: {
