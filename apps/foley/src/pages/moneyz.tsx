@@ -122,6 +122,18 @@ function blank(value: string): string | undefined {
     return trimmed ? trimmed : undefined;
 }
 
+function ClearButton({ onClick }: { onClick: () => void }): JSX.Element {
+    return (
+        <button
+            type="button"
+            className="underline w-fit text-xs leading-none -mt-2"
+            onClick={onClick}
+        >
+            clear
+        </button>
+    );
+}
+
 function toPayload(form: InvoiceForm): Record<string, unknown> {
     const taxRate = form.tax_rate;
     const discountValue = form.discount_value.trim();
@@ -378,13 +390,7 @@ const InvoicesPage: NextPage = () => {
                                 onChange={onLogo}
                             />
                             {form.logo && (
-                                <Button
-                                    type="button"
-                                    className="button bg-white dark:bg-black border-black dark:border-white"
-                                    onClick={() => setField("logo", "")}
-                                >
-                                    clear logo
-                                </Button>
+                                <ClearButton onClick={() => setField("logo", "")} />
                             )}
                             <Select
                                 label="type"
@@ -414,6 +420,11 @@ const InvoicesPage: NextPage = () => {
                                     setField("watermark", e.target.value)
                                 }
                             />
+                            {form.watermark && (
+                                <ClearButton
+                                    onClick={() => setField("watermark", "")}
+                                />
+                            )}
                             <Input
                                 label="number"
                                 required
@@ -424,6 +435,9 @@ const InvoicesPage: NextPage = () => {
                                     setField("number", e.target.value)
                                 }
                             />
+                            {form.number && (
+                                <ClearButton onClick={() => setField("number", "")} />
+                            )}
                             <Input
                                 label={`issue date (${dateHint})`}
                                 type="date"
@@ -456,6 +470,11 @@ const InvoicesPage: NextPage = () => {
                                     setField("currency", e.target.value)
                                 }
                             />
+                            {form.currency && (
+                                <ClearButton
+                                    onClick={() => setField("currency", "")}
+                                />
+                            )}
                             <Input
                                 label="payment terms"
                                 className={fieldClass}
@@ -464,6 +483,11 @@ const InvoicesPage: NextPage = () => {
                                     setField("payment_terms", e.target.value)
                                 }
                             />
+                            {form.payment_terms && (
+                                <ClearButton
+                                    onClick={() => setField("payment_terms", "")}
+                                />
+                            )}
                             <Input
                                 label="reference invoice"
                                 className={fieldClass}
@@ -475,6 +499,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.reference_invoice && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setField("reference_invoice", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="PO number"
                                 className={fieldClass}
@@ -483,6 +514,11 @@ const InvoicesPage: NextPage = () => {
                                     setField("po_number", e.target.value)
                                 }
                             />
+                            {form.po_number && (
+                                <ClearButton
+                                    onClick={() => setField("po_number", "")}
+                                />
+                            )}
                             <Input
                                 label={`delivery date (${dateHint})`}
                                 type="date"
@@ -492,6 +528,11 @@ const InvoicesPage: NextPage = () => {
                                     setField("delivery_date", e.target.value)
                                 }
                             />
+                            {form.delivery_date && (
+                                <ClearButton
+                                    onClick={() => setField("delivery_date", "")}
+                                />
+                            )}
                             <Input
                                 label="e-Factura reference"
                                 className={fieldClass}
@@ -503,6 +544,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.efactura_reference && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setField("efactura_reference", "")
+                                    }
+                                />
+                            )}
                         </fieldset>
 
                         <fieldset className="flex flex-col gap-3">
@@ -521,6 +569,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.supplier.name && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("supplier", "name", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="CIF"
                                 required
@@ -535,6 +590,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.supplier.cif && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("supplier", "cif", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="trade registry"
                                 className={fieldClass}
@@ -547,6 +609,17 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.supplier.trade_registry && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection(
+                                            "supplier",
+                                            "trade_registry",
+                                            ""
+                                        )
+                                    }
+                                />
+                            )}
                             <Input
                                 label="share capital"
                                 type="number"
@@ -572,6 +645,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.supplier.address && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("supplier", "address", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="IBAN"
                                 className={fieldClass}
@@ -584,6 +664,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.supplier.iban && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("supplier", "iban", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="bank"
                                 className={fieldClass}
@@ -596,6 +683,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.supplier.bank && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("supplier", "bank", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="email"
                                 type="email"
@@ -609,6 +703,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.supplier.email && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("supplier", "email", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="phone"
                                 className={fieldClass}
@@ -621,6 +722,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.supplier.phone && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("supplier", "phone", "")
+                                    }
+                                />
+                            )}
                         </fieldset>
 
                         <fieldset className="flex flex-col gap-3">
@@ -635,6 +743,13 @@ const InvoicesPage: NextPage = () => {
                                     setSection("client", "name", e.target.value)
                                 }
                             />
+                            {form.client.name && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("client", "name", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="CIF"
                                 className={fieldClass}
@@ -643,6 +758,11 @@ const InvoicesPage: NextPage = () => {
                                     setSection("client", "cif", e.target.value)
                                 }
                             />
+                            {form.client.cif && (
+                                <ClearButton
+                                    onClick={() => setSection("client", "cif", "")}
+                                />
+                            )}
                             <Input
                                 label="trade registry"
                                 className={fieldClass}
@@ -655,6 +775,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.client.trade_registry && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("client", "trade_registry", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="address"
                                 className={fieldClass}
@@ -667,6 +794,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.client.address && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("client", "address", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="email"
                                 type="email"
@@ -680,6 +814,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.client.email && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("client", "email", "")
+                                    }
+                                />
+                            )}
                             <Input
                                 label="phone"
                                 className={fieldClass}
@@ -692,6 +833,13 @@ const InvoicesPage: NextPage = () => {
                                     )
                                 }
                             />
+                            {form.client.phone && (
+                                <ClearButton
+                                    onClick={() =>
+                                        setSection("client", "phone", "")
+                                    }
+                                />
+                            )}
                         </fieldset>
 
                         <fieldset className="flex flex-col gap-3">
@@ -758,6 +906,17 @@ const InvoicesPage: NextPage = () => {
                                                 )
                                             }
                                         />
+                                        {item.description && (
+                                            <ClearButton
+                                                onClick={() =>
+                                                    setItem(
+                                                        index,
+                                                        "description",
+                                                        ""
+                                                    )
+                                                }
+                                            />
+                                        )}
                                         <Input
                                             label="qty"
                                             type="number"
@@ -851,17 +1010,24 @@ const InvoicesPage: NextPage = () => {
                                 }
                             />
                             {form.vat_exemption && (
-                                <Input
-                                    label="exemption text"
-                                    className={fieldClass}
-                                    value={form.vat_exemption}
-                                    onChange={(e) =>
-                                        setField(
-                                            "vat_exemption",
-                                            e.target.value
-                                        )
-                                    }
-                                />
+                                <>
+                                    <Input
+                                        label="exemption text"
+                                        className={fieldClass}
+                                        value={form.vat_exemption}
+                                        onChange={(e) =>
+                                            setField(
+                                                "vat_exemption",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                    <ClearButton
+                                        onClick={() =>
+                                            setField("vat_exemption", "")
+                                        }
+                                    />
+                                </>
                             )}
                         </fieldset>
 
@@ -876,6 +1042,9 @@ const InvoicesPage: NextPage = () => {
                                     setField("notes", e.target.value)
                                 }
                             />
+                            {form.notes && (
+                                <ClearButton onClick={() => setField("notes", "")} />
+                            )}
                             <Input
                                 label="issuer"
                                 className={fieldClass}
@@ -884,6 +1053,9 @@ const InvoicesPage: NextPage = () => {
                                     setField("issuer", e.target.value)
                                 }
                             />
+                            {form.issuer && (
+                                <ClearButton onClick={() => setField("issuer", "")} />
+                            )}
                         </fieldset>
                     </form>
 

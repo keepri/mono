@@ -66,8 +66,12 @@
         },
         "dev": {
             "persistent": true,
-            "dependsOn": ["^db:generate", "db:generate"],
             "cache": false
+        },
+        "foley#dev": {
+            "persistent": true,
+            "cache": false,
+            "dependsOn": ["db#db:generate"]
         },
         "lint": {},
         "check": {},
