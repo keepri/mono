@@ -69,21 +69,6 @@ function iso(date: Date): string {
     return date.toISOString().slice(0, 10);
 }
 
-function dateHint(): string {
-    if (typeof window === "undefined" || !("Intl" in window)) return "yyyy-mm-dd";
-    const parts = new Intl.DateTimeFormat(window.navigator.language).formatToParts(
-        new Date(2000, 11, 31)
-    );
-    const order = parts
-        .filter((p) => p.type === "day" || p.type === "month" || p.type === "year")
-        .map((p) => ({ day: "dd", month: "mm", year: "yyyy" }[p.type]));
-    const monthIdx = parts.findIndex((p) => p.type === "month");
-    const dayIdx = parts.findIndex((p) => p.type === "day");
-    return monthIdx < dayIdx
-        ? `${order.join("/")} - deal with it :)`
-        : order.join("/");
-}
-
 function demo(): InvoiceForm {
     const issue = new Date();
     const due = new Date(issue);
@@ -198,8 +183,41 @@ const InvoicesPage: NextPage = () => {
     const [html, setHtml] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [logoError, setLogoError] = useState("");
+    const [dateHint, setDateHint] = useState("dd/mm/yyyy");
 
     const payload = useMemo(() => toPayload(form), [form]);
+
+    useEffect(() => {
+        if (typeof window === "undefined" || !("Intl" in window)) return;
+        const parts = new Intl.DateTimeFormat(
+            window.navigator.language
+        ).formatToParts(new Date(2000, 11, 31));
+        const order = parts
+            .filter(
+                (p) => p.type === "day" || p.type === "month" || p.type === "year"
+            )
+            .map((p) => ({ day: "dd", month: "mm", year: "yyyy" }[p.type]));
+        const monthIdx = parts.findIndex((p) => p.type === "month");
+        const dayIdx = parts.findIndex((p) => p.type === "day");
+        setDateHint(
+            monthIdx < dayIdx
+                ? `${order.join("/")} - deal with it :)`
+                : order.join("/")
+        );
+    }, []);
+
+    useEffect(() => {
+        if (openItem < 0) return;
+        const t = setTimeout(() => {
+            const details = document.querySelectorAll("details");
+            const el = details[openItem];
+            if (el) {
+                const input = el.querySelector<HTMLInputElement>("input");
+                input?.focus();
+            }
+        }, 100);
+        return () => clearTimeout(t);
+    }, [openItem]);
 
     useEffect(() => {
         try {
@@ -407,7 +425,7 @@ const InvoicesPage: NextPage = () => {
                                 }
                             />
                             <Input
-                                label={`issue date (${dateHint()})`}
+                                label={`issue date (${dateHint})`}
                                 type="date"
                                 required
                                 className={fieldClass}
@@ -418,7 +436,7 @@ const InvoicesPage: NextPage = () => {
                                 }
                             />
                             <Input
-                                label={`due date (${dateHint()})`}
+                                label={`due date (${dateHint})`}
                                 type="date"
                                 required
                                 className={fieldClass}
@@ -466,7 +484,7 @@ const InvoicesPage: NextPage = () => {
                                 }
                             />
                             <Input
-                                label={`delivery date (${dateHint()})`}
+                                label={`delivery date (${dateHint})`}
                                 type="date"
                                 className={fieldClass}
                                 value={form.delivery_date}
