@@ -45,6 +45,15 @@ export default function Footer(): JSX.Element {
                     >
                         smol
                     </Link>
+
+                    <Link
+                        href={URLS.MONEYZ}
+                        className={`block py-1 ${
+                            router.pathname === URLS.MONEYZ ? "underline" : ""
+                        } dark:text-white hover:!text-[var(--clr-orange)]`}
+                    >
+                        moneyz
+                    </Link>
                 </div>
 
                 <div>

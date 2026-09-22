@@ -12,7 +12,7 @@ function defineNextConfig(config) {
 }
 
 export default defineNextConfig({
-    transpilePackages: ["ui", "qr", "utils", "db"],
+    transpilePackages: ["ui", "qr", "utils", "db", "invoice"],
     distDir: join(dirname("."), ".next"),
     reactStrictMode: true,
     env: serverEnv,

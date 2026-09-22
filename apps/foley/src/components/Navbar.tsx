@@ -36,6 +36,15 @@ export default function Navbar(): JSX.Element {
                         smol
                     </Link>
 
+                    <Link
+                        active={router.route === URLS.MONEYZ}
+                        href={URLS.MONEYZ}
+                        activeClassName={linkActiveClasses}
+                        className={linkClasses}
+                    >
+                        moneyz
+                    </Link>
+
                     {
                         // <Link
                         //     active={router.route === URLS.REPLACE}

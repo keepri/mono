@@ -17,6 +17,7 @@
         "db-nika:push": "turbo db:push --filter=nika",
         "build": "turbo build",
         "dev": "turbo dev --parallel",
+        "check": "turbo check",
         "clean": "turbo clean && turbo daemon clean && rm -rf node_modules .turbo package-lock.json",
         "lint": "turbo lint",
         "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,md}\"",

@@ -10,6 +10,7 @@ export enum URLS {
     REPLACE = "/replace",
     SMOL = "/s",
     QR = "/qr",
+    MONEYZ = "/moneyz",
     CLOSET = "/closet",
     BLOG = "/blog",
 
