@@ -121,7 +121,7 @@ async function handleSmolRedirect(req: NextRequest): Promise<NextResponse> {
 async function validateRateLimit(
     req: NextRequest,
     ev: NextFetchEvent
-) {
+): Promise<NextResponse | undefined> {
     const ip = extractIpFromRequest(req);
     const { success, pending, limit, remaining, reset } = await ratelimit.limit(
         `mw_${ip}`
@@ -131,12 +131,14 @@ async function validateRateLimit(
     if (!success) {
         return makeRateLimitResponse(limit, remaining, reset);
     }
+
+    return undefined;
 }
 
 async function validateContactRateLimit(
     req: NextRequest,
     ev: NextFetchEvent
-) {
+): Promise<NextResponse | undefined> {
     const ip = extractIpFromRequest(req);
     const key = `contact_ip_${ip}`;
     const checks = await Promise.all([
@@ -152,6 +154,8 @@ async function validateContactRateLimit(
             return makeRateLimitResponse(check.limit, check.remaining, check.reset);
         }
     }
+
+    return undefined;
 }
 
 function makeRateLimitResponse(
