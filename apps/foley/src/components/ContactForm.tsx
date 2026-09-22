@@ -31,6 +31,11 @@ type ErrorFields = null | {
     message?: boolean;
 };
 
+type ContactSubmitBody = z.infer<typeof ContactBodySchema> & {
+    website?: string;
+    startedAt: number;
+};
+
 export default function ContactForm(props: Props): JSX.Element {
     const session = useSession();
 
@@ -41,6 +46,8 @@ export default function ContactForm(props: Props): JSX.Element {
     );
     const [email, setEmail] = useState<string>(session.data?.user?.email ?? "");
     const [message, setMessage] = useState<string>("");
+    const [website, setWebsite] = useState<string>("");
+    const [startedAt] = useState<number>(() => Date.now());
 
     const buttonText = useMemo(() => {
         if (status === Status.idle) return "send";
@@ -63,6 +70,7 @@ export default function ContactForm(props: Props): JSX.Element {
                 setName(e.target.value.length ? e.target.value : undefined);
             else if (e.target.name === "email") setEmail(e.target.value);
             else if (e.target.name === "message") setMessage(e.target.value);
+            else if (e.target.name === "website") setWebsite(e.target.value);
         },
         []
     );
@@ -74,7 +82,6 @@ export default function ContactForm(props: Props): JSX.Element {
 
             try {
                 const body = ContactBodySchema.safeParse({
-                    userId: session.data?.user?.id,
                     name,
                     email,
                     message,
@@ -116,10 +123,22 @@ export default function ContactForm(props: Props): JSX.Element {
                     method: "POST",
                     headers,
                     credentials: "same-origin",
-                    body: JSON.stringify(body.data),
+                    body: JSON.stringify({
+                        ...body.data,
+                        website,
+                        startedAt,
+                    } satisfies ContactSubmitBody),
                 });
 
-                console.log(await result.text());
+                const responseText = await result.text();
+
+                if (!result.ok) {
+                    setStatus(Status.error);
+                    console.error("contact form submission failed", responseText);
+                    return;
+                }
+
+                console.log(responseText);
                 setStatus(Status.success);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch ({ stack, message }: any) {
@@ -128,7 +147,7 @@ export default function ContactForm(props: Props): JSX.Element {
                 console.error("contact form submition failed,", message);
             }
         },
-        [email, message, name, session.data?.user?.id]
+        [email, message, name, startedAt, website]
     );
 
     useEffect(() => {
@@ -196,6 +215,16 @@ export default function ContactForm(props: Props): JSX.Element {
             </span>
 
             <span className="flex flex-col gap-2">
+                <input
+                    type="text"
+                    name="website"
+                    value={website}
+                    onChange={handleChange<HTMLInputElement>}
+                    autoComplete="off"
+                    tabIndex={-1}
+                    aria-hidden={true}
+                    className="hidden"
+                />
                 <Textarea
                     required={true}
                     inputMode="text"

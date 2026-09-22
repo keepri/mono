@@ -20,7 +20,12 @@
         "lint": "turbo lint",
         "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,md}\"",
         "foley:dev": "turbo dev --filter=foley --output-logs=new-only",
-        "foley:build": "turbo db:generate --filter=db && turbo build --filter=foley"
+        "foley:build": "turbo db:generate --filter=db && turbo build --filter=foley",
+        "foley:test": "bun run --filter=foley test",
+        "foley:test:serial": "bun run foley:test:unit && bun run foley:test:integration && bun run foley:test:e2e",
+        "foley:test:unit": "bun run --filter=foley test:unit",
+        "foley:test:integration": "bun run --filter=foley test:integration",
+        "foley:test:e2e": "bun run --filter=foley test:e2e"
     },
     "devDependencies": {
         "@turbo/gen": "^1.9.7",

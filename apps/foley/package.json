@@ -6,6 +6,11 @@
         "lint": "next lint --fix",
         "clean": "rm -rf node_modules .next .turbo",
         "dev": "next dev --port 3001",
+        "test": "./scripts/test-suite.sh all",
+        "test:unit": "vitest run --config vitest.config.mjs --exclude src/rateLimit.integration.test.ts --exclude src/e2e/**",
+        "test:integration": "./scripts/test-suite.sh integration",
+        "test:e2e": "./scripts/test-suite.sh e2e",
+        "test:serial": "./scripts/test-suite.sh serial",
         "build": "next build",
 
         "start": "next start"
