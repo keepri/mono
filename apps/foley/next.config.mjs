@@ -1,5 +1,4 @@
 import { dirname, join } from "path";
-import { serverEnv } from "./src/env/server.mjs";
 import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 
 /**
@@ -15,7 +14,6 @@ export default defineNextConfig({
     transpilePackages: ["ui", "qr", "utils", "db", "invoice"],
     distDir: join(dirname("."), ".next"),
     reactStrictMode: true,
-    env: serverEnv,
     typescript: {
         ignoreBuildErrors: false,
     },

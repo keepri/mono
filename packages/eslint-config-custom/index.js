@@ -8,7 +8,6 @@ module.exports = {
     plugins: ["react", "react-hooks", "import", "@typescript-eslint"],
     extends: [
         "next",
-        "turbo",
         "prettier",
         "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
@@ -18,7 +17,6 @@ module.exports = {
     ],
     rules: {
         "@next/next/no-html-link-for-pages": "off",
-        "turbo/no-undeclared-env-vars": "warn",
         indent: [
             "warn",
             4,

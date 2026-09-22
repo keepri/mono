@@ -1,6 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
     /* colors */
@@ -68,18 +68,19 @@ img {
     transition: background-color 100ms ease-in-out;
     transition: border-color 100ms ease-in-out;
 
-    &:hover {
-        border-color: var(--clr-orange) !important;
-        background-color: var(--clr-bg-500) !important;
-        color: var(--clr-white) !important;
-    }
+}
 
-    &:active {
-        border-color: var(--clr-bg-500) !important;
-        background-color: var(--clr-orange) !important;
-        color: var(--clr-white) !important;
-        scale: 1.013 !important;
-    }
+.button:hover {
+    border-color: var(--clr-orange) !important;
+    background-color: var(--clr-bg-500) !important;
+    color: var(--clr-white) !important;
+}
+
+.button:active {
+    border-color: var(--clr-bg-500) !important;
+    background-color: var(--clr-orange) !important;
+    color: var(--clr-white) !important;
+    scale: 1.013 !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {
