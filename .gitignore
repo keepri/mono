@@ -42,4 +42,5 @@ yarn-error.log*
 .turbo
 
 # misc
+*.tsbuildinfo
 k.md

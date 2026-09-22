@@ -18,6 +18,7 @@
         "@upstash/redis": "^1.39.0",
         "@vercel/analytics": "^0.1.8",
         "db": "*",
+        "invoice": "*",
 
         "next": "~15.5.25",
         "next-auth": "^4.24.15",

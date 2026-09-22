@@ -1,37 +1,33 @@
 import {
-    type ChangeEvent,
+    type ChangeEventHandler,
     type HTMLInputTypeAttribute,
     type InputHTMLAttributes,
     type PropsWithRef,
     useId,
     forwardRef,
 } from "react";
-
-export type InputOnChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    index?: number
-) => void;
+import { FieldShell } from "./FieldShell";
 
 type Type1 = Omit<
     InputHTMLAttributes<HTMLInputElement>,
     "onChange" | "type" | "id"
 > & {
-    index?: number;
     type: "file";
     label: string;
     labelClass?: string;
-    onChange: InputOnChange;
+    error?: string;
+    onChange: ChangeEventHandler<HTMLInputElement>;
 };
 
 type Type2 = Omit<
     InputHTMLAttributes<HTMLInputElement>,
     "onChange" | "type"
 > & {
-    index?: number;
     type?: Exclude<HTMLInputTypeAttribute, "file">;
     label?: string;
     labelClass?: string;
-    onChange: InputOnChange;
+    error?: string;
+    onChange: ChangeEventHandler<HTMLInputElement>;
 };
 
 type Props = Type1 | Type2;
@@ -41,112 +37,73 @@ export const Input = forwardRef<HTMLInputElement, PropsWithRef<Props>>(
         {
             type = "text",
             className,
-            index,
             value,
             label,
             labelClass,
+            error,
             onChange,
             ...rest
         },
         ref
     ) => {
         const id = useId();
+        const base = { id, ref, onChange, ...rest };
+        const errorEl = error && (
+            <p className="text-red-600 text-sm">{error}</p>
+        );
 
         if (type.toLowerCase() === "checkbox") {
-            if (label) {
-                return (
-                    <label
-                        className={`${labelClass} flex flex-wrap items-center gap-2`}
-                        htmlFor={id}
-                    >
-                        <input
-                            id={id}
-                            ref={ref}
-                            data-index={index}
-                            type="checkbox"
-                            value={value}
-                            className={className}
-                            onChange={onChange}
-                            {...rest}
-                        />
-                        <span>
-                            {label}
-                            {rest.required && (
-                                <sup className="text-red-600">*</sup>
-                            )}
-                        </span>
-                    </label>
-                );
-            }
-
-            return (
-                <input
-                    id={id}
-                    ref={ref}
-                    data-index={index}
-                    type="checkbox"
-                    value={value}
-                    className={className}
-                    onChange={onChange}
-                    {...rest}
-                />
-            );
-        }
-
-        if (type.toLowerCase() === "file") {
-            // FIXME this is wrong, change it
-            return (
-                <label htmlFor={id} className={`input-base ${labelClass}`}>
-                    {label ?? "gib file"}
-                    <input
-                        id={id}
-                        ref={ref}
-                        data-index={index}
-                        type="file"
-                        value={value}
-                        className={className}
-                        onChange={onChange}
-                        {...rest}
-                    />
-                </label>
-            );
-        }
-
-        if (label) {
             return (
                 <label
+                    className={`${labelClass} flex flex-wrap items-center gap-2`}
                     htmlFor={id}
-                    className={`${labelClass ?? ""} flex flex-col`}
                 >
+                    <input
+                        type="checkbox"
+                        value={value}
+                        className={className}
+                        {...base}
+                    />
                     <span>
                         {label}
                         {rest.required && <sup className="text-red-600">*</sup>}
                     </span>
-                    <input
-                        id={id}
-                        ref={ref}
-                        data-index={index}
-                        type={type}
-                        value={value}
-                        className={`${className} input-base`}
-                        onChange={onChange}
-                        {...rest}
-                    />
+                    {errorEl}
                 </label>
             );
         }
 
+        const labelText = label ?? (type === "file" ? "gib file" : undefined);
+
+        if (labelText) {
+            return (
+                <FieldShell
+                    id={id}
+                    label={labelText}
+                    labelClass={labelClass}
+                    required={rest.required}
+                    error={error}
+                >
+                    <input
+                        type={type}
+                        value={value}
+                        className={`${className} input-base`}
+                        {...base}
+                    />
+                </FieldShell>
+            );
+        }
+
         return (
-            <input
-                id={id}
-                ref={ref}
-                data-index={index}
-                value={value}
-                className={`${className} input-base`}
-                type={type}
-                onChange={onChange}
-                {...rest}
-            />
+            <>
+                <input
+                    type={type}
+                    value={value}
+                    className={`${className} input-base`}
+                    {...base}
+                />
+                {errorEl}
+            </>
         );
     }
 );
