@@ -9,33 +9,30 @@
     ],
     "scripts": {
         "db:connect": "turbo db:connect",
-        "db:studio": "npm run dev --workspace db",
+        "db:studio": "turbo dev --filter=db --output-logs=new-only",
         "db:generate": "turbo db:generate --filter=db",
         "db:push": "turbo db:push --filter=db",
         "db:push-data-loss": "turbo db:push-data-loss --filter=db",
-        "db-nika:generate": "turbo db:generate --filter=nika",
-        "db-nika:push": "turbo db:push --filter=nika",
         "build": "turbo build",
-        "dev": "turbo dev --parallel",
-        "check": "turbo check",
+        "dev": "turbo dev --parallel --output-logs=new-only",
+        "check": "bun run policy:bun && turbo check",
         "clean": "turbo clean && turbo daemon clean && rm -rf node_modules .turbo package-lock.json",
         "lint": "turbo lint",
         "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,md}\"",
-        "foley:dev": "turbo dev --filter=foley",
-        "foley:build": "npm run db:generate --workspace db && npm run build --workspace foley",
-        "nika:dev": "turbo dev --filter=nika",
-        "nika:build": "turbo build --filter=nika"
+        "policy:bun": "bun verify-bun-only.mjs",
+        "foley:dev": "turbo dev --filter=foley --output-logs=new-only",
+        "foley:build": "turbo db:generate --filter=db && turbo build --filter=foley"
     },
     "devDependencies": {
         "@turbo/gen": "^1.9.7",
         "eslint": "^7.32.0",
         "eslint-config-custom": "*",
         "prettier": "^2.8.8",
-        "turbo": "^2.5.4",
+        "turbo": "^2.11.2",
         "vitest": "^5.0.1"
     },
     "engines": {
         "node": "^22.0.0"
     },
-    "packageManager": "npm@9.6.7"
+    "packageManager": "bun@1.4.2"
 }

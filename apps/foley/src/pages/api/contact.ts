@@ -32,8 +32,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         const user = body.data.userId
             ? await prisma.user.findFirst({
-                  where: { id: { equals: body.data.userId } },
-              })
+                where: { id: { equals: body.data.userId } },
+            })
             : null;
 
         await sendEmail({
@@ -47,10 +47,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 ${
                     user
                         ? `User name & id: ${user.name ?? "missing name"} - ${
-                              user.id
-                          }`
+                            user.id
+                        }`
                         : "User not logged in"
-                }
+}
                 Date: ${contact.createdAt.toLocaleString()}
                 DatabaseId: ${contact.id}
             `,

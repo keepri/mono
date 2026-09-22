@@ -1,6 +1,6 @@
 import "@total-typescript/ts-reset";
 import Layout from "@components/Layout/Layout";
-import "@styles/globals.scss";
+import "@styles/globals.css";
 import { StorageKey } from "@utils/enums";
 import { BrowserStorage } from "@utils/helpers";
 import { isProduction } from "@utils/misc";
