@@ -6,17 +6,35 @@ import {
     type NextFetchEvent,
     type NextRequest,
 } from "next/server";
+import {
+    makeRateLimitHeaders,
+} from "@utils/rateLimit";
 import { extractIpFromRequest } from "./ipHelper";
 
 const ratelimit = new Ratelimit({
     redis: Redis.fromEnv(),
     limiter: Ratelimit.fixedWindow(69, "10 s"),
 });
-const API_PROTECTED_ROUTES: Set<URLS> = new Set<URLS>([
+const contactRateLimitPerMinute = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(1, "60 s"),
+    prefix: "contact-ip-1m",
+});
+const contactRateLimitPer15Min = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(3, "15 m"),
+    prefix: "contact-ip-15m",
+});
+const contactRateLimitPerDay = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(6, "24 h"),
+    prefix: "contact-ip-24h",
+});
+const API_PROTECTED_ROUTES = [
     URLS.API_SMOL_CREATE,
     URLS.API_QR_CREATE,
     URLS.API_EMAIL_SEND,
-]);
+];
 
 export const config = {
     matcher: ["/api/:path*", "/s/:path*"],
@@ -40,13 +58,21 @@ export default async function handler(req: NextRequest, ev: NextFetchEvent) {
         }
 
         if (onApi) {
+            if (req.nextUrl.pathname === URLS.API_CONTACT) {
+                const isContactExceeded = await validateContactRateLimit(req, ev);
+
+                if (isContactExceeded) {
+                    return isContactExceeded;
+                }
+            }
+
             const isExceeded = await validateRateLimit(req, ev);
 
             if (isExceeded) {
                 return isExceeded;
             }
 
-            if (!API_PROTECTED_ROUTES.has(req.nextUrl.pathname as URLS)) {
+            if (!API_PROTECTED_ROUTES.includes(req.nextUrl.pathname)) {
                 return NextResponse.next();
             }
 
@@ -95,23 +121,52 @@ async function handleSmolRedirect(req: NextRequest): Promise<NextResponse> {
 async function validateRateLimit(
     req: NextRequest,
     ev: NextFetchEvent
-): Promise<Response | void> {
+) {
     const ip = extractIpFromRequest(req);
     const { success, pending, limit, remaining, reset } = await ratelimit.limit(
         `mw_${ip}`
     );
     ev.waitUntil(pending);
 
-    if (success === true) {
-        return;
+    if (!success) {
+        return makeRateLimitResponse(limit, remaining, reset);
     }
+}
 
-    const res = NextResponse.error();
-    res.headers.set("X-RateLimit-Limit", limit.toString());
-    res.headers.set("X-RateLimit-Remaining", remaining.toString());
-    res.headers.set("X-RateLimit-Reset", reset.toString());
+async function validateContactRateLimit(
+    req: NextRequest,
+    ev: NextFetchEvent
+) {
+    const ip = extractIpFromRequest(req);
+    const key = `contact_ip_${ip}`;
+    const checks = await Promise.all([
+        contactRateLimitPerMinute.limit(key),
+        contactRateLimitPer15Min.limit(key),
+        contactRateLimitPerDay.limit(key),
+    ]);
+
+    ev.waitUntil(Promise.all(checks.map((check) => check.pending)));
+
+    for (const check of checks) {
+        if (!check.success) {
+            return makeRateLimitResponse(check.limit, check.remaining, check.reset);
+        }
+    }
+}
+
+function makeRateLimitResponse(
+    limit: number,
+    remaining: number,
+    reset: number
+): NextResponse {
+    const res = NextResponse.json(
+        { message: "Too many requests. Try again later." },
+        { status: 429 }
+    );
+    const headers = makeRateLimitHeaders(limit, remaining, reset);
+    for (const [key, value] of Object.entries(headers)) {
+        res.headers.set(key, value);
+    }
 
     return res;
 }
-
-
