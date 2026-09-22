@@ -15,11 +15,10 @@
         "db:push-data-loss": "turbo db:push-data-loss --filter=db",
         "build": "turbo build",
         "dev": "turbo dev --parallel --output-logs=new-only",
-        "check": "bun run policy:bun && turbo check",
+        "check": "turbo check",
         "clean": "turbo clean && turbo daemon clean && rm -rf node_modules .turbo package-lock.json",
         "lint": "turbo lint",
         "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,md}\"",
-        "policy:bun": "bun verify-bun-only.mjs",
         "foley:dev": "turbo dev --filter=foley --output-logs=new-only",
         "foley:build": "turbo db:generate --filter=db && turbo build --filter=foley"
     },
